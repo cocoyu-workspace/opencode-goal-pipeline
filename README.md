@@ -77,7 +77,7 @@ Self-maintained zero-dependency **`opencode-goal` plugin** + **Atomic Lego Skill
 1. **主会话模型完全自定义**：可在 OpenCode 顶栏或 `-m` 自由切换 `GPT-6 Astra`、`GPT-6 Sol`、`GPT-6.1 Sol`、`Fable 5.1`、`Claude Opus 5.5` 等任意模型。
 2. **子 Agent 选模严格按一、二、三优先级执行**：
    - **第一优先级（用户当轮点名，最高优先）**：当用户点名「用 Opus 审」「用 Astra 跑」时，主会话调用 `subagent` 显式传入 `model="<provider>/<model>#<effort>"` 强制覆盖。
-   - **第二优先级（角色默认配置）**：未点名时使用 `opencode.json` 默认模型（`reviewer` 默认 `perplexity/fable-5-1#high`，`coder` / `explore` 默认 `word-claude/claude-opus-5-5#medium`）。
+   - **第二优先级（角色默认配置）**：未点名时使用 `opencode.json` 默认模型（`reviewer` 默认 `perplexity/fable-5.1#high`，`research` / `coder` / `explore` 默认 `word-claude/claude-opus-5-5#medium`）。
    - **第三优先级（`auto-continue-harness.js` 三级自动降级）**：上游限流或报错时自动按三级备选链同会话降级续跑，并在结果末尾追加 `[Fallback Executed: requested=... -> actual=...]` 审计标记。
 
 ---

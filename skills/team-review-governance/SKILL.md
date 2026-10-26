@@ -17,7 +17,7 @@ description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通
    - 老板指定「把某某评审放在第一位」时，直接将本技能对应评审节点排在 Goal 计划第 1 位执行。
 2. **评审模型一二三优先级**：
    - **第一优先级（老板当轮点名，最高优先）**：老板说「这次用 Opus 审」「用 GPT-6 Astra 审」时，派发 `reviewer` 子 Agent 显式传入 `model="<provider>/<model>#<effort>"`（如 `model="word-claude/claude-opus-5-5#high"`）。
-   - **第二优先级（角色默认异构评审）**：老板未点名时，默认由异构 `reviewer` 子 Agent（`perplexity/fable-5-1#high`，Claude 主会话下传 GPT 模型）执行独立冷审，避免同源模型自写自夸。
+   - **第二优先级（角色默认异构评审）**：老板未点名时，默认由异构 `reviewer` 子 Agent（`perplexity/fable-5.1#high`，Claude 主会话下传 GPT 模型）执行独立冷审，避免同源模型自写自夸。
    - **第三优先级（自动三级故障兜底）**：首选模型遇限流或渠道异常时，由 `auto-continue-harness.js` 自动切换备选模型并在报告末尾标注 `[Fallback Executed: ...]`。
 
 ---

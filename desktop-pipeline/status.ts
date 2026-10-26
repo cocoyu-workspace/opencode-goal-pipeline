@@ -555,7 +555,7 @@ export function isDualGoalMode(goal: RawGoalSnapshot, trace: SessionTraceInfo): 
 
 export function buildStage2Command(issuePath?: string): string {
   const target = issuePath && issuePath.trim().length > 0 ? issuePath : "TeamIssue/MUL-xxx/issue.md"
-  return `agy --model gemini-4-argon-high --dangerously-skip-permissions -p "/goal 读取 ${target} 已拍板方案，派 coder 实施、跑真实链路测试自愈并完成终审归档"`
+  return `agy --model gemini-4-argon-high --dangerously-skip-permissions -p "/goal 读取 ${target} 已拍板方案（§1~§5），按 §4 垂直切片 depends_on 顺序实施并跑先红后绿验证（同切片修复连续失败 3 次停机报 Blocker），完成后跑三合一终审并回填 §6"`
 }
 
 function buildDualGoalSteps(goal: RawGoalSnapshot, trace: SessionTraceInfo): PipelineStep[] {

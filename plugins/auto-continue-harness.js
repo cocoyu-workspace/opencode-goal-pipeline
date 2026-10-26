@@ -29,12 +29,19 @@ const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
    - Primary Session Model: 100% customizable by the user (\`GPT-6 Astra\`, \`GPT-6 Sol\`, \`GPT-6.1 Sol\`, \`Fable 5.1\`, \`Claude Opus 5.5\`, etc.).
    - Subagent 3-Tier Model Priority:
      * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 Opus 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call.
-     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`reviewer\`=\`perplexity/fable-5-1#high\`, \`research\`=\`perplexity/fable-5-1#medium\`, \`coder\`/\`explore\`=\`word-claude/claude-opus-5-5#medium\`).
-     * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`.
+     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`reviewer\`=\`perplexity/fable-5.1#high\`, \`research\`/\`coder\`/\`explore\`=\`word-claude/claude-opus-5-5#medium\`).
+     * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`. Fallback-protected subagents run in blocking mode (\`background: false\`).
    - 7 Composable Atomic Blocks for \`/goal\`: \`B1: issue-track\`, \`B2: req-grill\` (\`team-grilling\` + \`reviewer\` requirement pre-review), \`B3: fact-research\` (local \`file:line\` + \`research\` subagent), \`B4: spec-draft\` (spec + reuse design), \`B5: spec-review\` (\`team-review-governance\` 3-in-1 independent review), \`B6: gate-brief\` (approval gate), \`B7: impl-verify\` (\`coder\` implementation & simplification + \`reviewer\` 3-in-1 code review + tests inside OpenCode).
    - User's Explicit Flow Override ALWAYS Takes Priority 1: If the user says "先做某某评审", "把某某指定为第一位", "跳过某步", or "一个 \`/goal\` 自动走完（包含 \`B7: impl-verify\`）", dynamically assemble or reorder the blocks via \`update_goal_plan\` (\`plan_ops\`: \`insert_task\`, \`remove_task\`, \`reorder_tasks\`, \`insert_phase\`).
    - HITL Yield & Auto-Resume: When pausing to ask the user a question (\`B2\`) or waiting for gate approval (\`B6\`), call \`update_goal_status({ status: "paused", wait_reason: "clarification" | "approval", prompt_summary: "..." })\`. The local \`opencode-goal\` plugin automatically resumes the goal to \`active\` when the user replies.
 </system-reminder>`;
+
+const ROLE_DEFAULT_MODELS = {
+  explore: "word-claude/claude-opus-5-5#medium",
+  research: "word-claude/claude-opus-5-5#medium",
+  coder: "word-claude/claude-opus-5-5#medium",
+  reviewer: "perplexity/fable-5.1#high",
+};
 
 const SUBAGENT_FALLBACK_TIERS = {
   explore: ["perplexity/sonnet-5.5#medium", "openai/gpt-6.1-sol#medium"],
@@ -47,8 +54,71 @@ const SUBAGENT_FALLBACK_TIERS = {
 export function resolveSubagentFallbackTiers(agentId, initialModel) {
   const tiers = SUBAGENT_FALLBACK_TIERS[agentId];
   if (!tiers) return [];
-  const normalizedInitial = initialModel ? String(initialModel).trim() : "";
-  return tiers.filter((tier) => tier !== normalizedInitial);
+  const effectiveInitial = initialModel ? String(initialModel).trim() : ROLE_DEFAULT_MODELS[agentId] || "";
+  return tiers.filter((tier) => tier !== effectiveInitial);
+}
+
+function appendSubagentAuditNote(res, note) {
+  if (!note || !res || typeof res !== "object") return res;
+  if (res.output && typeof res.output === "object" && res.output.status === "running") return res;
+  if (typeof res.content === "string") {
+    return { ...res, content: `${res.content}${note}` };
+  }
+  if (typeof res.output === "string") {
+    return { ...res, output: `${res.output}${note}` };
+  }
+  return res;
+}
+
+export function wrapSubagentExecute(origExecute) {
+  return async (input, callCtx) => {
+    const fallbackTiers = resolveSubagentFallbackTiers(input?.agent, input?.model);
+    const coerceBg = input?.background === true && fallbackTiers.length > 0 && input?.allow_unprotected_background !== true;
+    const effectiveInput = coerceBg ? { ...input, background: false } : input;
+    const coercedNote = coerceBg ? "\n\n[Background Coerced: fallback-protected role]" : "";
+
+    try {
+      const res = await origExecute(effectiveInput, callCtx);
+      return appendSubagentAuditNote(res, coercedNote);
+    } catch (firstErr) {
+      const firstMsg = String(firstErr?.message || firstErr || "");
+      if (/Subagent cancelled/i.test(firstMsg) || callCtx?.signal?.aborted) throw firstErr;
+      const match = firstMsg.match(/sessionID:\s*(ses_[A-Za-z0-9]+)/i);
+      const isPreSessionErr =
+        /Model ".*" is not available|Variant ".*" is not available|Invalid model|Failed to prompt subagent|Failed to switch subagent/i.test(
+          firstMsg,
+        );
+      if ((!match && !isPreSessionErr) || fallbackTiers.length === 0) throw firstErr;
+
+      let currentSessionID = match?.[1] || input?.sessionID;
+      let lastErr = firstErr;
+      for (const fallbackModel of fallbackTiers) {
+        try {
+          const retryPayload = currentSessionID
+            ? {
+                ...effectiveInput,
+                sessionID: currentSessionID,
+                model: fallbackModel,
+                prompt: "前序模型渠道异常中断，请在同一子会话中直接继续完成上述任务。",
+              }
+            : {
+                ...effectiveInput,
+                model: fallbackModel,
+              };
+          const retryRes = await origExecute(retryPayload, callCtx);
+          const fallbackNote = `${coercedNote}\n\n[Fallback Executed: requested=${input?.model || `${input?.agent || "subagent"}:default`} -> actual=${fallbackModel}]`;
+          return appendSubagentAuditNote(retryRes, fallbackNote);
+        } catch (retryErr) {
+          lastErr = retryErr;
+          const retryMsg = String(retryErr?.message || retryErr || "");
+          if (/Subagent cancelled/i.test(retryMsg) || callCtx?.signal?.aborted) throw retryErr;
+          const nextMatch = retryMsg.match(/sessionID:\s*(ses_[A-Za-z0-9]+)/i);
+          if (nextMatch?.[1]) currentSessionID = nextMatch[1];
+        }
+      }
+      throw lastErr;
+    }
+  };
 }
 
 export function transformSystemPromptForAutonomy(hookInput) {
@@ -153,53 +223,7 @@ export default {
         const toolTransformReg = await ctx.tool.transform((registry) => {
           if (typeof registry.get === "function" && typeof registry.update === "function" && registry.get("subagent")) {
             registry.update("subagent", (tool) => {
-              const origExecute = tool.execute;
-              tool.execute = async (input, callCtx) => {
-                try {
-                  return await origExecute(input, callCtx);
-                } catch (firstErr) {
-                  const firstMsg = String(firstErr?.message || firstErr || "");
-                  if (/Subagent cancelled/i.test(firstMsg) || callCtx?.signal?.aborted) throw firstErr;
-                  const match = firstMsg.match(/Subagent failed \(sessionID:\s*(ses_[A-Za-z0-9]+)\)/i);
-                  if (!match) throw firstErr;
-
-                  let currentSessionID = match[1] || input?.sessionID;
-                  const fallbackTiers = resolveSubagentFallbackTiers(input?.agent, input?.model);
-                  if (fallbackTiers.length === 0) throw firstErr;
-
-                  let lastErr = firstErr;
-                  for (const fallbackModel of fallbackTiers) {
-                    try {
-                      const retryRes = await origExecute(
-                        {
-                          ...input,
-                          sessionID: currentSessionID,
-                          model: fallbackModel,
-                          prompt: "前序模型渠道异常中断，请在同一子会话中直接继续完成上述任务。",
-                        },
-                        callCtx,
-                      );
-                      const fallbackNote = `\n\n[Fallback Executed: requested=${input?.model || `${input?.agent || "subagent"}:default`} -> actual=${fallbackModel}]`;
-                      if (retryRes && typeof retryRes === "object") {
-                        if (typeof retryRes.content === "string") {
-                          return { ...retryRes, content: `${retryRes.content}${fallbackNote}` };
-                        }
-                        if (typeof retryRes.output === "string") {
-                          return { ...retryRes, output: `${retryRes.output}${fallbackNote}` };
-                        }
-                      }
-                      return retryRes;
-                    } catch (retryErr) {
-                      lastErr = retryErr;
-                      const retryMsg = String(retryErr?.message || retryErr || "");
-                      if (/Subagent cancelled/i.test(retryMsg) || callCtx?.signal?.aborted) throw retryErr;
-                      const nextMatch = retryMsg.match(/sessionID:\s*(ses_[A-Za-z0-9]+)/i);
-                      if (nextMatch?.[1]) currentSessionID = nextMatch[1];
-                    }
-                  }
-                  throw lastErr;
-                }
-              };
+              tool.execute = wrapSubagentExecute(tool.execute);
             });
           }
 

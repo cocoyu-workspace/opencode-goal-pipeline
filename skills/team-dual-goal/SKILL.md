@@ -28,7 +28,7 @@ description: "[弹性原子积木Goal调度] OpenCode 自维护 opencode-goal �
 | :--- | :--- | :--- | :--- | :--- |
 | **`B1` · Issue 建档 (`issue-track`)** | GitHub Issue (`gh-atg`) / 仓内 `TeamIssue` | `AFK` | 创建或绑定权威主卡 `issue.md` | 新任务留痕时插上；已在当前卡内跟进时跳过 |
 | **`N1` / `B2` · 需求澄清 (`Grill`)** | Matt `grill-with-docs` (`#1193` 正向推荐) + `domain-modeling` | `HITL` (`wait_reason="clarification"`) | **§1 需求与不改边界（`R1..Rn` + `Out of Scope`）**：用稳定编号 `R1..Rn` 列出全部明确需求（零删减）与禁止越界范围；长期术语/ADR 更新至仓内文档并引用 | 想法模糊时插上（提问带推荐，回「可以」即采纳）；需求明确直接拔掉 |
-| **`N2` / `B3` · 现状取证 (`Research`)** | 三轨灵活取证（`diagnosing-bugs` `#1209` / `explore` 查本仓 / `research` 查 `memex` 与开源） | `AFK` | **§2 根因与代码复用锚点**：记录 **`相对路径 + 符号名 + 参考行号`**（抗行号漂移）的根因与本仓可复用函数、必要性与不改判据门禁 | 需查日志复现或查本仓/外部方案时插上；内部几行机械小改直接拔掉 |
+| **`N2` / `B3` · 现状取证 (`Research`)** | 三轨灵活取证（`diagnosing-bugs` `#1209` / `explore` 查本仓 / `research` 查 `memex` 与开源） | `AFK` | **§2 根因与代码复用锚点**：记录基线 Commit SHA、**`相对路径 + 符号名 + 参考行号`**（抗行号漂移）的根因与本仓可复用函数、必要性与不改判据门禁 | 需查日志复现或查本仓/外部方案时插上；内部几行机械小改直接拔掉 |
 | **`N3` / `B4` · 规格合成 (`Spec`)** | Matt `to-spec` + `team-codebase-design` + 复用四问梯 | `AFK` | **§3 精简 Spec 与测试接缝（Seams）**：<br>• 模块深接口变更与复用四问结论（禁贴 >15 行实现代码）；<br>• 锁定最高层公共测试接缝（Seam），写明每个 Seam「能捕获什么、不能捕获什么、对应哪条 `R#`」 | 涉及多文件协议或架构调整时插上；小修小补直接跳过（仅保留 §1+§2） |
 | **`N5` · 任务图拆解 (`Tickets`)** | Matt `to-tickets`（Tracer-Bullet 垂直切片 + `depends_on` 阻塞边 + 宽重构 Expand-Contract） | `AFK` | **§4 垂直切片任务图（Vertical Slices）**：<br>• 每片必须切穿端到端可独立验证行为（禁水平分层），格式：`- [ ] [S1] 交付行为 (Covers: R1 \| depends_on: [])`；<br>• 仅当需多 worktree 并行认领、跨仓发布或单片超出上下文窗口时，才外拆 `tickets/01-slug.md` | 涉及多步或大 Spec 时插上；单点改动无需拆图 |
 | **`N4` / `B5` · 异构互辩 (`Review`)** | 双模型对抗挑刺（`team-review-governance` + `reviewer`） | `AFK` | **§5 Review & Decision Log**：一并审查 §1~§4（含 Spec、Seam 与垂直切片图），记录审查模型、契约版本、阻断项处理结果与关键取舍 | 重大方案防自嗨时插上；老板说「不用审方案」或紧急小修直接拔掉 |
@@ -41,7 +41,7 @@ description: "[弹性原子积木Goal调度] OpenCode 自维护 opencode-goal �
 
 ### 1. 派发 `coder` / `reviewer` 的最小完整交接包（禁复制长文，禁丢 §1/§2 边界）
 因为主卡 `issue.md` 已精简在百行左右（约 1.5k tokens），主会话派发 `coder` 时**严禁只传半截章节导致丢失 `§1 Out of Scope` 与 `§2 复用锚点`**，统一传递以下 5 项指针参数：
-1. **权威主卡路径与契约版本**：`<path/to/issue.md>`（要求子代理先全文读取 `§1`~`§5`）。
+1. **权威主卡路径与契约版本**：`<path/to/issue.md>`（要求子代理先全文读取 `§1`~`§5`；跨端交接给外部 `agy /goal` 时，`issue.md` 的单写者权限随之移交 `agy` 主会话）。
 2. **当前执行切片与覆盖需求**：`Slice S#`（对应 `R#`，插件级 `depends_on` 前置依赖必须已 `completed`）。
 3. **代码复用锚点与测试接缝（Seam）**：指向 `§2` 的 `相对路径 + 符号名 + 参考行号` 与 `§3` 的公共测试边界。
 4. **允许写入的文件范围与工作目录**：明确 worktree / 分支与禁止触碰的 `Out of Scope` 文件。
@@ -49,7 +49,7 @@ description: "[弹性原子积木Goal调度] OpenCode 自维护 opencode-goal �
 
 ### 2. 防退化 4 道准入检查（Gates）
 1. **派发前准入（Pre-Dispatch Gate）**：校验 `issue.md` 已含 `§1`~`§4`（跳过 Spec 的小修需含 `§1`+`§2`）、`R1..Rn` 无删减、插件 `depends_on` 无环且前置切片已 `completed`、受控模式下已获明确批准。
-2. **切片回写准入（Slice Verification Gate）**：核对红绿测试输出（Bug 修复优先用真实故障复现红灯，不把环境报错当红灯；仅在验证测试敏感度时使用隔离变异并强制还原），检查工作区无未登记的散装过程 `.md`。
+2. **切片回写准入（Slice Verification Gate）**：核对红绿测试输出（Bug 修复优先用真实故障复现红灯，不把环境报错当红灯；仅在验证测试敏感度时使用隔离变异并强制还原），检查工作区无未登记的散装过程 `.md`。**同一切片针对同一故障的修复验证连续失败 3 次（TDD 初始预期红灯不计入失败次数，换模型或恢复会话不重置计数）立即停机保留现场并写回 `issue.md` 报 Blocker，严禁篡改或弱化测试断言凑绿、严禁叠兼容垫片。**
 3. **三合一审查准入（Review Gate）**：`reviewer` 逐条核对 `R1..Rn` 兑现度（`Spec` 轴）、Fowler 12 坏味道（`Standards` 轴）与复用四问梯子 + 反过度防御 + 删腐烂注释（`Reuse & Simplify` 轴）。
 4. **关闭目标准入（Close Gate）**：所有 `R1..Rn` 与切片 `S1..Sn` 均已绑定持久验证证据，才允许调用 `update_goal(status="complete")`。
 
