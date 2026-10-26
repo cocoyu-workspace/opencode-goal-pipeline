@@ -78,6 +78,7 @@ Self-maintained zero-dependency **`opencode-goal` plugin** + **Atomic Lego Skill
 2. **子 Agent 选模严格按一、二、三优先级执行**：
    - **第一优先级（用户当轮点名，最高优先）**：当用户点名「用 Opus 审」「用 Astra 跑」时，主会话调用 `subagent` 显式传入 `model="<provider>/<model>#<effort>"` 强制覆盖。
    - **第二优先级（角色默认配置）**：未点名时使用 `opencode.json` 默认模型（`reviewer` 默认 `perplexity/fable-5.1#high`，`research` / `coder` / `explore` 默认 `word-claude/claude-opus-5-5#medium`）。
+    - **按任务复杂度分级启用**：`word-claude/claude-opus-5-5#medium` 用于复杂主干编码（含 `N3: Spec` / `N5: Tickets` 的多文件改动、并发与状态机修复）；`word-claude/claude-sonnet-5-5#medium` 用于跳过 `N3: Spec` 的小修小补（单文件机械小改、改配置/文案、几行补丁）与轻量 `explore` 检索，由主会话显式传入，不挂 `#high`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`）。
    - **第三优先级（`auto-continue-harness.js` 三级自动降级）**：上游限流或报错时自动按三级备选链同会话降级续跑，并在结果末尾追加 `[Fallback Executed: requested=... -> actual=...]` 审计标记。
 
 ---

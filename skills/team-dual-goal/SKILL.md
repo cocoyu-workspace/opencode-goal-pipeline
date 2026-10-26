@@ -80,4 +80,5 @@ description: "[弹性原子积木Goal调度] OpenCode 自维护 opencode-goal �
 - **子 Agent 一二三优先级**：
   - **第一优先级（老板当轮点名，最高优先）**：显式传入 `subagent(..., model="<provider>/<model>#<effort>")`。
   - **第二优先级（角色默认配置）**：不传 `model` 参数，读取 `opencode.json` 默认配置。
+  - **按任务复杂度分级选模**：主干/复杂编码（含 `N3: Spec` / `N5: Tickets` 的多文件改动、并发与状态机修复）默认保持 `word-claude/claude-opus-5-5#medium`；跳过 `N3: Spec` 的小修小补（单文件机械小改、改配置/文案、几行补丁）或轻量 `explore` 检索，由主会话显式传 `model="word-claude/claude-sonnet-5-5#medium"`，不挂 `#high`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`，`#high` 无效）。
   - **第三优先级（`auto-continue-harness.js` 三级自动降级）**：渠道异常时同会话自动按三级备选链降级并追加 `[Fallback Executed: requested=... -> actual=...]` 审计标记。

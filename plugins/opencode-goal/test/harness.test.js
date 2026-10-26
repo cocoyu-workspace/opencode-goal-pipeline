@@ -23,6 +23,28 @@ describe("auto-continue-harness subagent fallback & background coercion (Issue #
     ]);
   });
 
+  test("resolveSubagentFallbackTiers puts word-claude/claude-sonnet-5-5#medium first for explore and coder and deduplicates it", () => {
+    expect(resolveSubagentFallbackTiers("explore", undefined)).toEqual([
+      "word-claude/claude-sonnet-5-5#medium",
+      "perplexity/sonnet-5.5#medium",
+      "openai/gpt-6.1-sol#medium",
+    ]);
+    expect(resolveSubagentFallbackTiers("coder", undefined)).toEqual([
+      "word-claude/claude-sonnet-5-5#medium",
+      "perplexity/sonnet-5.5#high",
+      "openai/gpt-6.1-sol#high",
+    ]);
+
+    expect(resolveSubagentFallbackTiers("explore", "word-claude/claude-sonnet-5-5#medium")).toEqual([
+      "perplexity/sonnet-5.5#medium",
+      "openai/gpt-6.1-sol#medium",
+    ]);
+    expect(resolveSubagentFallbackTiers("coder", "word-claude/claude-sonnet-5-5#medium")).toEqual([
+      "perplexity/sonnet-5.5#high",
+      "openai/gpt-6.1-sol#high",
+    ]);
+  });
+
   test("wrapSubagentExecute coerces background:true to false for fallback-protected roles and appends audit tag", async () => {
     const calls = [];
     const wrapped = wrapSubagentExecute(async (input) => {

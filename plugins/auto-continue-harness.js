@@ -30,6 +30,7 @@ const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
    - Subagent 3-Tier Model Priority:
      * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 Opus 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call.
      * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`reviewer\`=\`perplexity/fable-5.1#high\`, \`research\`/\`coder\`/\`explore\`=\`word-claude/claude-opus-5-5#medium\`).
+       - Complexity tiering: mainline/complex coding (multi-file changes under \`N3: Spec\` / \`N5: Tickets\`, concurrency and state-machine fixes) keeps the default \`word-claude/claude-opus-5-5#medium\`. Small fixes that skip \`N3: Spec\` (single-file mechanical edits, config/copy changes, few-line patches, lightweight \`explore\` lookups) may be dispatched by the main session with an explicit \`model="word-claude/claude-sonnet-5-5#medium"\`. Do not append \`#high\`: the Word channel carries \`NormalizeSonnet55DisabledThinking:True\`, so a high variant has no effect.
      * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`. Fallback-protected subagents run in blocking mode (\`background: false\`).
    - 7 Composable Atomic Blocks for \`/goal\`: \`B1: issue-track\`, \`B2: req-grill\` (\`team-grilling\` + \`reviewer\` requirement pre-review), \`B3: fact-research\` (local \`file:line\` + \`research\` subagent), \`B4: spec-draft\` (spec + reuse design), \`B5: spec-review\` (\`team-review-governance\` 3-in-1 independent review), \`B6: gate-brief\` (approval gate), \`B7: impl-verify\` (\`coder\` implementation & simplification + \`reviewer\` 3-in-1 code review + tests inside OpenCode).
    - User's Explicit Flow Override ALWAYS Takes Priority 1: If the user says "先做某某评审", "把某某指定为第一位", "跳过某步", or "一个 \`/goal\` 自动走完（包含 \`B7: impl-verify\`）", dynamically assemble or reorder the blocks via \`update_goal_plan\` (\`plan_ops\`: \`insert_task\`, \`remove_task\`, \`reorder_tasks\`, \`insert_phase\`).
@@ -44,10 +45,10 @@ const ROLE_DEFAULT_MODELS = {
 };
 
 const SUBAGENT_FALLBACK_TIERS = {
-  explore: ["perplexity/sonnet-5.5#medium", "openai/gpt-6.1-sol#medium"],
+  explore: ["word-claude/claude-sonnet-5-5#medium", "perplexity/sonnet-5.5#medium", "openai/gpt-6.1-sol#medium"],
   research: ["word-claude/claude-opus-5-5#medium", "perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
   general: ["perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
-  coder: ["perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
+  coder: ["word-claude/claude-sonnet-5-5#medium", "perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
   reviewer: ["word-claude/claude-opus-5-5#high", "perplexity/opus-5.5#medium", "openai/gpt-6.1-sol#high"],
 };
 
