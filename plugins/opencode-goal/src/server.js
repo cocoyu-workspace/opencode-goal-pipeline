@@ -12,7 +12,8 @@ var task = z.object({
   description: text,
   status,
   evidence: text.nullish(),
-  blocker: text.nullish()
+  blocker: text.nullish(),
+  depends_on: z.array(id).max(32).optional()
 }).strict();
 var phase = z.object({
   id,
@@ -35,7 +36,8 @@ var GoalPlanOpSchema = z.discriminatedUnion("op", [
     task_id: id,
     status: status.optional(),
     evidence: text.nullable().optional(),
-    blocker: text.nullable().optional()
+    blocker: text.nullable().optional(),
+    depends_on: z.array(id).max(32).nullable().optional()
   }).strict(),
   z.object({ op: z.literal("append_decision"), decision: text }).strict(),
   z.object({
@@ -44,6 +46,7 @@ var GoalPlanOpSchema = z.discriminatedUnion("op", [
     task_id: id,
     description: text,
     status: status.optional(),
+    depends_on: z.array(id).max(32).optional(),
     position: z.enum(["first", "last", "before", "after"]).optional(),
     target_task_id: id.optional()
   }).strict(),
@@ -108,6 +111,59 @@ var GoalPlanInputSchema = GoalPlanDraftSchema.superRefine((plan, ctx) => {
         if (phase.status !== "in_progress")
           ctx.addIssue({ code: "custom", message: "running tasks require a running phase", path: [...taskPath, "status"] });
       }
+    }
+  }
+  const taskById = new Map;
+  const taskPathById = new Map;
+  for (const [phaseIndex, phase] of plan.phases.entries()) {
+    for (const [taskIndex, task] of phase.tasks.entries()) {
+      taskById.set(task.id, task);
+      taskPathById.set(task.id, ["phases", phaseIndex, "tasks", taskIndex]);
+    }
+  }
+  for (const [taskId, task] of taskById.entries()) {
+    const taskPath = taskPathById.get(taskId) ?? ["phases"];
+    const deps = task.depends_on ?? [];
+    for (const depId of deps) {
+      if (depId === taskId) {
+        ctx.addIssue({ code: "custom", message: `task (${taskId}) cannot depend on itself`, path: [...taskPath, "depends_on"] });
+        continue;
+      }
+      const depTask = taskById.get(depId);
+      if (!depTask) {
+        ctx.addIssue({ code: "custom", message: `unknown dependency task ID (${depId})`, path: [...taskPath, "depends_on"] });
+        continue;
+      }
+      if ((task.status === "in_progress" || task.status === "completed") && depTask.status !== "completed") {
+        ctx.addIssue({
+          code: "custom",
+          message: `task (${taskId}) cannot be ${task.status} before dependency (${depId}) is completed`,
+          path: [...taskPath, "status"]
+        });
+      }
+    }
+  }
+  const visitState = new Map;
+  function hasCycle(taskId) {
+    const st = visitState.get(taskId) ?? 0;
+    if (st === 1)
+      return true;
+    if (st === 2)
+      return false;
+    visitState.set(taskId, 1);
+    const t = taskById.get(taskId);
+    for (const depId of t?.depends_on ?? []) {
+      if (taskById.has(depId) && hasCycle(depId))
+        return true;
+    }
+    visitState.set(taskId, 2);
+    return false;
+  }
+  for (const taskId of taskById.keys()) {
+    if (hasCycle(taskId)) {
+      const taskPath = taskPathById.get(taskId) ?? ["phases"];
+      ctx.addIssue({ code: "custom", message: `circular task dependency detected involving (${taskId})`, path: [...taskPath, "depends_on"] });
+      break;
     }
   }
   const firstUnfinished = plan.phases.find((phase) => phase.status !== "completed");
@@ -178,7 +234,8 @@ function applyGoalPlanOps(previous, ops) {
         description: op.description,
         status: op.status ?? "pending",
         evidence: null,
-        blocker: null
+        blocker: null,
+        ...op.depends_on ? { depends_on: op.depends_on } : {}
       };
       if (op.position === "first") {
         targetPhase.tasks.unshift(newTask);
@@ -263,7 +320,7 @@ function applyGoalPlanOps(previous, ops) {
         target.blocker = op.blocker;
       continue;
     }
-    if (op.status === undefined && op.evidence === undefined && op.blocker === undefined) {
+    if (op.status === undefined && op.evidence === undefined && op.blocker === undefined && op.depends_on === undefined) {
       errors.push(`plan_ops[${index}].task_id (${op.task_id}): set_task requires a field to change`);
       continue;
     }
@@ -284,6 +341,12 @@ function applyGoalPlanOps(previous, ops) {
       target.evidence = op.evidence;
     if (op.blocker !== undefined)
       target.blocker = op.blocker;
+    if (op.depends_on !== undefined) {
+      if (op.depends_on === null)
+        delete target.depends_on;
+      else
+        target.depends_on = op.depends_on;
+    }
   }
   return { plan: next, errors };
 }
@@ -396,14 +459,16 @@ function reviseGoalPlan(previous, input, expectedRevision, reason, now, revisitE
 function goalPlanProgress(plan) {
   const current = plan.phases.find((phase) => phase.status === "in_progress") ?? plan.phases.find((phase) => phase.status !== "completed");
   const running = current?.tasks.find((task) => task.status === "in_progress");
-  const next = current?.tasks.find((task) => task.status === "pending");
+  const completedTaskIDs = plan.phases.flatMap((phase) => phase.tasks.filter((task) => task.status === "completed").map((task) => task.id));
+  const completedSet = new Set(completedTaskIDs);
+  const next = current?.tasks.find((task) => task.status === "pending" && (task.depends_on ?? []).every((depId) => completedSet.has(depId))) ?? current?.tasks.find((task) => task.status === "pending");
   return {
     currentPhaseID: current?.id ?? null,
     currentTaskID: running?.id ?? null,
     nextTaskID: next?.id ?? null,
     nextPhaseID: plan.phases.find((phase) => phase.id !== current?.id && phase.status !== "completed")?.id ?? null,
     completedPhaseIDs: plan.phases.filter((phase) => phase.status === "completed").map((phase) => phase.id),
-    completedTaskIDs: plan.phases.flatMap((phase) => phase.tasks.filter((task) => task.status === "completed").map((task) => task.id))
+    completedTaskIDs
   };
 }
 function goalPlanEntries(plan) {
@@ -2757,9 +2822,19 @@ function isExplicitResumePrompt(text, commandName, locale, messages) {
 function isGoalWaitingForUserInput(goal) {
   return goal?.status === "paused" && (goal.stopReason === "waiting_user_clarification" || goal.stopReason === "waiting_user_approval");
 }
-function shouldAutoResumeWaitingGoal(text, commandName, locale, messages) {
+function isApprovalRejectionOrQuestion(text) {
   const value = text.trim();
   if (!value)
+    return false;
+  return /(先别做|别做|暂停|不要实施|先不|解释一下|为什么|不行|不对|不认可|重来|等等|等一下|有问题|\bwait\b|\bhold on\b|\bdon't implement\b|\bdo not implement\b)/i.test(value);
+}
+function shouldAutoResumeWaitingGoal(text, commandName, locale, messages, stopReason = null) {
+  const value = text.trim();
+  if (!value)
+    return false;
+  if (stopReason === "waiting_user_approval" && isApprovalRejectionOrQuestion(value))
+    return false;
+  if (/(^|\s)(暂停|停止|\bpause\b|\bstop\b)(\s|$)/i.test(value))
     return false;
   if (value.includes("<untrusted_objective>"))
     return false;
@@ -4396,9 +4471,13 @@ var server = async ({ client }, options) => {
         explicitResumeRequests.add(sessionID);
       }
       const promptText = (output.parts ?? []).map(textFromPart).filter(Boolean).join("\n").trim();
-      if (!activeContinuations.has(sessionID) && shouldAutoResumeWaitingGoal(promptText, commandName, locale, messages)) {
+      if (!activeContinuations.has(sessionID)) {
         const currentGoal = await getGoal(sessionID);
-        if (isGoalWaitingForUserInput(currentGoal) && !isPlanAgent(agent ?? currentGoal.lastPromptAgent)) {
+        if (
+          isGoalWaitingForUserInput(currentGoal) &&
+          !isPlanAgent(agent ?? currentGoal.lastPromptAgent) &&
+          shouldAutoResumeWaitingGoal(promptText, commandName, locale, messages, currentGoal.stopReason)
+        ) {
           await setGoalStatus(sessionID, "active", typeof agent === "string" && agent.trim() ? agent : null, { preserveShellDeferrals: true });
         }
       }

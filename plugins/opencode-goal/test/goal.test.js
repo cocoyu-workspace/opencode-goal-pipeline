@@ -193,6 +193,132 @@ describe("self-maintained opencode-goal plugin", () => {
     expect(resumed.goal.stopReason).toBeNull();
     expect(resumed.goal.blocker).toBeNull();
 
+    // 4. Pause at N6 / B6 gate for approval: replying "先别做，解释一下" keeps it paused!
+    await instance.tool.update_goal_status.execute(
+      {
+        status: "paused",
+        wait_reason: "approval",
+        prompt_summary: "等待老板拍板是否进入 N7 编码实施"
+      },
+      { sessionID, agent: "build" }
+    );
+    await instance["chat.message"](
+      { sessionID, agent: "build" },
+      { parts: [{ type: "text", text: "先别做，解释一下为什么这么拆切片" }] }
+    );
+    const stillWaitingApproval = JSON.parse(
+      await instance.tool.get_goal.execute({ view: "full" }, { sessionID })
+    );
+    expect(stillWaitingApproval.goal.status).toBe("paused");
+    expect(stillWaitingApproval.goal.stopReason).toBe("waiting_user_approval");
+
+    // 5. Boss explicitly approves -> auto-resumes to active!
+    await instance["chat.message"](
+      { sessionID, agent: "build" },
+      { parts: [{ type: "text", text: "通过，按这个方案落地" }] }
+    );
+    const approvedResume = JSON.parse(
+      await instance.tool.get_goal.execute({ view: "full" }, { sessionID })
+    );
+    expect(approvedResume.goal.status).toBe("active");
+
+    await instance.dispose();
+  });
+
+  test("enforces vertical slice depends_on graph (rejects cycles, unmet dependencies, and selects ready frontier)", async () => {
+    const instance = await plugin.server({ client: { session: {} } }, {});
+    const sessionID = "ses_test_dag";
+
+    const created = JSON.parse(
+      await instance.tool.create_goal.execute(
+        { objective: "Vertical slice dependency validation test" },
+        { sessionID, agent: "build" }
+      )
+    );
+    const goalID = created.goal.id;
+
+    // 1. Rejects circular dependency S1 <-> S2
+    await expect(
+      instance.tool.update_goal_plan.execute(
+        {
+          goal_id: goalID,
+          expected_revision: 0,
+          reason: "Test circular dependency",
+          plan: {
+            summary: "Cycle test",
+            completionCriteria: ["All slices done"],
+            phases: [
+              {
+                id: "p1",
+                objective: "Slices",
+                status: "in_progress",
+                tasks: [
+                  { id: "S1", description: "Slice 1", status: "pending", depends_on: ["S2"] },
+                  { id: "S2", description: "Slice 2", status: "pending", depends_on: ["S1"] }
+                ]
+              }
+            ]
+          }
+        },
+        { sessionID, agent: "build" }
+      )
+    ).rejects.toThrow("circular task dependency");
+
+    // 2. Rejects starting S2 (in_progress) while its dependency S1 is still pending
+    await expect(
+      instance.tool.update_goal_plan.execute(
+        {
+          goal_id: goalID,
+          expected_revision: 0,
+          reason: "Test uncompleted dependency",
+          plan: {
+            summary: "Unmet blocker test",
+            completionCriteria: ["All slices done"],
+            phases: [
+              {
+                id: "p1",
+                objective: "Slices",
+                status: "in_progress",
+                tasks: [
+                  { id: "S1", description: "Slice 1", status: "pending" },
+                  { id: "S2", description: "Slice 2", status: "in_progress", depends_on: ["S1"] }
+                ]
+              }
+            ]
+          }
+        },
+        { sessionID, agent: "build" }
+      )
+    ).rejects.toThrow("before dependency (S1) is completed");
+
+    // 3. Valid DAG: S1 completed -> S2 can now transition to in_progress
+    const validPlan = JSON.parse(
+      await instance.tool.update_goal_plan.execute(
+        {
+          goal_id: goalID,
+          expected_revision: 0,
+          reason: "Create valid vertical slices",
+          plan: {
+            summary: "Valid vertical slices",
+            completionCriteria: ["All slices done"],
+            phases: [
+              {
+                id: "p1",
+                objective: "Slices",
+                status: "in_progress",
+                tasks: [
+                  { id: "S1", description: "Slice 1 (Covers: R1)", status: "completed", evidence: "bun test passed" },
+                  { id: "S2", description: "Slice 2 (Covers: R2)", status: "in_progress", depends_on: ["S1"] }
+                ]
+              }
+            ]
+          }
+        },
+        { sessionID, agent: "build" }
+      )
+    );
+    expect(validPlan.goal.planRevision).toBe(1);
+
     await instance.dispose();
   });
 });

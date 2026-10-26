@@ -14,7 +14,7 @@ var __export = (target, all) => {
     });
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/external.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/external.js
 var exports_external = {};
 __export(exports_external, {
   xor: () => xor,
@@ -277,7 +277,7 @@ __export(exports_external, {
   $brand: () => $brand
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/index.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/index.js
 var exports_core2 = {};
 __export(exports_core2, {
   withParser: () => withParser,
@@ -594,7 +594,7 @@ __export(exports_core2, {
   $ZodAny: () => $ZodAny
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/util.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/util.js
 var exports_util = {};
 __export(exports_util, {
   unwrapMessage: () => unwrapMessage,
@@ -1443,7 +1443,7 @@ function constantCatch(value) {
   return fn;
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/core.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/core.js
 var _a;
 var NEVER = /* @__PURE__ */ Object.freeze({
   status: "aborted"
@@ -1566,7 +1566,7 @@ function config(newConfig) {
     Object.assign(globalConfig, newConfig);
   return globalConfig;
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/errors.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/errors.js
 function _getMessage() {
   const internals = this._zod;
   internals.message ?? (internals.message = JSON.stringify(internals.def, jsonStringifyReplacer, 2));
@@ -1759,7 +1759,7 @@ function prettifyError(error) {
 `);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/parse.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/parse.js
 function finalizeParams(callee, params) {
   return { callee: params?.callee ?? callee, Err: params?.Err };
 }
@@ -1918,7 +1918,7 @@ var _safeDecodeAsync = (_Err) => async (schema, value, _ctx) => {
   return _safeParseAsync(_Err)(schema, value, _ctx);
 };
 var safeDecodeAsync = /* @__PURE__ */ _safeDecodeAsync($ZodRealError);
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/regexes.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/regexes.js
 var exports_regexes = {};
 __export(exports_regexes, {
   xid: () => xid,
@@ -2090,7 +2090,7 @@ var sha512_hex = /^[0-9a-fA-F]{128}$/;
 var sha512_base64 = /* @__PURE__ */ fixedBase64(86, "==");
 var sha512_base64url = /* @__PURE__ */ fixedBase64url(86);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/checks.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/checks.js
 var $ZodCheck = /* @__PURE__ */ $constructor("$ZodCheck", (inst, def) => {
   var _a2;
   inst._zod ?? (inst._zod = {});
@@ -2564,7 +2564,7 @@ var $ZodCheckOverwrite = /* @__PURE__ */ $constructor("$ZodCheckOverwrite", (ins
   };
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/doc.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/doc.js
 class Doc {
   constructor(args = [], closed = {}) {
     this.content = [];
@@ -2606,14 +2606,14 @@ ${content.join(`
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/versions.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/versions.js
 var version = {
   major: 4,
   minor: 6,
   patch: 7
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/schemas.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/schemas.js
 var $ZodType = /* @__PURE__ */ $constructor("$ZodType", (inst, def) => {
   var _a2;
   inst ?? (inst = {});
@@ -5042,7 +5042,7 @@ function handleRefineResult(result, payload, input, inst) {
     payload.issues.push(issue(_iss));
   }
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/memoizer.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/memoizer.js
 class $ZodCyclicError extends Error {
   constructor() {
     super(`Cannot parse a reference cycle that closes through a transform`);
@@ -5314,7 +5314,7 @@ function isBackEdge(ctx, value) {
   const backEdges = ctx[STATE]?.backEdges;
   return backEdges !== undefined && isRef(value) && backEdges.has(value);
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/index.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/index.js
 var exports_locales = {};
 __export(exports_locales, {
   zhTW: () => zh_TW_default,
@@ -5382,7 +5382,7 @@ __export(exports_locales, {
   ar: () => ar_default
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ar.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ar.js
 var error = () => {
   const Sizable = {
     string: { unit: "\u062D\u0631\u0641", verb: "\u0623\u0646 \u064A\u062D\u0648\u064A" },
@@ -5493,7 +5493,7 @@ function ar_default() {
     localeError: error()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/az.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/az.js
 var error2 = () => {
   const Sizable = {
     string: { unit: "simvol", verb: "olmal\u0131d\u0131r" },
@@ -5603,7 +5603,7 @@ function az_default() {
     localeError: error2()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/be.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/be.js
 function getBelarusianPlural(count, one, few, many) {
   const absCount = Math.abs(count);
   const lastDigit = absCount % 10;
@@ -5771,7 +5771,7 @@ function be_default() {
     localeError: error3()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/bg.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/bg.js
 var error4 = () => {
   const Sizable = {
     string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0430", verb: "\u0434\u0430 \u0441\u044A\u0434\u044A\u0440\u0436\u0430" },
@@ -5896,7 +5896,7 @@ function bg_default() {
     localeError: error4()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/bn.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/bn.js
 var error5 = () => {
   const Sizable = {
     string: { unit: "\u0985\u0995\u09CD\u09B7\u09B0", verb: "\u09A5\u09BE\u0995\u09A4\u09C7 \u09B9\u09AC\u09C7" },
@@ -6009,7 +6009,7 @@ function bn_default() {
     localeError: error5()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ca.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ca.js
 var error6 = () => {
   const Sizable = {
     string: { unit: "car\xE0cters", verb: "contenir" },
@@ -6121,7 +6121,7 @@ function ca_default() {
     localeError: error6()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ckb.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ckb.js
 var error7 = () => {
   const Sizable = {
     string: { unit: "\u067E\u06CC\u062A", verb: "\u0628\u06CE\u062A" },
@@ -6253,7 +6253,7 @@ function ckb_default() {
     localeError: error7()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/cs.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/cs.js
 var error8 = () => {
   const Sizable = {
     string: { unit: "znak\u016F", verb: "m\xEDt" },
@@ -6369,7 +6369,7 @@ function cs_default() {
     localeError: error8()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/da.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/da.js
 var error9 = () => {
   const Sizable = {
     string: { unit: "tegn", verb: "havde" },
@@ -6489,7 +6489,7 @@ function da_default() {
     localeError: error9()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/de.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/de.js
 var error10 = () => {
   const Sizable = {
     string: { unit: "Zeichen", verb: "zu haben" },
@@ -6602,7 +6602,7 @@ function de_default() {
     localeError: error10()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/el.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/el.js
 var error11 = () => {
   const Sizable = {
     string: { unit: "\u03C7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1\u03B5\u03C2", verb: "\u03BD\u03B1 \u03AD\u03C7\u03B5\u03B9" },
@@ -6714,7 +6714,7 @@ function el_default() {
     localeError: error11()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/en.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/en.js
 var error12 = () => {
   const Sizable = {
     string: { unit: "characters", verb: "to have" },
@@ -6836,7 +6836,7 @@ function en_default() {
     localeError: error12()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/eo.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/eo.js
 var error13 = () => {
   const Sizable = {
     string: { unit: "karaktrojn", verb: "havi" },
@@ -6950,7 +6950,7 @@ function eo_default() {
     localeError: error13()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/es.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/es.js
 var error14 = () => {
   const Sizable = {
     string: { unit: "caracteres", verb: "tener" },
@@ -7086,7 +7086,7 @@ function es_default() {
     localeError: error14()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/fa.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/fa.js
 var error15 = () => {
   const Sizable = {
     string: { unit: "\u06A9\u0627\u0631\u0627\u06A9\u062A\u0631", verb: "\u062F\u0627\u0634\u062A\u0647 \u0628\u0627\u0634\u062F" },
@@ -7205,7 +7205,7 @@ function fa_default() {
     localeError: error15()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/fi.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/fi.js
 var error16 = () => {
   const Sizable = {
     string: { unit: "merkki\xE4", subject: "merkkijonon" },
@@ -7322,7 +7322,7 @@ function fi_default() {
     localeError: error16()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/fr.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/fr.js
 var error17 = () => {
   const Sizable = {
     string: { unit: "caract\xE8res", verb: "avoir" },
@@ -7451,7 +7451,7 @@ function fr_default() {
     localeError: error17()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/fr-CA.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/fr-CA.js
 var error18 = () => {
   const Sizable = {
     string: { unit: "caract\xE8res", verb: "avoir" },
@@ -7563,7 +7563,7 @@ function fr_CA_default() {
     localeError: error18()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/gu.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/gu.js
 var error19 = () => {
   const Sizable = {
     string: { unit: "\u0A85\u0A95\u0ACD\u0AB7\u0AB0", verb: "\u0AB9\u0ACB\u0AB5\u0ABE \u0A9C\u0ACB\u0A88\u0A8F" },
@@ -7676,7 +7676,7 @@ function gu_default() {
     localeError: error19()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/he.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/he.js
 var error20 = () => {
   const TypeNames = {
     string: { label: "\u05DE\u05D7\u05E8\u05D5\u05D6\u05EA", gender: "f" },
@@ -7876,7 +7876,7 @@ function he_default() {
     localeError: error20()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/hi.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/hi.js
 var error21 = () => {
   const Sizable = {
     string: { unit: "\u0905\u0915\u094D\u0937\u0930", verb: "\u0930\u0916\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F" },
@@ -7987,7 +7987,7 @@ function hi_default() {
     localeError: error21()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/hr.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/hr.js
 var error22 = () => {
   const Sizable = {
     string: { unit: "znakova", verb: "imati" },
@@ -8113,7 +8113,7 @@ function hr_default() {
     localeError: error22()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/hu.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/hu.js
 var error23 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "legyen" },
@@ -8226,7 +8226,7 @@ function hu_default() {
     localeError: error23()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/hy.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/hy.js
 function getArmenianPlural(count, one, many) {
   return Math.abs(count) === 1 ? one : many;
 }
@@ -8384,7 +8384,7 @@ function hy_default() {
     localeError: error24()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/id.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/id.js
 var error25 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "memiliki" },
@@ -8495,7 +8495,7 @@ function id_default() {
     localeError: error25()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/is.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/is.js
 var error26 = () => {
   const Sizable = {
     string: { unit: "stafi", verb: "a\xF0 hafa" },
@@ -8609,7 +8609,7 @@ function is_default() {
     localeError: error26()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/it.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/it.js
 var error27 = () => {
   const Sizable = {
     string: { unit: "caratteri", verb: "avere" },
@@ -8722,7 +8722,7 @@ function it_default() {
     localeError: error27()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ja.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ja.js
 var error28 = () => {
   const Sizable = {
     string: { unit: "\u6587\u5B57", verb: "\u3067\u3042\u308B" },
@@ -8834,7 +8834,7 @@ function ja_default() {
     localeError: error28()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ka.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ka.js
 var error29 = () => {
   const Sizable = {
     string: { unit: "\u10E1\u10D8\u10DB\u10D1\u10DD\u10DA\u10DD", verb: "\u10E3\u10DC\u10D3\u10D0 \u10E8\u10D4\u10D8\u10EA\u10D0\u10D5\u10D3\u10D4\u10E1" },
@@ -8951,7 +8951,7 @@ function ka_default() {
     localeError: error29()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/km.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/km.js
 var error30 = () => {
   const Sizable = {
     string: { unit: "\u178F\u17BD\u17A2\u1780\u17D2\u179F\u179A", verb: "\u1782\u17BD\u179A\u1798\u17B6\u1793" },
@@ -9067,11 +9067,11 @@ function km_default() {
   };
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/kh.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/kh.js
 function kh_default() {
   return km_default();
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/kn.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/kn.js
 var error31 = () => {
   const Sizable = {
     string: { unit: "\u0C85\u0C95\u0CCD\u0CB7\u0CB0\u0C97\u0CB3\u0CC1", verb: "\u0CB9\u0CCA\u0C82\u0CA6\u0CB2\u0CC1" },
@@ -9184,7 +9184,7 @@ function kn_default() {
     localeError: error31()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ko.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ko.js
 var error32 = () => {
   const Sizable = {
     string: { unit: "\uBB38\uC790", verb: "to have" },
@@ -9300,7 +9300,7 @@ function ko_default() {
     localeError: error32()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/lt.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/lt.js
 var capitalizeFirstCharacter = (text) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
 };
@@ -9507,7 +9507,7 @@ function lt_default() {
     localeError: error33()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/mk.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/mk.js
 var error34 = () => {
   const Sizable = {
     string: { unit: "\u0437\u043D\u0430\u0446\u0438", verb: "\u0434\u0430 \u0438\u043C\u0430\u0430\u0442" },
@@ -9621,7 +9621,7 @@ function mk_default() {
     localeError: error34()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ms.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ms.js
 var error35 = () => {
   const Sizable = {
     string: { unit: "aksara", verb: "mempunyai" },
@@ -9733,7 +9733,7 @@ function ms_default() {
     localeError: error35()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ne.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ne.js
 var error36 = () => {
   const Sizable = {
     string: { unit: "\u0905\u0915\u094D\u0937\u0930", verb: "\u0939\u0941\u0928\u0941\u092A\u0930\u094D\u091B" },
@@ -9844,7 +9844,7 @@ function ne_default() {
     localeError: error36()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/nl.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/nl.js
 var error37 = () => {
   const Sizable = {
     string: { unit: "tekens", verb: "heeft" },
@@ -9959,7 +9959,7 @@ function nl_default() {
     localeError: error37()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/nn.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/nn.js
 var error38 = () => {
   const Sizable = {
     string: { unit: "teikn", verb: "\xE5 ha" },
@@ -10072,7 +10072,7 @@ function nn_default() {
     localeError: error38()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/no.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/no.js
 var error39 = () => {
   const Sizable = {
     string: { unit: "tegn", verb: "\xE5 ha" },
@@ -10185,7 +10185,7 @@ function no_default() {
     localeError: error39()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ota.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ota.js
 var error40 = () => {
   const Sizable = {
     string: { unit: "harf", verb: "olmal\u0131d\u0131r" },
@@ -10299,7 +10299,7 @@ function ota_default() {
     localeError: error40()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ps.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ps.js
 var error41 = () => {
   const Sizable = {
     string: { unit: "\u062A\u0648\u06A9\u064A", verb: "\u0648\u0644\u0631\u064A" },
@@ -10418,7 +10418,7 @@ function ps_default() {
     localeError: error41()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/pl.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/pl.js
 var error42 = () => {
   const Sizable = {
     string: { unit: "znak\xF3w", verb: "mie\u0107" },
@@ -10532,7 +10532,7 @@ function pl_default() {
     localeError: error42()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/pt.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/pt.js
 var error43 = () => {
   const Sizable = {
     string: { unit: "caracteres" },
@@ -10674,7 +10674,7 @@ function pt_default() {
     localeError: error43()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/pt-BR.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/pt-BR.js
 var error44 = () => {
   const Sizable = {
     string: { unit: "caracteres" },
@@ -10817,7 +10817,7 @@ function pt_BR_default() {
     localeError: error44()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ro.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ro.js
 var error45 = () => {
   const Sizable = {
     string: { unit: "caractere", verb: "s\u0103 aib\u0103" },
@@ -10939,7 +10939,7 @@ function ro_default() {
     localeError: error45()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ru.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ru.js
 function getRussianPlural(count, one, few, many) {
   const absCount = Math.abs(count);
   const lastDigit = absCount % 10;
@@ -11107,7 +11107,7 @@ function ru_default() {
     localeError: error46()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/sk.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/sk.js
 var error47 = () => {
   const Sizable = {
     string: { unit: "znakov", verb: "ma\u0165" },
@@ -11223,7 +11223,7 @@ function sk_default() {
     localeError: error47()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/sl.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/sl.js
 var error48 = () => {
   const Sizable = {
     string: { unit: "znakov", verb: "imeti" },
@@ -11337,7 +11337,7 @@ function sl_default() {
     localeError: error48()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/sv.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/sv.js
 var error49 = () => {
   const Sizable = {
     string: { unit: "tecken", verb: "att ha" },
@@ -11452,7 +11452,7 @@ function sv_default() {
     localeError: error49()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ta.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ta.js
 var error50 = () => {
   const Sizable = {
     string: { unit: "\u0B8E\u0BB4\u0BC1\u0BA4\u0BCD\u0BA4\u0BC1\u0B95\u0BCD\u0B95\u0BB3\u0BCD", verb: "\u0B95\u0BCA\u0BA3\u0BCD\u0B9F\u0BBF\u0BB0\u0BC1\u0B95\u0BCD\u0B95 \u0BB5\u0BC7\u0BA3\u0BCD\u0B9F\u0BC1\u0BAE\u0BCD" },
@@ -11567,7 +11567,7 @@ function ta_default() {
     localeError: error50()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/tg.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/tg.js
 var error51 = () => {
   const Sizable = {
     string: { unit: "\u0430\u043B\u043E\u043C\u0430\u0442", verb: "\u0434\u043E\u0448\u0442\u0430 \u0431\u043E\u0448\u0430\u0434" },
@@ -11683,7 +11683,7 @@ function tg_default() {
     localeError: error51()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/th.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/th.js
 var error52 = () => {
   const Sizable = {
     string: { unit: "\u0E15\u0E31\u0E27\u0E2D\u0E31\u0E01\u0E29\u0E23", verb: "\u0E04\u0E27\u0E23\u0E21\u0E35" },
@@ -11798,7 +11798,7 @@ function th_default() {
     localeError: error52()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/tk.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/tk.js
 var error53 = () => {
   const Sizable = {
     string: { unit: "simwol", verb: "bolmaly" },
@@ -11905,7 +11905,7 @@ function tk_default() {
     localeError: error53()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/tr.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/tr.js
 var error54 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "olmal\u0131" },
@@ -12015,7 +12015,7 @@ function tr_default() {
     localeError: error54()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/uk.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/uk.js
 var error55 = () => {
   const Sizable = {
     string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0456\u0432", verb: "\u043C\u0430\u0442\u0438\u043C\u0435" },
@@ -12129,11 +12129,11 @@ function uk_default() {
   };
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ua.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ua.js
 function ua_default() {
   return uk_default();
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/ur.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/ur.js
 var error56 = () => {
   const Sizable = {
     string: { unit: "\u062D\u0631\u0648\u0641", verb: "\u06C1\u0648\u0646\u0627" },
@@ -12248,7 +12248,7 @@ function ur_default() {
     localeError: error56()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/uz.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/uz.js
 var error57 = () => {
   const Sizable = {
     string: { unit: "belgi", verb: "bo\u2018lishi kerak" },
@@ -12361,7 +12361,7 @@ function uz_default() {
     localeError: error57()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/vi.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/vi.js
 var error58 = () => {
   const Sizable = {
     string: { unit: "k\xFD t\u1EF1", verb: "c\xF3" },
@@ -12474,7 +12474,7 @@ function vi_default() {
     localeError: error58()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/zh-CN.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/zh-CN.js
 var error59 = () => {
   const Sizable = {
     string: { unit: "\u5B57\u7B26", verb: "\u5305\u542B" },
@@ -12588,7 +12588,7 @@ function zh_CN_default() {
     localeError: error59()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/zh-TW.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/zh-TW.js
 var error60 = () => {
   const Sizable = {
     string: { unit: "\u5B57\u5143", verb: "\u64C1\u6709" },
@@ -12700,7 +12700,7 @@ function zh_TW_default() {
     localeError: error60()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/locales/yo.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/locales/yo.js
 var error61 = () => {
   const Sizable = {
     string: { unit: "\xE0mi", verb: "n\xED" },
@@ -12812,7 +12812,7 @@ function yo_default() {
     localeError: error61()
   };
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/registries.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/registries.js
 var _a2;
 var $output = /* @__PURE__ */ Symbol("ZodOutput");
 var $input = /* @__PURE__ */ Symbol("ZodInput");
@@ -12862,7 +12862,7 @@ function registry() {
 }
 (_a2 = globalThis).__zod_globalRegistry ?? (_a2.__zod_globalRegistry = registry());
 var globalRegistry = globalThis.__zod_globalRegistry;
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/compile.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/compile.js
 var INVALID = Symbol.for("zod.compile.invalid");
 var FALLBACK_FLAG = Symbol.for("zod.compile.fallback");
 
@@ -14468,7 +14468,7 @@ function generateTransformCheck(doc, ctx, schema, accessor) {
   }
   return accessor;
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/api.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/api.js
 function snapshotChecks(def) {
   if (def.checks)
     def.checks = [...def.checks];
@@ -15405,7 +15405,7 @@ function _stringFormat(Class2, format, fnOrRegex, _params = {}) {
   const inst = new Class2(def);
   return inst;
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/to-json-schema.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/to-json-schema.js
 function assignProps(target, ...sources) {
   for (const source of sources) {
     for (const key of Reflect.ownKeys(source)) {
@@ -15928,7 +15928,7 @@ var createStandardJSONSchemaMethod = (schema, io, processors = {}) => (params) =
   extractDefs(ctx, schema);
   return finalize(ctx, schema);
 };
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/json-schema-processors.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/json-schema-processors.js
 var narrowMin = (agg, key, value) => {
   if (agg[key] === undefined || value > agg[key])
     agg[key] = value;
@@ -16671,7 +16671,7 @@ function toJSONSchema(input, params) {
   extractDefs(ctx, input);
   return finalize(ctx, input);
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/json-schema-generator.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/json-schema-generator.js
 class JSONSchemaGenerator {
   get metadataRegistry() {
     return this.ctx.metadataRegistry;
@@ -16732,9 +16732,9 @@ class JSONSchemaGenerator {
     return plainResult;
   }
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/json-schema.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/json-schema.js
 var exports_json_schema = {};
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/schemas.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/schemas.js
 var exports_schemas2 = {};
 __export(exports_schemas2, {
   xor: () => xor,
@@ -16915,7 +16915,7 @@ __export(exports_schemas2, {
   ZodAny: () => ZodAny
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/checks.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/checks.js
 var exports_checks2 = {};
 __export(exports_checks2, {
   uppercase: () => _uppercase,
@@ -16950,7 +16950,7 @@ __export(exports_checks2, {
   endsWith: () => _endsWith
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/errors.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/errors.js
 var _installedErrorProtos = /* @__PURE__ */ new WeakSet([Object.prototype, Error.prototype]);
 function _lazyMethod(proto, key, make) {
   Object.defineProperty(proto, key, {
@@ -16996,7 +16996,7 @@ var ZodRealError = /* @__PURE__ */ $constructor("ZodError", initializer2, undefi
   Parent: Error
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/parse.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/parse.js
 var parse3 = /* @__PURE__ */ _parse(ZodRealError);
 var parseAsync2 = /* @__PURE__ */ _parseAsync(ZodRealError);
 var safeParse2 = /* @__PURE__ */ _safeParse(ZodRealError);
@@ -17010,7 +17010,7 @@ var safeDecode2 = /* @__PURE__ */ _safeDecode(ZodRealError);
 var safeEncodeAsync2 = /* @__PURE__ */ _safeEncodeAsync(ZodRealError);
 var safeDecodeAsync2 = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/schemas.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/schemas.js
 function _ensureDefaultLocale() {
   if (!globalConfig.localeError)
     config(en_default());
@@ -18452,7 +18452,7 @@ function preprocess(fn, schema) {
     out: schema
   });
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/compat.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/compat.js
 var ZodIssueCode = {
   invalid_type: "invalid_type",
   too_big: "too_big",
@@ -18476,7 +18476,7 @@ function getErrorMap() {
 }
 var ZodFirstPartyTypeKind;
 (function(ZodFirstPartyTypeKind2) {})(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/iso.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/iso.js
 var exports_iso = {};
 __export(exports_iso, {
   time: () => time2,
@@ -18501,7 +18501,7 @@ function duration2(params) {
   return _isoDuration(ZodISODuration, params);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/from-json-schema.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/from-json-schema.js
 var z = {
   ...exports_schemas2,
   ...exports_checks2,
@@ -19221,7 +19221,7 @@ function fromJSONSchema(schema, params) {
   };
   return convertSchema(normalized, ctx);
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/core/visit.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/core/visit.js
 var RESOLVING = Symbol("z.visit/resolving");
 function visit(schema, fnOrHandlers) {
   const fn = typeof fnOrHandlers === "function" ? fnOrHandlers : (node2, rewritten) => {
@@ -19373,7 +19373,7 @@ function visit(schema, fnOrHandlers) {
   return run(schema);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/deep-partial.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/deep-partial.js
 function deepPartial(schema) {
   return visit(schema, {
     object: (s) => s.partial(),
@@ -19383,7 +19383,7 @@ function deepPartial(schema) {
     }
   });
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/in-out.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/in-out.js
 function withChecks(side, checks2) {
   if (!checks2?.length)
     return side;
@@ -19409,7 +19409,7 @@ function output(schema) {
     prefault: (s, rewritten) => rewritten ? s._zod.def.innerType : s
   });
 }
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/zod/v4/classic/coerce.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/zod/v4/classic/coerce.js
 var exports_coerce = {};
 __export(exports_coerce, {
   string: () => string3,
@@ -19437,7 +19437,7 @@ function date4(params) {
 import { randomUUID as randomUUID2 } from "crypto";
 import { mkdir, readFile } from "fs/promises";
 import { dirname as dirname2 } from "path";
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Data.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Data.js
 var exports_Data = {};
 __export(exports_Data, {
   unsafeStruct: () => unsafeStruct,
@@ -19455,7 +19455,7 @@ __export(exports_Data, {
   Class: () => Class2
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Function.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Function.js
 var isFunction = (input2) => typeof input2 === "function";
 var dual = function(arity, body) {
   if (typeof arity === "function") {
@@ -19555,7 +19555,7 @@ function pipe2(a, ab, bc, cd, de, ef, fg, gh, hi) {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Equivalence.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Equivalence.js
 var make = (isEquivalent) => (self, that) => self === that || isEquivalent(self, that);
 var isStrictEquivalent = (x, y) => x === y;
 var strict = () => isStrictEquivalent;
@@ -19575,7 +19575,7 @@ var array2 = (item) => make((self, that) => {
   return true;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/doNotation.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/doNotation.js
 var let_ = (map2) => dual(3, (self, name, f) => map2(self, (a) => ({
   ...a,
   [name]: f(a)
@@ -19588,7 +19588,7 @@ var bind = (map2, flatMap) => dual(3, (self, name, f) => flatMap(self, (a) => ma
   [name]: b
 }))));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/GlobalValue.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/GlobalValue.js
 var globalStoreId = `effect/GlobalValue`;
 var globalStore;
 var globalValue = (id, compute) => {
@@ -19602,7 +19602,7 @@ var globalValue = (id, compute) => {
   return globalStore.get(id);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Predicate.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Predicate.js
 var isTruthy = (input2) => !!input2;
 var isSet = (input2) => input2 instanceof Set;
 var isMap = (input2) => input2 instanceof Map;
@@ -19628,10 +19628,10 @@ var isIterable = (input2) => typeof input2 === "string" || hasProperty(input2, S
 var isRecord = (input2) => isRecordOrArray(input2) && !Array.isArray(input2);
 var isPromiseLike = (input2) => hasProperty(input2, "then") && isFunction2(input2.then);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/errors.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/errors.js
 var getBugErrorMessage = (message) => `BUG: ${message} - please report an issue at https://github.com/Effect-TS/effect/issues`;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Utils.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Utils.js
 class SingleShotGen {
   self;
   called = false;
@@ -19789,7 +19789,7 @@ var internalCall = isNotOptimizedAway ? standard.effect_internal_function : forc
 var genConstructor = function* () {}.constructor;
 var isGeneratorFunction = (u) => isObject2(u) && u.constructor === genConstructor;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Hash.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Hash.js
 var randomHashCache = /* @__PURE__ */ globalValue(/* @__PURE__ */ Symbol.for("effect/Hash/randomHashCache"), () => new WeakMap);
 var symbol2 = /* @__PURE__ */ Symbol.for("effect/Hash");
 var hash2 = (self) => {
@@ -19898,7 +19898,7 @@ var cached2 = function() {
   return hash3;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Equal.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Equal.js
 var symbol3 = /* @__PURE__ */ Symbol.for("effect/Equal");
 function equals() {
   if (arguments.length === 1) {
@@ -19957,7 +19957,7 @@ function compareBoth(self, that) {
 var isEqual = (u) => hasProperty(u, symbol3);
 var equivalence = () => equals;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Inspectable.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Inspectable.js
 var NodeInspectSymbol = /* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom");
 var toJSON = (x) => {
   try {
@@ -20108,7 +20108,7 @@ var redact = (u) => {
   return u;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Pipeable.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Pipeable.js
 var pipeArguments = (self, args) => {
   switch (args.length) {
     case 0:
@@ -20141,7 +20141,7 @@ var pipeArguments = (self, args) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/opCodes/effect.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/opCodes/effect.js
 var OP_ASYNC = "Async";
 var OP_COMMIT = "Commit";
 var OP_FAILURE = "Failure";
@@ -20158,11 +20158,11 @@ var OP_WITH_RUNTIME = "WithRuntime";
 var OP_YIELD = "Yield";
 var OP_REVERT_FLAGS = "RevertFlags";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/version.js
-var moduleVersion = "3.22.3";
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/version.js
+var moduleVersion = "3.22.4";
 var getCurrentVersion = () => moduleVersion;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/effectable.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/effectable.js
 var EffectTypeId = /* @__PURE__ */ Symbol.for("effect/Effect");
 var StreamTypeId = /* @__PURE__ */ Symbol.for("effect/Stream");
 var SinkTypeId = /* @__PURE__ */ Symbol.for("effect/Sink");
@@ -20239,7 +20239,7 @@ var Base = /* @__PURE__ */ function() {
   return Base2;
 }();
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/option.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/option.js
 var TypeId = /* @__PURE__ */ Symbol.for("effect/Option");
 var CommonProto = {
   ...EffectPrototype,
@@ -20297,7 +20297,7 @@ var some = (value) => {
   return a;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/either.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/either.js
 var TypeId2 = /* @__PURE__ */ Symbol.for("effect/Either");
 var CommonProto2 = {
   ...EffectPrototype,
@@ -20361,7 +20361,7 @@ var right = (right2) => {
 var getRight = (self) => isLeft(self) ? none : some(self.right);
 var fromOption = /* @__PURE__ */ dual(2, (self, onNone) => isNone(self) ? left(onNone()) : right(self.value));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Either.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Either.js
 var right2 = right;
 var left2 = left;
 var fromOption2 = fromOption;
@@ -20409,10 +20409,10 @@ var getOrThrowWith = /* @__PURE__ */ dual(2, (self, onLeft) => {
 });
 var getOrThrow = /* @__PURE__ */ getOrThrowWith(() => new Error("getOrThrow called on a Left"));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/array.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/array.js
 var isNonEmptyArray = (self) => self.length > 0;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Order.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Order.js
 var make2 = (compare) => (self, that) => self === that ? 0 : compare(self, that);
 var number6 = /* @__PURE__ */ make2((self, that) => self < that ? -1 : 1);
 var bigint4 = /* @__PURE__ */ make2((self, that) => self < that ? -1 : 1);
@@ -20426,7 +20426,7 @@ var max = (O) => dual(2, (self, that) => self === that || O(self, that) > -1 ? s
 var clamp = (O) => dual(2, (self, options) => min(O)(options.maximum, max(O)(options.minimum, self)));
 var between = (O) => dual(2, (self, options) => !lessThan(O)(self, options.minimum) && !greaterThan(O)(self, options.maximum));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Option.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Option.js
 var none2 = () => none;
 var some2 = some;
 var isOption2 = isOption;
@@ -20476,10 +20476,10 @@ var mergeWith = (f) => (o1, o2) => {
   return some2(f(o1.value, o2.value));
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Tuple.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Tuple.js
 var make3 = (...elements) => elements;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Iterable.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Iterable.js
 var findFirst = /* @__PURE__ */ dual(2, (self, f) => {
   let i = 0;
   for (const a of self) {
@@ -20511,7 +20511,7 @@ var constEmptyIterator = {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Array.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Array.js
 var allocate = (n) => new Array(n);
 var makeBy = /* @__PURE__ */ dual(2, (n, f) => {
   const max2 = Math.max(1, Math.floor(n));
@@ -20713,7 +20713,7 @@ var dedupeWith = /* @__PURE__ */ dual(2, (self, isEquivalent) => {
 var dedupe = (self) => dedupeWith(self, equivalence());
 var join = /* @__PURE__ */ dual(2, (self, sep) => fromIterable(self).join(sep));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Chunk.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Chunk.js
 var TypeId3 = /* @__PURE__ */ Symbol.for("effect/Chunk");
 function copy2(src, srcPos, dest, destPos, len) {
   for (let i = srcPos;i < Math.min(src.length, srcPos + len); i++) {
@@ -21049,7 +21049,26 @@ var unsafeHead = (self) => unsafeGet2(self, 0);
 var headNonEmpty2 = unsafeHead;
 var tailNonEmpty2 = (self) => drop2(self, 1);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/context.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/stackTraceLimit.js
+var ObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var ObjectPrototypeHasOwnProperty = Object.prototype.hasOwnProperty;
+var ObjectIsExtensible = Object.isExtensible;
+var isStackTraceLimitWritable = () => {
+  const desc = ObjectGetOwnPropertyDescriptor(Error, "stackTraceLimit");
+  if (desc === undefined) {
+    return ObjectIsExtensible(Error);
+  }
+  return ObjectPrototypeHasOwnProperty.call(desc, "writable") ? desc.writable === true : desc.set !== undefined;
+};
+var canWriteStackTraceLimit = /* @__PURE__ */ isStackTraceLimitWritable();
+var getStackTraceLimit = () => Error.stackTraceLimit;
+var setStackTraceLimit = (value) => {
+  if (canWriteStackTraceLimit) {
+    Error.stackTraceLimit = value;
+  }
+};
+
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/context.js
 var TagTypeId = /* @__PURE__ */ Symbol.for("effect/Context/Tag");
 var ReferenceTypeId = /* @__PURE__ */ Symbol.for("effect/Context/Reference");
 var STMSymbolKey = "effect/STM";
@@ -21087,10 +21106,10 @@ var ReferenceProto = {
   [ReferenceTypeId]: ReferenceTypeId
 };
 var makeGenericTag = (key) => {
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 2;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(2);
   const creationError = new Error;
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   const tag = Object.create(TagProto);
   Object.defineProperty(tag, "stack", {
     get() {
@@ -21101,10 +21120,10 @@ var makeGenericTag = (key) => {
   return tag;
 };
 var Reference = () => (id, options) => {
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 2;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(2);
   const creationError = new Error;
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   function ReferenceClass() {}
   Object.setPrototypeOf(ReferenceClass, ReferenceProto);
   ReferenceClass.key = id;
@@ -21234,7 +21253,7 @@ var mergeAll = (...ctxs) => {
   return makeContext(map5);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Context.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Context.js
 var GenericTag = makeGenericTag;
 var isContext2 = isContext;
 var isTag2 = isTag;
@@ -21248,7 +21267,7 @@ var merge4 = merge3;
 var mergeAll2 = mergeAll;
 var Reference2 = Reference;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Duration.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Duration.js
 var TypeId5 = /* @__PURE__ */ Symbol.for("effect/Duration");
 var bigint0 = /* @__PURE__ */ BigInt(0);
 var bigint24 = /* @__PURE__ */ BigInt(24);
@@ -21257,6 +21276,7 @@ var bigint1e3 = /* @__PURE__ */ BigInt(1000);
 var bigint1e6 = /* @__PURE__ */ BigInt(1e6);
 var bigint1e9 = /* @__PURE__ */ BigInt(1e9);
 var DURATION_REGEX = /^(-?\d+(?:\.\d+)?)\s+(nanos?|micros?|millis?|seconds?|minutes?|hours?|days?|weeks?)$/;
+var parseNanos = (input2, scale) => input2.includes(".") ? BigInt(Math.round(Number(input2) * scale)) : BigInt(input2) * BigInt(scale);
 var decode3 = (input2) => {
   if (isDuration(input2)) {
     return input2;
@@ -21280,10 +21300,10 @@ var decode3 = (input2) => {
       switch (unit) {
         case "nano":
         case "nanos":
-          return nanos(BigInt(valueStr));
+          return nanos(parseNanos(valueStr, 1));
         case "micro":
         case "micros":
-          return micros(BigInt(valueStr));
+          return nanos(parseNanos(valueStr, 1000));
         case "milli":
         case "millis":
           return millis(value);
@@ -21399,7 +21419,6 @@ var isZero = (self) => {
 var zero = /* @__PURE__ */ make7(0);
 var infinity = /* @__PURE__ */ make7(Infinity);
 var nanos = (nanos2) => make7(nanos2);
-var micros = (micros2) => make7(micros2 * bigint1e3);
 var millis = (millis2) => make7(millis2);
 var seconds = (seconds2) => make7(seconds2 * 1000);
 var minutes = (minutes2) => make7(minutes2 * 60000);
@@ -21555,14 +21574,14 @@ var format2 = (self) => {
   return pieces.join(" ");
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/hashMap/config.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/hashMap/config.js
 var SIZE = 5;
 var BUCKET_SIZE = /* @__PURE__ */ Math.pow(2, SIZE);
 var MASK = BUCKET_SIZE - 1;
 var MAX_INDEX_NODE = BUCKET_SIZE / 2;
 var MIN_ARRAY_NODE = BUCKET_SIZE / 4;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/hashMap/bitwise.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/hashMap/bitwise.js
 function popcount(x) {
   x -= x >> 1 & 1431655765;
   x = (x & 858993459) + (x >> 2 & 858993459);
@@ -21581,13 +21600,13 @@ function fromBitmap(bitmap, bit) {
   return popcount(bitmap & bit - 1);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/stack.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/stack.js
 var make8 = (value, previous) => ({
   value,
   previous
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/hashMap/array.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/hashMap/array.js
 function arrayUpdate(mutate, at, v, arr) {
   let out = arr;
   if (!mutate) {
@@ -21638,7 +21657,7 @@ function arraySpliceIn(mutate, at, v, arr) {
   return out;
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/hashMap/node.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/hashMap/node.js
 class EmptyNode {
   _tag = "EmptyNode";
   modify(edit, _shift, f, hash3, key, size) {
@@ -21890,7 +21909,7 @@ function mergeLeaves(edit, shift, h1, n1, h2, n2) {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/hashMap.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/hashMap.js
 var HashMapSymbolKey = "effect/HashMap";
 var HashMapTypeId = /* @__PURE__ */ Symbol.for(HashMapSymbolKey);
 var HashMapProto = {
@@ -22123,7 +22142,7 @@ var reduce2 = /* @__PURE__ */ dual(3, (self, zero2, f) => {
   return zero2;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/hashSet.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/hashSet.js
 var HashSetSymbolKey = "effect/HashSet";
 var HashSetTypeId = /* @__PURE__ */ Symbol.for(HashSetSymbolKey);
 var HashSetProto = {
@@ -22206,7 +22225,7 @@ var union3 = /* @__PURE__ */ dual(2, (self, that) => mutate2(empty6(), (set3) =>
 var forEach2 = /* @__PURE__ */ dual(2, (self, f) => forEach(self._keyMap, (_, k) => f(k)));
 var reduce3 = /* @__PURE__ */ dual(3, (self, zero2, f) => reduce2(self._keyMap, zero2, (z2, _, a) => f(z2, a)));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/HashSet.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/HashSet.js
 var isHashSet2 = isHashSet;
 var empty7 = empty6;
 var fromIterable5 = fromIterable4;
@@ -22219,7 +22238,7 @@ var difference3 = difference2;
 var union4 = union3;
 var reduce4 = reduce3;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/MutableRef.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/MutableRef.js
 var TypeId6 = /* @__PURE__ */ Symbol.for("effect/MutableRef");
 var MutableRefProto = {
   [TypeId6]: TypeId6,
@@ -22257,7 +22276,7 @@ var set3 = /* @__PURE__ */ dual(2, (self, value) => {
   return self;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberId.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberId.js
 var FiberIdSymbolKey = "effect/FiberId";
 var FiberIdTypeId = /* @__PURE__ */ Symbol.for(FiberIdSymbolKey);
 var OP_NONE = "None";
@@ -22393,7 +22412,7 @@ var unsafeMake = () => {
   return new Runtime(id, Date.now());
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/FiberId.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/FiberId.js
 var none4 = none3;
 var runtime2 = runtime;
 var composite2 = composite;
@@ -22402,7 +22421,7 @@ var combine3 = combine2;
 var threadName2 = threadName;
 var unsafeMake2 = unsafeMake;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/HashMap.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/HashMap.js
 var isHashMap2 = isHashMap;
 var empty8 = empty5;
 var fromIterable6 = fromIterable3;
@@ -22416,7 +22435,7 @@ var map7 = map5;
 var forEach3 = forEach;
 var reduce5 = reduce2;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/List.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/List.js
 var TypeId7 = /* @__PURE__ */ Symbol.for("effect/List");
 var toArray2 = (self) => fromIterable(self);
 var getEquivalence5 = (isEquivalent) => mapInput(getEquivalence3(isEquivalent), toArray2);
@@ -22582,7 +22601,7 @@ var reverse3 = (self) => {
   return result;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/data.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/data.js
 var ArrayProto = /* @__PURE__ */ Object.assign(/* @__PURE__ */ Object.create(Array.prototype), {
   [symbol2]() {
     return cached2(this, array3(this));
@@ -22606,7 +22625,7 @@ var Structural = /* @__PURE__ */ function() {
 }();
 var struct = (as) => Object.assign(Object.create(StructuralPrototype), as);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/differ/contextPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/differ/contextPatch.js
 var ContextPatchTypeId = /* @__PURE__ */ Symbol.for("effect/DifferContextPatch");
 function variance(a) {
   return a;
@@ -22732,7 +22751,7 @@ var patch = /* @__PURE__ */ dual(2, (self, context) => {
   return makeContext(map8);
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/differ/hashSetPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/differ/hashSetPatch.js
 var HashSetPatchTypeId = /* @__PURE__ */ Symbol.for("effect/DifferHashSetPatch");
 function variance2(a) {
   return a;
@@ -22817,7 +22836,7 @@ var patch2 = /* @__PURE__ */ dual(2, (self, oldValue) => {
   return set5;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/differ/readonlyArrayPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/differ/readonlyArrayPatch.js
 var ReadonlyArrayPatchTypeId = /* @__PURE__ */ Symbol.for("effect/DifferReadonlyArrayPatch");
 function variance3(a) {
   return a;
@@ -22931,7 +22950,7 @@ var patch3 = /* @__PURE__ */ dual(3, (self, oldValue, differ) => {
   return readonlyArray;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/differ.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/differ.js
 var DifferTypeId = /* @__PURE__ */ Symbol.for("effect/Differ");
 var DifferProto = {
   [DifferTypeId]: {
@@ -22993,7 +23012,7 @@ var updateWith = (f) => make14({
   patch: (patch4, oldValue) => f(oldValue, patch4(oldValue))
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/runtimeFlagsPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/runtimeFlagsPatch.js
 var BIT_MASK = 255;
 var BIT_SHIFT = 8;
 var active = (patch4) => patch4 & BIT_MASK;
@@ -23006,7 +23025,7 @@ var exclude = /* @__PURE__ */ dual(2, (self, flag) => make15(active(self) & ~fla
 var andThen = /* @__PURE__ */ dual(2, (self, that) => self | that);
 var invert = (n) => ~n >>> 0 & BIT_MASK;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/runtimeFlags.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/runtimeFlags.js
 var None2 = 0;
 var Interruption = 1 << 0;
 var OpSupervision = 1 << 1;
@@ -23032,13 +23051,13 @@ var differ = /* @__PURE__ */ make14({
   patch: (_patch, oldValue) => patch4(oldValue, _patch)
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/RuntimeFlagsPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/RuntimeFlagsPatch.js
 var empty14 = empty13;
 var enable3 = enable;
 var disable3 = disable;
 var exclude2 = exclude;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/blockedRequests.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/blockedRequests.js
 var empty15 = {
   _tag: "Empty"
 };
@@ -23210,7 +23229,7 @@ var sequentialCollectionCombine = (self, that) => new SequentialImpl(reduce5(tha
 var sequentialCollectionKeys = (self) => Array.from(keys2(self.map));
 var sequentialCollectionToChunk = (self) => Array.from(self.map);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/opCodes/cause.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/opCodes/cause.js
 var OP_DIE = "Die";
 var OP_EMPTY = "Empty";
 var OP_FAIL = "Fail";
@@ -23218,7 +23237,7 @@ var OP_INTERRUPT = "Interrupt";
 var OP_PARALLEL = "Parallel";
 var OP_SEQUENTIAL = "Sequential";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/cause.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/cause.js
 var CauseSymbolKey = "effect/Cause";
 var CauseTypeId = /* @__PURE__ */ Symbol.for(CauseSymbolKey);
 var variance4 = {
@@ -23258,7 +23277,7 @@ var proto = {
         return {
           _id: "Cause",
           _tag: this._tag,
-          failure: toJSON(this.error)
+          error: toJSON(this.error)
         };
       case "Sequential":
       case "Parallel":
@@ -23689,16 +23708,16 @@ ${prefix}}`;
 };
 var makePrettyError = (originalError) => {
   const originalErrorIsObject = typeof originalError === "object" && originalError !== null;
-  const prevLimit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 1;
+  const prevLimit = getStackTraceLimit();
+  setStackTraceLimit(1);
   const error62 = new Error(prettyErrorMessage(originalError), originalErrorIsObject && "cause" in originalError && typeof originalError.cause !== "undefined" ? {
     cause: makePrettyError(originalError.cause)
   } : undefined);
-  Error.stackTraceLimit = prevLimit;
+  setStackTraceLimit(prevLimit);
   if (error62.message === "") {
     error62.message = "An error has occurred";
   }
-  Error.stackTraceLimit = prevLimit;
+  setStackTraceLimit(prevLimit);
   error62.name = originalError instanceof Error ? originalError.name : "Error";
   if (originalErrorIsObject) {
     if (spanSymbol in originalError) {
@@ -23791,11 +23810,11 @@ var prettyErrors = (cause) => reduceWithContext(cause, undefined, {
   sequentialCase: (_, l, r) => [...l, ...r]
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/opCodes/deferred.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/opCodes/deferred.js
 var OP_STATE_PENDING = "Pending";
 var OP_STATE_DONE = "Done";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/deferred.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/deferred.js
 var DeferredSymbolKey = "effect/Deferred";
 var DeferredTypeId = /* @__PURE__ */ Symbol.for(DeferredSymbolKey);
 var deferredVariance = {
@@ -23815,7 +23834,7 @@ var done = (effect) => {
   };
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/singleShotGen.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/singleShotGen.js
 class SingleShotGen2 {
   self;
   called = false;
@@ -23845,7 +23864,7 @@ class SingleShotGen2 {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/core.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/core.js
 var blocked = (blockedRequests, _continue) => {
   const effect = new EffectPrimitive("Blocked");
   effect.effect_instruction_i0 = blockedRequests;
@@ -24867,7 +24886,7 @@ var NoopSpanProto = {
 };
 var noopSpan = (options) => Object.assign(Object.create(NoopSpanProto), options);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Data.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Data.js
 var struct2 = struct;
 var unsafeStruct = (as2) => Object.setPrototypeOf(as2, StructuralPrototype);
 var tuple2 = (...as2) => unsafeArray(as2);
@@ -24944,7 +24963,7 @@ var TaggedError = (tag) => {
   O.BaseEffectError.prototype.name = tag;
   return O.BaseEffectError;
 };
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Effect.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Effect.js
 var exports_Effect = {};
 __export(exports_Effect, {
   zipWith: () => zipWith3,
@@ -25279,7 +25298,7 @@ __export(exports_Effect, {
   Do: () => Do2
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/clock.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/clock.js
 var ClockSymbolKey = "effect/Clock";
 var ClockTypeId = /* @__PURE__ */ Symbol.for(ClockSymbolKey);
 var clockTag = /* @__PURE__ */ GenericTag("effect/Clock");
@@ -25345,7 +25364,7 @@ class ClockImpl {
 }
 var make18 = () => new ClockImpl;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Number.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Number.js
 var Order2 = number6;
 var clamp4 = /* @__PURE__ */ clamp(Order2);
 var remainder = /* @__PURE__ */ dual(2, (dividend, divisor) => {
@@ -25373,10 +25392,10 @@ var parse5 = (s) => {
   return Number.isNaN(n) ? none : some(n);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/RegExp.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/RegExp.js
 var escape = (string5) => string5.replace(/[/\\^$*+?.()|[\]{}]/g, "\\$&");
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/opCodes/configError.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/opCodes/configError.js
 var OP_AND = "And";
 var OP_OR = "Or";
 var OP_INVALID_DATA = "InvalidData";
@@ -25384,7 +25403,7 @@ var OP_MISSING_DATA = "MissingData";
 var OP_SOURCE_UNAVAILABLE = "SourceUnavailable";
 var OP_UNSUPPORTED = "Unsupported";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/configError.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/configError.js
 var ConfigErrorSymbolKey = "effect/ConfigError";
 var ConfigErrorTypeId = /* @__PURE__ */ Symbol.for(ConfigErrorSymbolKey);
 var proto2 = {
@@ -25591,7 +25610,7 @@ var reduceWithContext2 = /* @__PURE__ */ dual(3, (self, context2, reducer) => {
   return accumulator.pop();
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/configProvider/pathPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/configProvider/pathPatch.js
 var empty17 = {
   _tag: "Empty"
 };
@@ -25634,7 +25653,7 @@ var patch5 = /* @__PURE__ */ dual(2, (path, patch6) => {
   return right2(output2);
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/opCodes/config.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/opCodes/config.js
 var OP_CONSTANT = "Constant";
 var OP_FAIL2 = "Fail";
 var OP_FALLBACK = "Fallback";
@@ -25648,7 +25667,7 @@ var OP_SEQUENCE = "Sequence";
 var OP_HASHMAP = "HashMap";
 var OP_ZIP_WITH = "ZipWith";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/configProvider.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/configProvider.js
 var concat = (l, r) => [...l, ...r];
 var ConfigProviderSymbolKey = "effect/ConfigProvider";
 var ConfigProviderTypeId = /* @__PURE__ */ Symbol.for(ConfigProviderSymbolKey);
@@ -25864,7 +25883,7 @@ var parseInteger = (str) => {
   return Number.isNaN(parsedIndex) ? none2() : some2(parsedIndex);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/defaultServices/console.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/defaultServices/console.js
 var TypeId8 = /* @__PURE__ */ Symbol.for("effect/Console");
 var consoleTag = /* @__PURE__ */ GenericTag("effect/Console");
 var defaultConsole = {
@@ -25952,7 +25971,7 @@ var defaultConsole = {
   unsafe: console
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/random.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/random.js
 var RandomSymbolKey = "effect/Random";
 var RandomTypeId = /* @__PURE__ */ Symbol.for(RandomSymbolKey);
 var randomTag = /* @__PURE__ */ GenericTag("effect/Random");
@@ -26062,7 +26081,7 @@ class FixedRandomImpl {
 }
 var fixed = (values3) => new FixedRandomImpl(values3);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/tracer.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/tracer.js
 var TracerTypeId = /* @__PURE__ */ Symbol.for("effect/Tracer");
 var make22 = (options) => ({
   [TracerTypeId]: TracerTypeId,
@@ -26139,10 +26158,10 @@ var addSpanStackTrace = (options) => {
   } else if (options?.captureStackTrace !== undefined && typeof options.captureStackTrace !== "boolean") {
     return options;
   }
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 3;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(3);
   const traceError = new Error;
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   let cache = false;
   return {
     ...options,
@@ -26165,7 +26184,7 @@ var DisablePropagation = /* @__PURE__ */ Reference2()("effect/Tracer/DisableProp
   defaultValue: constFalse
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/defaultServices.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/defaultServices.js
 var liveServices = /* @__PURE__ */ pipe2(/* @__PURE__ */ empty4(), /* @__PURE__ */ add2(clockTag, /* @__PURE__ */ make18()), /* @__PURE__ */ add2(consoleTag, defaultConsole), /* @__PURE__ */ add2(randomTag, /* @__PURE__ */ make21(/* @__PURE__ */ Math.random())), /* @__PURE__ */ add2(configProviderTag, /* @__PURE__ */ fromEnv()), /* @__PURE__ */ add2(tracerTag, nativeTracer));
 var currentServices = /* @__PURE__ */ globalValue(/* @__PURE__ */ Symbol.for("effect/DefaultServices/currentServices"), () => fiberRefUnsafeMakeContext(liveServices));
 var sleep = (duration3) => {
@@ -26185,17 +26204,17 @@ var withRandom = /* @__PURE__ */ dual(2, (effect, value) => fiberRefLocallyWith(
 var tracerWith = (f) => defaultServicesWith((services) => f(services.unsafeMap.get(tracerTag.key)));
 var withTracer = /* @__PURE__ */ dual(2, (effect, value) => fiberRefLocallyWith(currentServices, add2(tracerTag, value))(effect));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Boolean.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Boolean.js
 var not = (self) => !self;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Effectable.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Effectable.js
 var EffectPrototype2 = EffectPrototype;
 var CommitPrototype2 = CommitPrototype;
 var Base2 = Base;
 class Class3 extends Base2 {
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/executionStrategy.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/executionStrategy.js
 var OP_SEQUENTIAL2 = "Sequential";
 var OP_PARALLEL2 = "Parallel";
 var OP_PARALLEL_N = "ParallelN";
@@ -26212,12 +26231,12 @@ var parallelN = (parallelism) => ({
 var isSequential = (self) => self._tag === OP_SEQUENTIAL2;
 var isParallel = (self) => self._tag === OP_PARALLEL2;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/ExecutionStrategy.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/ExecutionStrategy.js
 var sequential3 = sequential2;
 var parallel3 = parallel2;
 var parallelN2 = parallelN;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberRefs.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberRefs.js
 function unsafeMake3(fiberRefLocals) {
   return new FiberRefsImpl(fiberRefLocals);
 }
@@ -26387,7 +26406,7 @@ var updateManyAs = /* @__PURE__ */ dual(2, (self, {
   return new FiberRefsImpl(locals);
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/FiberRefs.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/FiberRefs.js
 var get9 = get8;
 var getOrDefault2 = getOrDefault;
 var joinAs2 = joinAs;
@@ -26395,7 +26414,7 @@ var setAll2 = setAll;
 var updateManyAs2 = updateManyAs;
 var empty19 = empty18;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberRefs/patch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberRefs/patch.js
 var OP_EMPTY2 = "Empty";
 var OP_ADD = "Add";
 var OP_REMOVE = "Remove";
@@ -26485,11 +26504,11 @@ var patch6 = /* @__PURE__ */ dual(3, (self, fiberId2, oldValue) => {
   return fiberRefs2;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/FiberRefsPatch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/FiberRefsPatch.js
 var diff6 = diff5;
 var patch7 = patch6;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberStatus.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberStatus.js
 var FiberStatusSymbolKey = "effect/FiberStatus";
 var FiberStatusTypeId = /* @__PURE__ */ Symbol.for(FiberStatusSymbolKey);
 var OP_DONE = "Done";
@@ -26545,13 +26564,13 @@ var suspended = (runtimeFlags2, blockingOn) => new Suspended(runtimeFlags2, bloc
 var isFiberStatus = (u) => hasProperty(u, FiberStatusTypeId);
 var isDone = (self) => self._tag === OP_DONE;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/FiberStatus.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/FiberStatus.js
 var done3 = done2;
 var running2 = running;
 var suspended2 = suspended;
 var isDone2 = isDone;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/LogLevel.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/LogLevel.js
 var All = logLevelAll;
 var Fatal = logLevelFatal;
 var Error3 = logLevelError;
@@ -26583,7 +26602,7 @@ var fromLiteral = (literal2) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Micro.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Micro.js
 var TypeId9 = /* @__PURE__ */ Symbol.for("effect/Micro");
 var MicroExitTypeId = /* @__PURE__ */ Symbol.for("effect/Micro/MicroExit");
 var MicroCauseTypeId = /* @__PURE__ */ Symbol.for("effect/Micro/MicroCause");
@@ -27034,7 +27053,7 @@ var runFork = (effect, options) => {
   return fiber;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Readable.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Readable.js
 var TypeId10 = /* @__PURE__ */ Symbol.for("effect/Readable");
 var Proto = {
   [TypeId10]: TypeId10,
@@ -27043,7 +27062,7 @@ var Proto = {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/ref.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/ref.js
 var RefTypeId = /* @__PURE__ */ Symbol.for("effect/Ref");
 var refVariance = {
   _A: (_) => _
@@ -27081,13 +27100,13 @@ var getAndSet = /* @__PURE__ */ dual(2, (self, value) => self.modify((a) => [a, 
 var modify3 = /* @__PURE__ */ dual(2, (self, f) => self.modify(f));
 var update2 = /* @__PURE__ */ dual(2, (self, f) => self.modify((a) => [undefined, f(a)]));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Ref.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Ref.js
 var make24 = make23;
 var get11 = get10;
 var getAndSet2 = getAndSet;
 var update3 = update2;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Scheduler.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Scheduler.js
 class SchedulerRunner {
   scheduleDrain;
   running = false;
@@ -27209,10 +27228,10 @@ class SyncScheduler {
 var currentScheduler = /* @__PURE__ */ globalValue(/* @__PURE__ */ Symbol.for("effect/FiberRef/currentScheduler"), () => fiberRefUnsafeMake(defaultScheduler));
 var withScheduler = /* @__PURE__ */ dual(2, (self, scheduler) => fiberRefLocally(self, currentScheduler, scheduler));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/completedRequestMap.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/completedRequestMap.js
 var currentRequestMap = /* @__PURE__ */ globalValue(/* @__PURE__ */ Symbol.for("effect/FiberRef/currentRequestMap"), () => fiberRefUnsafeMake(new Map));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/concurrency.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/concurrency.js
 var match7 = (concurrency, sequential4, unbounded, bounded) => {
   switch (concurrency) {
     case undefined:
@@ -27238,14 +27257,14 @@ var matchSimple = (concurrency, sequential4, concurrent) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Clock.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Clock.js
 var sleep2 = sleep;
 var currentTimeMillis2 = currentTimeMillis;
 var currentTimeNanos2 = currentTimeNanos;
 var clockWith2 = clockWith;
 var Clock = clockTag;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/logSpan.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/logSpan.js
 var make25 = (label, startTime) => ({
   label,
   startTime
@@ -27256,13 +27275,13 @@ var render = (now) => (self) => {
   return `${label}=${now - self.startTime}ms`;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/LogSpan.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/LogSpan.js
 var make26 = make25;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Tracer.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Tracer.js
 var tracerWith2 = tracerWith;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/label.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/label.js
 var MetricLabelSymbolKey = "effect/MetricLabel";
 var MetricLabelTypeId = /* @__PURE__ */ Symbol.for(MetricLabelSymbolKey);
 
@@ -27291,7 +27310,7 @@ var make27 = (key, value) => {
 };
 var isMetricLabel = (u) => hasProperty(u, MetricLabelTypeId);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/core-effect.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/core-effect.js
 var annotateLogs = /* @__PURE__ */ dual((args2) => isEffect(args2[0]), function() {
   const args2 = arguments;
   return fiberRefLocallyWith(args2[0], currentLogAnnotations, typeof args2[1] === "string" ? set4(args2[1], args2[2]) : (annotations) => Object.entries(args2[1]).reduce((acc, [key, value]) => set4(acc, key, value), annotations));
@@ -27907,10 +27926,10 @@ var withSpan = function() {
 var functionWithSpan = (options) => function() {
   let captureStackTrace2 = options.captureStackTrace ?? false;
   if (options.captureStackTrace !== false) {
-    const limit = Error.stackTraceLimit;
-    Error.stackTraceLimit = 2;
+    const limit = getStackTraceLimit();
+    setStackTraceLimit(2);
     const error62 = new Error;
-    Error.stackTraceLimit = limit;
+    setStackTraceLimit(limit);
     let cache = false;
     captureStackTrace2 = () => {
       if (cache !== false) {
@@ -27936,7 +27955,7 @@ var functionWithSpan = (options) => function() {
 var fromNullable2 = (value) => value == null ? fail2(new NoSuchElementException) : succeed(value);
 var optionFromOptional = (self) => catchAll(map10(self, some2), (error62) => isNoSuchElementException(error62) ? succeedNone : fail2(error62));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Exit.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Exit.js
 var isExit = exitIsExit;
 var isSuccess2 = exitIsSuccess;
 var failCause3 = exitFailCause;
@@ -27944,7 +27963,7 @@ var flatten5 = exitFlatten;
 var match9 = exitMatch;
 var succeed3 = exitSucceed;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberMessage.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberMessage.js
 var OP_INTERRUPT_SIGNAL = "InterruptSignal";
 var OP_STATEFUL = "Stateful";
 var OP_RESUME = "Resume";
@@ -27965,7 +27984,7 @@ var yieldNow3 = () => ({
   _tag: OP_YIELD_NOW
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberScope.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberScope.js
 var FiberScopeSymbolKey = "effect/FiberScope";
 var FiberScopeTypeId = /* @__PURE__ */ Symbol.for(FiberScopeSymbolKey);
 
@@ -28003,7 +28022,7 @@ var unsafeMake5 = (fiber) => {
 };
 var globalScope = /* @__PURE__ */ globalValue(/* @__PURE__ */ Symbol.for("effect/FiberScope/Global"), () => new Global);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiber.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiber.js
 var FiberSymbolKey = "effect/Fiber";
 var FiberTypeId = /* @__PURE__ */ Symbol.for(FiberSymbolKey);
 var fiberVariance2 = {
@@ -28053,7 +28072,7 @@ var _never2 = {
 };
 var currentFiberURI = "effect/FiberCurrent";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/logger.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/logger.js
 var LoggerSymbolKey = "effect/Logger";
 var LoggerTypeId = /* @__PURE__ */ Symbol.for(LoggerSymbolKey);
 var loggerVariance = {
@@ -28135,7 +28154,7 @@ var hasProcessStdout = typeof process === "object" && process !== null && typeof
 var processStdoutIsTTY = hasProcessStdout && process.stdout.isTTY === true;
 var hasProcessStdoutOrDeno = hasProcessStdout || "Deno" in globalThis;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/boundaries.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/boundaries.js
 var MetricBoundariesSymbolKey = "effect/MetricBoundaries";
 var MetricBoundariesTypeId = /* @__PURE__ */ Symbol.for(MetricBoundariesSymbolKey);
 
@@ -28164,7 +28183,7 @@ var fromIterable8 = (iterable) => {
 };
 var exponential = (options) => pipe2(makeBy(options.count - 1, (i) => options.start * Math.pow(options.factor, i)), unsafeFromArray, fromIterable8);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/keyType.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/keyType.js
 var MetricKeyTypeSymbolKey = "effect/MetricKeyType";
 var MetricKeyTypeTypeId = /* @__PURE__ */ Symbol.for(MetricKeyTypeSymbolKey);
 var CounterKeyTypeSymbolKey = "effect/MetricKeyType/Counter";
@@ -28232,7 +28251,7 @@ var isGaugeKey = (u) => hasProperty(u, GaugeKeyTypeTypeId);
 var isHistogramKey = (u) => hasProperty(u, HistogramKeyTypeTypeId);
 var isSummaryKey = (u) => hasProperty(u, SummaryKeyTypeTypeId);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/key.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/key.js
 var MetricKeySymbolKey = "effect/MetricKey";
 var MetricKeyTypeId = /* @__PURE__ */ Symbol.for(MetricKeySymbolKey);
 var metricKeyVariance = {
@@ -28269,7 +28288,7 @@ var counter2 = (name, options) => new MetricKeyImpl(name, counter(options), from
 var histogram2 = (name, boundaries, description) => new MetricKeyImpl(name, histogram(boundaries), fromNullable(description));
 var taggedWithLabels = /* @__PURE__ */ dual(2, (self, extraTags) => extraTags.length === 0 ? self : new MetricKeyImpl(self.name, self.keyType, self.description, union2(self.tags, extraTags)));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/MutableHashMap.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/MutableHashMap.js
 var TypeId11 = /* @__PURE__ */ Symbol.for("effect/MutableHashMap");
 var MutableHashMapProto = {
   [TypeId11]: TypeId11,
@@ -28417,7 +28436,7 @@ var size4 = (self) => {
   return self.referential.size + self.bucketsSize;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/state.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/state.js
 var MetricStateSymbolKey = "effect/MetricState";
 var MetricStateTypeId = /* @__PURE__ */ Symbol.for(MetricStateSymbolKey);
 var CounterStateSymbolKey = "effect/MetricState/Counter";
@@ -28556,7 +28575,7 @@ var isGaugeState = (u) => hasProperty(u, GaugeStateTypeId);
 var isHistogramState = (u) => hasProperty(u, HistogramStateTypeId);
 var isSummaryState = (u) => hasProperty(u, SummaryStateTypeId);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/hook.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/hook.js
 var MetricHookSymbolKey = "effect/MetricHook";
 var MetricHookTypeId = /* @__PURE__ */ Symbol.for(MetricHookSymbolKey);
 var metricHookVariance = {
@@ -28849,7 +28868,7 @@ var resolveQuantile = (error62, sampleCount, current, consumed, quantile, rest) 
   throw new Error("BUG: MetricHook.resolveQuantiles - please report an issue at https://github.com/Effect-TS/effect/issues");
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/pair.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/pair.js
 var MetricPairSymbolKey = "effect/MetricPair";
 var MetricPairTypeId = /* @__PURE__ */ Symbol.for(MetricPairSymbolKey);
 var metricPairVariance = {
@@ -28866,7 +28885,7 @@ var unsafeMake6 = (metricKey, metricState) => {
   };
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric/registry.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric/registry.js
 var MetricRegistrySymbolKey = "effect/MetricRegistry";
 var MetricRegistryTypeId = /* @__PURE__ */ Symbol.for(MetricRegistrySymbolKey);
 
@@ -28963,7 +28982,7 @@ var make29 = () => {
   return new MetricRegistryImpl;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/metric.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/metric.js
 var MetricSymbolKey = "effect/Metric";
 var MetricTypeId = /* @__PURE__ */ Symbol.for(MetricSymbolKey);
 var metricVariance = {
@@ -29018,7 +29037,7 @@ var taggedWithLabels2 = /* @__PURE__ */ dual(2, (self, extraTags) => {
 });
 var update4 = /* @__PURE__ */ dual(2, (self, input2) => fiberRefGetWith(currentMetricLabels, (tags) => sync(() => self.unsafeUpdate(input2, tags))));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/request.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/request.js
 var RequestSymbolKey = "effect/Request";
 var RequestTypeId = /* @__PURE__ */ Symbol.for(RequestSymbolKey);
 var requestVariance = {
@@ -29068,7 +29087,7 @@ class Listeners {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/redBlackTree/iterator.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/redBlackTree/iterator.js
 var Direction = {
   Forward: 0,
   Backward: 1 << 0
@@ -29222,7 +29241,7 @@ class RedBlackTreeIterator {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/redBlackTree/node.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/redBlackTree/node.js
 var Color = {
   Red: 0,
   Black: 1 << 0
@@ -29245,7 +29264,7 @@ var recount = (node2) => {
   node2.count = 1 + (node2.left?.count ?? 0) + (node2.right?.count ?? 0);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/redBlackTree.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/redBlackTree.js
 var RedBlackTreeSymbolKey = "effect/RedBlackTree";
 var RedBlackTreeTypeId = /* @__PURE__ */ Symbol.for(RedBlackTreeSymbolKey);
 var redBlackTreeVariance = {
@@ -29534,12 +29553,12 @@ var keys3 = (self, direction) => {
   };
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/RedBlackTree.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/RedBlackTree.js
 var fromIterable10 = fromIterable9;
 var has6 = has5;
 var keys4 = keysForward;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/SortedSet.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/SortedSet.js
 var TypeId12 = /* @__PURE__ */ Symbol.for("effect/SortedSet");
 var SortedSetProto = {
   [TypeId12]: {
@@ -29590,7 +29609,7 @@ var isSubset2 = /* @__PURE__ */ dual(2, (self, that) => every5(self, (a) => has7
 var values3 = (self) => keys4(self.keyTree);
 var getEquivalence6 = () => (a, b) => isSubset2(a, b) && isSubset2(b, a);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/supervisor.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/supervisor.js
 var SupervisorSymbolKey = "effect/Supervisor";
 var SupervisorTypeId = /* @__PURE__ */ Symbol.for(SupervisorSymbolKey);
 var supervisorVariance = {
@@ -29731,10 +29750,10 @@ var fromEffect = (effect) => {
 };
 var none8 = /* @__PURE__ */ globalValue("effect/Supervisor/none", () => fromEffect(void_));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Differ.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Differ.js
 var make32 = make14;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/supervisor/patch.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/supervisor/patch.js
 var OP_EMPTY3 = "Empty";
 var OP_ADD_SUPERVISOR = "AddSupervisor";
 var OP_REMOVE_SUPERVISOR = "RemoveSupervisor";
@@ -29825,7 +29844,7 @@ var differ2 = /* @__PURE__ */ make32({
   diff: diff7
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/fiberRuntime.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/fiberRuntime.js
 var fiberStarted = /* @__PURE__ */ counter5("effect_fiber_started", {
   incremental: true
 });
@@ -31464,7 +31483,7 @@ var withSpanScoped = function() {
   return (self) => flatMap7(makeSpanScoped(name, addSpanStackTrace(options)), (span2) => provideService(self, spanTag, span2));
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Cause.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Cause.js
 var empty25 = empty16;
 var fail3 = fail;
 var die3 = die;
@@ -31476,7 +31495,7 @@ var isFailType2 = isFailType;
 var IllegalArgumentException2 = IllegalArgumentException;
 var pretty2 = pretty;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schedule/interval.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schedule/interval.js
 var IntervalSymbolKey = "effect/ScheduleInterval";
 var IntervalTypeId = /* @__PURE__ */ Symbol.for(IntervalSymbolKey);
 var empty26 = {
@@ -31520,14 +31539,14 @@ var after = (startMilliseconds) => {
   return make33(startMilliseconds, Number.POSITIVE_INFINITY);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/ScheduleInterval.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/ScheduleInterval.js
 var empty27 = empty26;
 var lessThan4 = lessThan3;
 var isEmpty7 = isEmpty6;
 var intersect2 = intersect;
 var after2 = after;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schedule/intervals.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schedule/intervals.js
 var IntervalsSymbolKey = "effect/ScheduleIntervals";
 var IntervalsTypeId = /* @__PURE__ */ Symbol.for(IntervalsSymbolKey);
 var make35 = (intervals) => {
@@ -31564,7 +31583,7 @@ var isNonEmpty3 = (self) => {
   return isNonEmpty(self.intervals);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/ScheduleIntervals.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/ScheduleIntervals.js
 var make36 = make35;
 var intersect4 = intersect3;
 var start2 = start;
@@ -31572,7 +31591,7 @@ var end2 = end;
 var lessThan6 = lessThan5;
 var isNonEmpty4 = isNonEmpty3;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schedule/decision.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schedule/decision.js
 var OP_CONTINUE = "Continue";
 var OP_DONE2 = "Done";
 var _continue = (intervals) => {
@@ -31597,18 +31616,18 @@ var isDone3 = (self) => {
   return self._tag === OP_DONE2;
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/ScheduleDecision.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/ScheduleDecision.js
 var _continue2 = _continue;
 var continueWith2 = continueWith;
 var done5 = done4;
 var isContinue2 = isContinue;
 var isDone4 = isDone3;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Scope.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Scope.js
 var close = scopeClose;
 var fork2 = scopeFork;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/effect/circular.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/effect/circular.js
 class Semaphore {
   permits;
   waiters = /* @__PURE__ */ new Set;
@@ -31762,7 +31781,7 @@ var computeCachedValue = (self, timeToLive, start3) => {
   const timeToLiveMillis = toMillis(decode3(timeToLive));
   return pipe2(deferredMake(), tap((deferred) => intoDeferred(self, deferred)), map10((deferred) => some2([start3 + timeToLiveMillis, deferred])));
 };
-var getCachedValue = (self, timeToLive, cache) => uninterruptibleMask((restore) => pipe2(clockWith3((clock2) => clock2.currentTimeMillis), flatMap7((time3) => updateSomeAndGetEffectSynchronized(cache, (option2) => {
+var getCachedValue = (self, timeToLive, cache) => pipe2(clockWith3((clock2) => clock2.currentTimeMillis), flatMap7((time3) => updateSomeAndGetEffectSynchronized(cache, (option2) => {
   switch (option2._tag) {
     case "None": {
       return some2(computeCachedValue(self, timeToLive, time3));
@@ -31772,7 +31791,7 @@ var getCachedValue = (self, timeToLive, cache) => uninterruptibleMask((restore) 
       return end3 - time3 <= 0 ? some2(computeCachedValue(self, timeToLive, time3)) : none2();
     }
   }
-})), flatMap7((option2) => isNone2(option2) ? dieMessage("BUG: Effect.cachedInvalidate - please report an issue at https://github.com/Effect-TS/effect/issues") : restore(deferredAwait(option2.value[1])))));
+})), flatMap7((option2) => isNone2(option2) ? dieMessage("BUG: Effect.cachedInvalidate - please report an issue at https://github.com/Effect-TS/effect/issues") : deferredAwait(option2.value[1])));
 var invalidateCache = (cache) => set5(cache, none2());
 var ensuringChild = /* @__PURE__ */ dual(2, (self, f) => ensuringChildren(self, (children) => f(fiberAll(children))));
 var ensuringChildren = /* @__PURE__ */ dual(2, (self, children) => flatMap7(track, (supervisor) => pipe2(supervised(self, supervisor), ensuring(flatMap7(supervisor.value, children)))));
@@ -31930,10 +31949,10 @@ var updateSomeAndGetEffectSynchronized = /* @__PURE__ */ dual(2, (self, pf) => s
 }));
 var bindAll = /* @__PURE__ */ dual((args2) => isEffect(args2[0]), (self, f, options) => flatMap7(self, (a) => all2(f(a), options).pipe(map10((record2) => Object.assign({}, a, record2)))));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/managedRuntime/circular.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/managedRuntime/circular.js
 var TypeId13 = /* @__PURE__ */ Symbol.for("effect/ManagedRuntime");
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/opCodes/layer.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/opCodes/layer.js
 var OP_FRESH = "Fresh";
 var OP_FROM_EFFECT = "FromEffect";
 var OP_SCOPED = "Scoped";
@@ -31942,10 +31961,10 @@ var OP_PROVIDE = "Provide";
 var OP_PROVIDE_MERGE = "ProvideMerge";
 var OP_MERGE_ALL = "MergeAll";
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Fiber.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Fiber.js
 var interruptAs = interruptAsFiber;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/runtime.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/runtime.js
 var makeDual = (f) => function() {
   if (arguments.length === 1) {
     const runtime3 = arguments[0];
@@ -32015,10 +32034,10 @@ class AsyncFiberExceptionImpl extends Error {
   }
 }
 var asyncFiberException = (fiber) => {
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 0;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(0);
   const error62 = new AsyncFiberExceptionImpl(fiber);
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   return error62;
 };
 var FiberFailureId = /* @__PURE__ */ Symbol.for("effect/Runtime/FiberFailure");
@@ -32053,10 +32072,10 @@ class FiberFailureImpl extends Error {
   }
 }
 var fiberFailure = (cause2) => {
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 0;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(0);
   const error62 = new FiberFailureImpl(cause2);
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   return error62;
 };
 var fastPath = (effect) => {
@@ -32119,10 +32138,15 @@ var unsafeRunPromiseExit = /* @__PURE__ */ makeDual((runtime3, effect, options) 
     if (options.signal.aborted) {
       fiber.unsafeInterruptAsFork(fiber.id());
     } else {
-      options.signal.addEventListener("abort", () => {
+      const signal = options.signal;
+      const onAbort = () => {
         fiber.unsafeInterruptAsFork(fiber.id());
-      }, {
+      };
+      signal.addEventListener("abort", onAbort, {
         once: true
+      });
+      fiber.addObserver(() => {
+        signal.removeEventListener("abort", onAbort);
       });
     }
   }
@@ -32166,10 +32190,10 @@ var asyncEffect = (register) => suspend(() => {
   }))), restore(onInterrupt(deferredAwait(deferred), () => cleanup ?? void_))))));
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/synchronizedRef.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/synchronizedRef.js
 var modifyEffect = /* @__PURE__ */ dual(2, (self, f) => self.modifyEffect(f));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/layer.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/layer.js
 var LayerSymbolKey = "effect/Layer";
 var LayerTypeId = /* @__PURE__ */ Symbol.for(LayerSymbolKey);
 var layerVariance = {
@@ -32397,13 +32421,13 @@ var effect_provide = /* @__PURE__ */ dual(2, (self, source) => {
   }
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/console.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/console.js
 var console2 = /* @__PURE__ */ map10(/* @__PURE__ */ fiberRefGet(currentServices), /* @__PURE__ */ get4(consoleTag));
 var consoleWith = (f) => fiberRefGetWith(currentServices, (services) => f(get4(services, consoleTag)));
 var withConsole = /* @__PURE__ */ dual(2, (effect, value) => fiberRefLocallyWith(effect, currentServices, add2(consoleTag, value)));
 var withConsoleScoped = (console3) => fiberRefLocallyScopedWith(currentServices, add2(consoleTag, console3));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/dateTime.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/dateTime.js
 var TypeId14 = /* @__PURE__ */ Symbol.for("effect/DateTime");
 var TimeZoneTypeId = /* @__PURE__ */ Symbol.for("effect/DateTime/TimeZone");
 var Proto2 = {
@@ -32787,7 +32811,7 @@ var formatIsoOffset = (self) => {
 };
 var formatIsoZoned = (self) => self.zone._tag === "Offset" ? formatIsoOffset(self) : `${formatIsoOffset(self)}[${self.zone.id}]`;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/String.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/String.js
 var toUpperCase = (self) => self.toUpperCase();
 var toLowerCase = (self) => self.toLowerCase();
 var capitalize = (self) => {
@@ -32802,10 +32826,10 @@ var uncapitalize = (self) => {
 };
 var isNonEmpty5 = (self) => self.length > 0;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Random.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Random.js
 var fixed2 = fixed;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schedule.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schedule.js
 var ScheduleSymbolKey = "effect/Schedule";
 var ScheduleTypeId = /* @__PURE__ */ Symbol.for(ScheduleSymbolKey);
 var isSchedule = (u) => hasProperty(u, ScheduleTypeId);
@@ -33044,7 +33068,7 @@ var forever2 = /* @__PURE__ */ unfold2(0, (n) => n + 1);
 var once2 = /* @__PURE__ */ asVoid2(/* @__PURE__ */ recurs(1));
 var scheduleForked = /* @__PURE__ */ dual(2, (self, schedule) => forkScoped(schedule_Effect(self, schedule)));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/executionPlan.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/executionPlan.js
 var withExecutionPlan = /* @__PURE__ */ dual(2, (effect, plan) => suspend(() => {
   let i = 0;
   let result;
@@ -33092,13 +33116,13 @@ var scheduleFromStep = (step3, first2) => {
   });
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Deferred.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Deferred.js
 var _await2 = deferredAwait;
 var done6 = deferredDone;
 var interrupt4 = deferredInterrupt;
 var unsafeMake8 = deferredUnsafeMake;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/MutableList.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/MutableList.js
 var TypeId15 = /* @__PURE__ */ Symbol.for("effect/MutableList");
 var MutableListProto = {
   [TypeId15]: TypeId15,
@@ -33209,7 +33233,7 @@ var remove6 = (self, node2) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/MutableQueue.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/MutableQueue.js
 var TypeId16 = /* @__PURE__ */ Symbol.for("effect/MutableQueue");
 var EmptyMutableQueue = /* @__PURE__ */ Symbol.for("effect/mutable/MutableQueue/Empty");
 var MutableQueueProto = {
@@ -33255,7 +33279,7 @@ var poll = /* @__PURE__ */ dual(2, (self, def) => {
   return shift(self.queue);
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/cache.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/cache.js
 var complete2 = (key, exit2, entryStats, timeToLiveMillis) => struct({
   _tag: "Complete",
   key,
@@ -33670,7 +33694,7 @@ class CacheImpl {
 }
 var unsafeMakeWith = (capacity, lookup, timeToLive) => new CacheImpl(capacity, empty4(), none3, lookup, (exit2) => decode3(timeToLive(exit2)));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/query.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/query.js
 var currentCache = /* @__PURE__ */ globalValue(/* @__PURE__ */ Symbol.for("effect/FiberRef/currentCache"), () => fiberRefUnsafeMake(unsafeMakeWith(65536, () => map10(deferredMake(), (handle) => ({
   listeners: new Listeners,
   handle
@@ -33744,11 +33768,11 @@ var cacheRequest = (request, result) => {
 var withRequestCaching = /* @__PURE__ */ dual(2, (self, strategy) => fiberRefLocally(self, currentCacheEnabled, strategy));
 var withRequestCache = /* @__PURE__ */ dual(2, (self, cache) => fiberRefLocally(self, currentCache, cache));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Request.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Request.js
 var isRequest2 = isRequest;
 var Class5 = Class4;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Effect.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Effect.js
 var EffectTypeId3 = EffectTypeId2;
 var isEffect2 = isEffect;
 var cachedWithTTL = cached3;
@@ -34108,10 +34132,10 @@ var makeTagProxy = (TagClass) => {
   });
 };
 var Tag2 = (id) => () => {
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 2;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(2);
   const creationError = new Error;
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   function TagClass() {}
   Object.setPrototypeOf(TagClass, TagProto);
   TagClass.key = id;
@@ -34131,10 +34155,10 @@ var Service = function() {
   return function() {
     const [id, maker] = arguments;
     const proxy = "accessors" in maker ? maker["accessors"] : false;
-    const limit = Error.stackTraceLimit;
-    Error.stackTraceLimit = 2;
+    const limit = getStackTraceLimit();
+    setStackTraceLimit(2);
     const creationError = new Error;
-    Error.stackTraceLimit = limit;
+    setStackTraceLimit(limit);
     let patchState = "unchecked";
     const TagClass = function(service) {
       if (patchState === "unchecked") {
@@ -34230,16 +34254,16 @@ var Service = function() {
   };
 };
 var fn = function(nameOrBody, ...pipeables) {
-  const limit = Error.stackTraceLimit;
-  Error.stackTraceLimit = 2;
+  const limit = getStackTraceLimit();
+  setStackTraceLimit(2);
   const errorDef = new Error;
-  Error.stackTraceLimit = limit;
+  setStackTraceLimit(limit);
   if (typeof nameOrBody !== "string") {
     return defineLength(nameOrBody.length, function(...args2) {
-      const limit2 = Error.stackTraceLimit;
-      Error.stackTraceLimit = 2;
+      const limit2 = getStackTraceLimit();
+      setStackTraceLimit(2);
       const errorCall = new Error;
-      Error.stackTraceLimit = limit2;
+      setStackTraceLimit(limit2);
       return fnApply({
         self: this,
         body: nameOrBody,
@@ -34258,10 +34282,10 @@ var fn = function(nameOrBody, ...pipeables) {
   const options = pipeables[0];
   return (body, ...pipeables2) => defineLength(body.length, {
     [name](...args2) {
-      const limit2 = Error.stackTraceLimit;
-      Error.stackTraceLimit = 2;
+      const limit2 = getStackTraceLimit();
+      setStackTraceLimit(2);
       const errorCall = new Error;
-      Error.stackTraceLimit = limit2;
+      setStackTraceLimit(limit2);
       return fnApply({
         self: this,
         body,
@@ -34288,7 +34312,19 @@ function fnApply(options) {
     effect = fromIterator(() => options.body.apply(options.self, options.args));
   } else {
     try {
-      effect = options.body.apply(options.self, options.args);
+      const result = options.body.apply(options.self, options.args);
+      if (isEffect(result)) {
+        effect = result;
+      } else {
+        let first2 = true;
+        effect = fromIterator(() => {
+          if (first2) {
+            first2 = false;
+            return result;
+          }
+          return options.body.apply(options.self, options.args);
+        });
+      }
     } catch (error62) {
       fnError = error62;
       effect = die4(error62);
@@ -34338,7 +34374,7 @@ var fnUntraced2 = fnUntraced;
 var ensureSuccessType = () => (effect) => effect;
 var ensureErrorType = () => (effect) => effect;
 var ensureRequirementsType = () => (effect) => effect;
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Schema.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Schema.js
 var exports_Schema = {};
 __export(exports_Schema, {
   withDefaults: () => withDefaults,
@@ -34725,7 +34761,7 @@ __export(exports_Schema, {
   Any: () => Any
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/BigDecimal.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/BigDecimal.js
 var FINITE_INT_REGEX = /^[+-]?\d+$/;
 var TypeId17 = /* @__PURE__ */ Symbol.for("effect/BigDecimal");
 var BigDecimalProto = {
@@ -34788,10 +34824,11 @@ var normalize = (self) => {
       }
       if (trail === 0) {
         self.normalized = self;
+      } else {
+        const value = BigInt(digits.substring(0, digits.length - trail));
+        const scale = self.scale - trail;
+        self.normalized = unsafeMakeNormalized(value, scale);
       }
-      const value = BigInt(digits.substring(0, digits.length - trail));
-      const scale = self.scale - trail;
-      self.normalized = unsafeMakeNormalized(value, scale);
     }
   }
   return self.normalized;
@@ -34933,7 +34970,7 @@ var isZero2 = (n) => n.value === bigint04;
 var isNegative = (n) => n.value < bigint04;
 var isPositive = (n) => n.value > bigint04;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/BigInt.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/BigInt.js
 var Order5 = bigint4;
 var clamp6 = /* @__PURE__ */ clamp(Order5);
 var toNumber = (b) => {
@@ -34960,10 +34997,10 @@ var fromNumber = (n) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/ConfigError.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/ConfigError.js
 var InvalidData2 = InvalidData;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/redacted.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/redacted.js
 var RedactedSymbolKey = "effect/Redacted";
 var redactedRegistry = /* @__PURE__ */ globalValue("effect/Redacted/redactedRegistry", () => new WeakMap);
 var RedactedTypeId = /* @__PURE__ */ Symbol.for(RedactedSymbolKey);
@@ -35004,7 +35041,7 @@ var value = (self) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/config.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/config.js
 var ConfigSymbolKey = "effect/Config";
 var ConfigTypeId = /* @__PURE__ */ Symbol.for(ConfigSymbolKey);
 var configVariance = {
@@ -35043,11 +35080,11 @@ var string5 = (name) => {
   return name === undefined ? config3 : nested2(config3, name);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Config.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Config.js
 var mapOrFail2 = mapOrFail;
 var string6 = string5;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/DateTime.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/DateTime.js
 var isDateTime2 = isDateTime;
 var isTimeZoneOffset2 = isTimeZoneOffset;
 var isTimeZoneNamed2 = isTimeZoneNamed;
@@ -35067,7 +35104,7 @@ var toEpochMillis2 = toEpochMillis;
 var formatIso2 = formatIso;
 var formatIsoZoned2 = formatIsoZoned;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/encoding/common.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/encoding/common.js
 var DecodeExceptionTypeId = /* @__PURE__ */ Symbol.for("effect/Encoding/errors/Decode");
 var DecodeException = (input2, message) => {
   const out = {
@@ -35095,7 +35132,7 @@ var EncodeException = (input2, message) => {
 var encoder = /* @__PURE__ */ new TextEncoder;
 var decoder = /* @__PURE__ */ new TextDecoder;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/encoding/base64.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/encoding/base64.js
 var encode3 = (bytes) => {
   const length2 = bytes.length;
   let result = "";
@@ -35157,7 +35194,7 @@ function getBase64Code(charCode) {
 var base64abc = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "/"];
 var base64codes = [255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 0, 255, 255, 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255, 255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51];
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/encoding/base64Url.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/encoding/base64Url.js
 var encode4 = (data) => encode3(data).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 var decode5 = (str) => {
   const stripped = stripCrlf(str);
@@ -35173,7 +35210,7 @@ var decode5 = (str) => {
   return decode4(sanitized);
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/encoding/hex.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/encoding/hex.js
 var encode5 = (bytes) => {
   let result = "";
   for (let i = 0;i < bytes.length; ++i) {
@@ -35213,7 +35250,7 @@ var fromHexChar = (byte) => {
   throw new TypeError("Invalid input");
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Encoding.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Encoding.js
 var encodeBase64 = (input2) => typeof input2 === "string" ? encode3(encoder.encode(input2)) : encode3(input2);
 var decodeBase64 = (str) => decode4(str);
 var decodeBase64String = (str) => map2(decodeBase64(str), (_) => decoder.decode(_));
@@ -35234,7 +35271,7 @@ var decodeUriComponent = (str) => try_({
 var DecodeException2 = DecodeException;
 var EncodeException2 = EncodeException;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/stream/StreamHelpers.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/stream/StreamHelpers.js
 class Nil {
   [Symbol.iterator]() {
     return this;
@@ -35291,7 +35328,7 @@ function* joinHelper(g, others) {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/stream/Stream.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/stream/Stream.js
 var safeSymbolIterator = Symbol.iterator;
 
 class Stream {
@@ -35379,7 +35416,7 @@ function stream(g) {
   return new Stream(g);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/check/symbols.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/check/symbols.js
 var cloneMethod = Symbol.for("fast-check/cloneMethod");
 function hasCloneMethod(instance) {
   return instance !== null && (typeof instance === "object" || typeof instance === "function") && cloneMethod in instance && typeof instance[cloneMethod] === "function";
@@ -35388,7 +35425,7 @@ function cloneIfNeeded(instance) {
   return hasCloneMethod(instance) ? instance[cloneMethod]() : instance;
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/check/arbitrary/definition/Value.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/check/arbitrary/definition/Value.js
 var safeObjectDefineProperty = Object.defineProperty;
 
 class Value {
@@ -35415,7 +35452,7 @@ class Value {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/check/arbitrary/definition/Arbitrary.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/check/arbitrary/definition/Arbitrary.js
 var safeObjectAssign = Object.assign;
 
 class Arbitrary {
@@ -35596,7 +35633,7 @@ class NoBiasArbitrary extends Arbitrary {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/utils/apply.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/utils/apply.js
 var untouchedApply = Function.prototype.apply;
 var ApplySymbol = Symbol("apply");
 function safeExtractApply(f) {
@@ -35620,7 +35657,7 @@ function safeApply(f, instance, args2) {
   return safeApplyHacky(f, instance, args2);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/utils/globals.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/utils/globals.js
 var untouchedForEach = Array.prototype.forEach;
 var untouchedIndexOf = Array.prototype.indexOf;
 var untouchedJoin = Array.prototype.join;
@@ -35730,7 +35767,7 @@ var untouchedNormalize = String.prototype.normalize;
 var untouchedReplace = String.prototype.replace;
 var untouchedNumberToString = Number.prototype.toString;
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/stream/LazyIterableIterator.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/stream/LazyIterableIterator.js
 class LazyIterableIterator {
   constructor(producer) {
     this.producer = producer;
@@ -35752,13 +35789,13 @@ function makeLazy(producer) {
   return new LazyIterableIterator(producer);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/check/runner/configuration/GlobalParameters.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/check/runner/configuration/GlobalParameters.js
 var globalParameters = {};
 function readConfigureGlobal() {
   return globalParameters;
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/BiasNumericRange.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/BiasNumericRange.js
 var safeMathFloor = Math.floor;
 var safeMathLog = Math.log;
 function integerLogLike(v) {
@@ -35783,7 +35820,7 @@ function biasNumericRange(min4, max6, logLike) {
   return min4 < 0 ? [arbCloseToMax, arbCloseToMin] : [arbCloseToMin, arbCloseToMax];
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/ShrinkInteger.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/ShrinkInteger.js
 var safeMathCeil = Math.ceil;
 var safeMathFloor2 = Math.floor;
 function halvePosInteger(n) {
@@ -35815,7 +35852,7 @@ function shrinkInteger(current, target, tryTargetAsap) {
   return realGap > 0 ? stream(shrinkDecr()) : stream(shrinkIncr());
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/IntegerArbitrary.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/IntegerArbitrary.js
 var safeMathSign = Math.sign;
 var safeNumberIsInteger = Number.isInteger;
 var safeObjectIs = Object.is;
@@ -35881,7 +35918,7 @@ class IntegerArbitrary extends Arbitrary {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/integer.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/integer.js
 var safeNumberIsInteger2 = Number.isInteger;
 function buildCompleteIntegerConstraints(constraints) {
   const min4 = constraints.min !== undefined ? constraints.min : -2147483648;
@@ -35902,7 +35939,7 @@ function integer3(constraints = {}) {
   return new IntegerArbitrary(fullConstraints.min, fullConstraints.max);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/DepthContext.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/DepthContext.js
 var depthContextCache = new Map;
 function getDepthContextFor(contextMeta) {
   if (contextMeta === undefined) {
@@ -35920,7 +35957,7 @@ function getDepthContextFor(contextMeta) {
   return context4;
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/implementations/NoopSlicedGenerator.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/implementations/NoopSlicedGenerator.js
 class NoopSlicedGenerator {
   constructor(arb, mrng, biasFactor) {
     this.arb = arb;
@@ -35935,7 +35972,7 @@ class NoopSlicedGenerator {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/implementations/SlicedBasedGenerator.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/implementations/SlicedBasedGenerator.js
 var safeMathMin = Math.min;
 var safeMathMax = Math.max;
 
@@ -35988,7 +36025,7 @@ class SlicedBasedGenerator {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/BuildSlicedGenerator.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/BuildSlicedGenerator.js
 function buildSlicedGenerator(arb, mrng, slices, biasFactor) {
   if (biasFactor === undefined || slices.length === 0 || mrng.nextInt(1, biasFactor) !== 1) {
     return new NoopSlicedGenerator(arb, mrng, biasFactor);
@@ -35996,7 +36033,7 @@ function buildSlicedGenerator(arb, mrng, slices, biasFactor) {
   return new SlicedBasedGenerator(arb, mrng, slices, biasFactor);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/ArrayArbitrary.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/ArrayArbitrary.js
 var safeMathFloor3 = Math.floor;
 var safeMathLog2 = Math.log;
 var safeMathMax2 = Math.max;
@@ -36187,7 +36224,7 @@ class ArrayArbitrary extends Arbitrary {
   }
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/MaxLengthFromMinLength.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/_internals/helpers/MaxLengthFromMinLength.js
 var safeMathFloor4 = Math.floor;
 var safeMathMin2 = Math.min;
 var MaxLengthUpperBound = 2147483647;
@@ -36232,7 +36269,7 @@ function maxGeneratedLengthFromSizeForArbitrary(size10, minLength, maxLength, sp
   return safeMathMin2(maxLengthFromMinLength(minLength, finalSize), maxLength);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/node_modules/fast-check/lib/esm/arbitrary/array.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/fast-check/lib/esm/arbitrary/array.js
 function array6(arb, constraints = {}) {
   const size10 = constraints.size;
   const minLength = constraints.minLength || 0;
@@ -36245,7 +36282,7 @@ function array6(arb, constraints = {}) {
   return new ArrayArbitrary(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier, undefined, customSlices);
 }
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schema/util.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schema/util.js
 var getKeysForIndexSignature = (input2, parameter) => {
   switch (parameter._tag) {
     case "StringKeyword":
@@ -36274,7 +36311,7 @@ var isSingle = (x) => !Array.isArray(x);
 var formatPathKey = (key) => `[${formatPropertyKey(key)}]`;
 var formatPath = (path) => isNonEmpty6(path) ? path.map(formatPathKey).join("") : formatPathKey(path);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schema/errors.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schema/errors.js
 var getErrorMessage = (reason, details, path, ast) => {
   let out = reason;
   if (path && isNonEmptyReadonlyArray(path)) {
@@ -36306,7 +36343,7 @@ var getASTDuplicatePropertySignatureTransformationErrorMessage = (key) => getErr
 var getASTUnsupportedRenameSchemaErrorMessage = (ast) => getUnsupportedSchemaErrorMessage(undefined, undefined, ast);
 var getASTDuplicatePropertySignatureErrorMessage = (key) => getErrorMessage("Duplicate property signature", `Duplicate key ${formatUnknown(key)}`);
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/internal/schema/schemaId.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/internal/schema/schemaId.js
 var DateFromSelfSchemaId = /* @__PURE__ */ Symbol.for("effect/SchemaId/DateFromSelf");
 var GreaterThanSchemaId = /* @__PURE__ */ Symbol.for("effect/SchemaId/GreaterThan");
 var GreaterThanOrEqualToSchemaId = /* @__PURE__ */ Symbol.for("effect/SchemaId/GreaterThanOrEqualTo");
@@ -36329,7 +36366,7 @@ var MinItemsSchemaId = /* @__PURE__ */ Symbol.for("effect/SchemaId/MinItems");
 var MaxItemsSchemaId = /* @__PURE__ */ Symbol.for("effect/SchemaId/MaxItems");
 var ItemsCountSchemaId = /* @__PURE__ */ Symbol.for("effect/SchemaId/ItemsCount");
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/SchemaAST.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/SchemaAST.js
 var TypeConstructorAnnotationId = /* @__PURE__ */ Symbol.for("effect/annotation/TypeConstructor");
 var BrandAnnotationId = /* @__PURE__ */ Symbol.for("effect/annotation/Brand");
 var SchemaIdAnnotationId = /* @__PURE__ */ Symbol.for("effect/annotation/SchemaId");
@@ -37923,7 +37960,7 @@ var pruneUndefined = (ast, self, onTransformation) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/ParseResult.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/ParseResult.js
 class Pointer {
   path;
   actual;
@@ -39081,13 +39118,13 @@ var getArrayFormatterIssues = (issue2, parentTag, path) => {
   }
 };
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Redacted.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Redacted.js
 var isRedacted2 = isRedacted;
 var make42 = make40;
 var value2 = value;
 var getEquivalence7 = (isEquivalent) => make((x, y) => isEquivalent(value2(x), value2(y)));
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Struct.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Struct.js
 var pick4 = /* @__PURE__ */ dual((args2) => isObject2(args2[0]), (s, ...keys5) => {
   const out = {};
   for (const k of keys5) {
@@ -39107,7 +39144,7 @@ var omit4 = /* @__PURE__ */ dual((args2) => isObject2(args2[0]), (s, ...keys5) =
   return out;
 });
 
-// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1792603502365/node_modules/effect-goal-state/dist/esm/Schema.js
+// ../../.cache/opencode/npm/@prevalentware/opencode-goal-plugin@latest/1793034550239/node_modules/effect-goal-state/dist/esm/Schema.js
 var TypeId18 = /* @__PURE__ */ Symbol.for("effect/Schema");
 function make43(ast) {
   return class SchemaClass {
@@ -43063,7 +43100,8 @@ var task = exports_external.object({
   description: text,
   status,
   evidence: text.nullish(),
-  blocker: text.nullish()
+  blocker: text.nullish(),
+  depends_on: exports_external.array(id).max(32).optional()
 }).strict();
 var phase = exports_external.object({
   id,
@@ -43086,7 +43124,8 @@ var GoalPlanOpSchema = exports_external.discriminatedUnion("op", [
     task_id: id,
     status: status.optional(),
     evidence: text.nullable().optional(),
-    blocker: text.nullable().optional()
+    blocker: text.nullable().optional(),
+    depends_on: exports_external.array(id).max(32).nullable().optional()
   }).strict(),
   exports_external.object({ op: exports_external.literal("append_decision"), decision: text }).strict(),
   exports_external.object({
@@ -43095,6 +43134,7 @@ var GoalPlanOpSchema = exports_external.discriminatedUnion("op", [
     task_id: id,
     description: text,
     status: status.optional(),
+    depends_on: exports_external.array(id).max(32).optional(),
     position: exports_external.enum(["first", "last", "before", "after"]).optional(),
     target_task_id: id.optional()
   }).strict(),
@@ -43159,6 +43199,59 @@ var GoalPlanInputSchema = GoalPlanDraftSchema.superRefine((plan, ctx) => {
         if (phase2.status !== "in_progress")
           ctx.addIssue({ code: "custom", message: "running tasks require a running phase", path: [...taskPath, "status"] });
       }
+    }
+  }
+  const taskById = new Map;
+  const taskPathById = new Map;
+  for (const [phaseIndex, phase2] of plan.phases.entries()) {
+    for (const [taskIndex, task2] of phase2.tasks.entries()) {
+      taskById.set(task2.id, task2);
+      taskPathById.set(task2.id, ["phases", phaseIndex, "tasks", taskIndex]);
+    }
+  }
+  for (const [taskId, task2] of taskById.entries()) {
+    const taskPath = taskPathById.get(taskId) ?? ["phases"];
+    const deps = task2.depends_on ?? [];
+    for (const depId of deps) {
+      if (depId === taskId) {
+        ctx.addIssue({ code: "custom", message: `task (${taskId}) cannot depend on itself`, path: [...taskPath, "depends_on"] });
+        continue;
+      }
+      const depTask = taskById.get(depId);
+      if (!depTask) {
+        ctx.addIssue({ code: "custom", message: `unknown dependency task ID (${depId})`, path: [...taskPath, "depends_on"] });
+        continue;
+      }
+      if ((task2.status === "in_progress" || task2.status === "completed") && depTask.status !== "completed") {
+        ctx.addIssue({
+          code: "custom",
+          message: `task (${taskId}) cannot be ${task2.status} before dependency (${depId}) is completed`,
+          path: [...taskPath, "status"]
+        });
+      }
+    }
+  }
+  const visitState = new Map;
+  function hasCycle(taskId) {
+    const st = visitState.get(taskId) ?? 0;
+    if (st === 1)
+      return true;
+    if (st === 2)
+      return false;
+    visitState.set(taskId, 1);
+    const t = taskById.get(taskId);
+    for (const depId of t?.depends_on ?? []) {
+      if (taskById.has(depId) && hasCycle(depId))
+        return true;
+    }
+    visitState.set(taskId, 2);
+    return false;
+  }
+  for (const taskId of taskById.keys()) {
+    if (hasCycle(taskId)) {
+      const taskPath = taskPathById.get(taskId) ?? ["phases"];
+      ctx.addIssue({ code: "custom", message: `circular task dependency detected involving (${taskId})`, path: [...taskPath, "depends_on"] });
+      break;
     }
   }
   const firstUnfinished = plan.phases.find((phase2) => phase2.status !== "completed");
@@ -43229,7 +43322,8 @@ function applyGoalPlanOps(previous, ops) {
         description: op.description,
         status: op.status ?? "pending",
         evidence: null,
-        blocker: null
+        blocker: null,
+        ...op.depends_on ? { depends_on: op.depends_on } : {}
       };
       if (op.position === "first") {
         targetPhase.tasks.unshift(newTask);
@@ -43314,7 +43408,7 @@ function applyGoalPlanOps(previous, ops) {
         target2.blocker = op.blocker;
       continue;
     }
-    if (op.status === undefined && op.evidence === undefined && op.blocker === undefined) {
+    if (op.status === undefined && op.evidence === undefined && op.blocker === undefined && op.depends_on === undefined) {
       errors3.push(`plan_ops[${index}].task_id (${op.task_id}): set_task requires a field to change`);
       continue;
     }
@@ -43335,6 +43429,12 @@ function applyGoalPlanOps(previous, ops) {
       target.evidence = op.evidence;
     if (op.blocker !== undefined)
       target.blocker = op.blocker;
+    if (op.depends_on !== undefined) {
+      if (op.depends_on === null)
+        delete target.depends_on;
+      else
+        target.depends_on = op.depends_on;
+    }
   }
   return { plan: next, errors: errors3 };
 }
@@ -43447,14 +43547,16 @@ function reviseGoalPlan(previous, input2, expectedRevision, reason, now2, revisi
 function goalPlanProgress(plan) {
   const current = plan.phases.find((phase2) => phase2.status === "in_progress") ?? plan.phases.find((phase2) => phase2.status !== "completed");
   const running3 = current?.tasks.find((task2) => task2.status === "in_progress");
-  const next = current?.tasks.find((task2) => task2.status === "pending");
+  const completedTaskIDs = plan.phases.flatMap((phase2) => phase2.tasks.filter((task2) => task2.status === "completed").map((task2) => task2.id));
+  const completedSet = new Set(completedTaskIDs);
+  const next = current?.tasks.find((task2) => task2.status === "pending" && (task2.depends_on ?? []).every((depId) => completedSet.has(depId))) ?? current?.tasks.find((task2) => task2.status === "pending");
   return {
     currentPhaseID: current?.id ?? null,
     currentTaskID: running3?.id ?? null,
     nextTaskID: next?.id ?? null,
     nextPhaseID: plan.phases.find((phase2) => phase2.id !== current?.id && phase2.status !== "completed")?.id ?? null,
     completedPhaseIDs: plan.phases.filter((phase2) => phase2.status === "completed").map((phase2) => phase2.id),
-    completedTaskIDs: plan.phases.flatMap((phase2) => phase2.tasks.filter((task2) => task2.status === "completed").map((task2) => task2.id))
+    completedTaskIDs
   };
 }
 function goalPlanEntries(plan) {
@@ -45785,9 +45887,19 @@ function isExplicitResumePrompt(text2, commandName, locale, messages) {
 function isGoalWaitingForUserInput(goal) {
   return goal?.status === "paused" && (goal.stopReason === "waiting_user_clarification" || goal.stopReason === "waiting_user_approval");
 }
-function shouldAutoResumeWaitingGoal(text2, commandName, locale, messages) {
+function isApprovalRejectionOrQuestion(text2) {
   const value3 = text2.trim();
   if (!value3)
+    return false;
+  return /(\u5148\u522B\u505A|\u522B\u505A|\u6682\u505C|\u4E0D\u8981\u5B9E\u65BD|\u5148\u4E0D|\u89E3\u91CA\u4E00\u4E0B|\u4E3A\u4EC0\u4E48|\u4E0D\u884C|\u4E0D\u5BF9|\u4E0D\u8BA4\u53EF|\u91CD\u6765|\u7B49\u7B49|\u7B49\u4E00\u4E0B|\u6709\u95EE\u9898|\bwait\b|\bhold on\b|\bdon't implement\b|\bdo not implement\b)/i.test(value3);
+}
+function shouldAutoResumeWaitingGoal(text2, commandName, locale, messages, stopReason = null) {
+  const value3 = text2.trim();
+  if (!value3)
+    return false;
+  if (stopReason === "waiting_user_approval" && isApprovalRejectionOrQuestion(value3))
+    return false;
+  if (/(^|\s)(\u6682\u505C|\u505C\u6B62|\bpause\b|\bstop\b)(\s|$)/i.test(value3))
     return false;
   if (value3.includes("<untrusted_objective>"))
     return false;
@@ -47425,9 +47537,9 @@ var server = async ({ client }, options) => {
       }
       const promptText = (output2.parts ?? []).map(textFromPart).filter(Boolean).join(`
 `).trim();
-      if (!activeContinuations.has(sessionID) && shouldAutoResumeWaitingGoal(promptText, commandName, locale, messages)) {
+      if (!activeContinuations.has(sessionID)) {
         const currentGoal = await getGoal(sessionID);
-        if (isGoalWaitingForUserInput(currentGoal) && !isPlanAgent(agent ?? currentGoal.lastPromptAgent)) {
+        if (isGoalWaitingForUserInput(currentGoal) && !isPlanAgent(agent ?? currentGoal.lastPromptAgent) && shouldAutoResumeWaitingGoal(promptText, commandName, locale, messages, currentGoal.stopReason)) {
           await setGoalStatus(sessionID, "active", typeof agent === "string" && agent.trim() ? agent : null, { preserveShellDeferrals: true });
         }
       }
