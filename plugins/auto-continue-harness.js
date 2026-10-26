@@ -288,11 +288,14 @@ export default {
                 const input = d.input || {};
                 if (CODE_MUTATION_TOOLS.has(toolName)) {
                   const targetPath = String(input.path || input.filePath || input.patchText || "");
+                  const patchFiles =
+                    toolName === "patch"
+                      ? Array.from(targetPath.matchAll(/\*\*\* (?:Update|Add) File:\s*([^\r\n]+)/gi), (m) => m[1].trim())
+                      : [];
                   const isDocOnly =
                     toolName !== "patch"
                       ? DOC_ONLY_PATH_RE.test(targetPath)
-                      : !/\*\*\* (?:Update|Add) File: [^\n]+\.(?!md|txt|rst)[a-zA-Z0-9]+/i.test(targetPath) &&
-                        /\*\*\* (?:Update|Add) File: [^\n]+\.(?:md|txt|rst)/i.test(targetPath);
+                      : patchFiles.length > 0 && patchFiles.every((f) => DOC_ONLY_PATH_RE.test(f));
                   if (!isDocOnly) {
                     s.codeEditsSinceVerify += 1;
                   }

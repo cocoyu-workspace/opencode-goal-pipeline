@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# agy-gpt: Launch Antigravity CLI (agy) backed by Magpie + OpenCode Model Pool.
+# Default model: magpie/codex/gpt-6.1-sol (Standard tier, medium reasoning effort).
+# Supports:
+#   agy-gpt                                           # interactive TUI on gpt-6.1-sol
+#   agy-gpt --fast                                    # interactive TUI on gpt-6.1-sol-fast
+#   agy-gpt --ultrafast                               # interactive TUI on gpt-6.1-sol-ultrafast
+#   agy-gpt --astra                                   # interactive TUI on gpt-6-astra
+#   agy-gpt --model 'magpie/word-claude/word/claude-opus-5-5'
+#   agy-gpt --continue                                # resume most recent conversation
+set -euo pipefail
+
+export GEMINI_API_KEY="${GEMINI_API_KEY:-magpie-agy}"
+export GOOGLE_GEMINI_BASE_URL="${GOOGLE_GEMINI_BASE_URL:-http://127.0.0.1:3425}"
+
+MODEL="magpie/codex/gpt-6.1-sol"
+HAS_MODEL=0
+ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --fast)
+      MODEL="magpie/codex/gpt-6.1-sol-fast"
+      shift
+      ;;
+    --ultrafast)
+      MODEL="magpie/codex/gpt-6.1-sol-ultrafast"
+      shift
+      ;;
+    --astra)
+      MODEL="magpie/codex/gpt-6-astra"
+      shift
+      ;;
+    --astra-fast)
+      MODEL="magpie/codex/gpt-6-astra-fast"
+      shift
+      ;;
+    --astra-ultrafast)
+      MODEL="magpie/codex/gpt-6-astra-ultrafast"
+      shift
+      ;;
+    -m|--model|--model=*)
+      HAS_MODEL=1
+      ARGS+=("$1")
+      shift
+      if [[ "${ARGS[${#ARGS[@]}-1]}" == "-m" || "${ARGS[${#ARGS[@]}-1]}" == "--model" ]] && [[ $# -gt 0 ]]; then
+        ARGS+=("$1")
+        shift
+      fi
+      ;;
+    *)
+      ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+if [[ "$HAS_MODEL" -eq 0 ]]; then
+  exec agy --model "$MODEL" "${ARGS[@]}"
+else
+  exec agy "${ARGS[@]}"
+fi

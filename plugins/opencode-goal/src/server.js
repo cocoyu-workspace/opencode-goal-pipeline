@@ -2657,7 +2657,7 @@ var STALE_PENDING_MS = 30000;
 var RETRY_SETTLE_MS = 25;
 var TRANSPORT_ERROR_PATTERN = /\b(?:network|fetch|socket|connect|connection|timeout|timed out|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|ENOTFOUND|EPIPE|transport|stream|websocket|offline|internet|request failed|proxy)\b/i;
 var NON_TRANSPORT_TERMINAL_PATTERN = /\b(?:abort(?:ed)?|interrupt(?:ed|ion)?)\b/i;
-var NON_PROGRESS_TOOLS = new Set(["get_goal", "get_goal_history", "list_all_goals", "defer_goal_until_shell", "release_goal_shell_deferral"]);
+var NON_PROGRESS_TOOLS = new Set(["get_goal", "get_goal_history", "list_all_goals", "defer_goal_until_shell", "release_goal_shell_deferral", "todowrite", "todoread"]);
 var TASK_TERMINAL_STATES = new Set(["completed", "error", "cancelled"]);
 var activeContinuations = new Set;
 
@@ -5574,9 +5574,13 @@ async function setupV2(context) {
       }
       if (isExplicitResumePrompt(input.prompt.text, commandName, locale, messages)) {
         explicitResumeRequests.add(input.sessionID);
-      } else if (!activeContinuationsV2.has(input.sessionID) && shouldAutoResumeWaitingGoal(input.prompt.text, commandName, locale, messages)) {
+      } else if (!activeContinuationsV2.has(input.sessionID)) {
         const currentGoal = await getGoal(input.sessionID);
-        if (isGoalWaitingForUserInput(currentGoal) && !isPlanAgent(currentGoal.lastPromptAgent)) {
+        if (
+          isGoalWaitingForUserInput(currentGoal) &&
+          !isPlanAgent(currentGoal.lastPromptAgent) &&
+          shouldAutoResumeWaitingGoal(input.prompt.text, commandName, locale, messages, currentGoal.stopReason)
+        ) {
           stoppedExecutions.delete(input.sessionID);
           await setGoalStatus(input.sessionID, "active", null, { preserveShellDeferrals: true });
         }
