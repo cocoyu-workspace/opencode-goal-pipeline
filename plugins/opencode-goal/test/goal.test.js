@@ -321,4 +321,70 @@ describe("self-maintained opencode-goal plugin", () => {
 
     await instance.dispose();
   });
+
+  test("V2 /goal command returns immediately after prompt admission on Desktop/Web without blocking on session.wait", async () => {
+    let registeredGoalCmd = null;
+    let promptAdmitted = false;
+    let waitCalled = false;
+
+    const mockV2Context = {
+      options: { locale: "zh-CN" },
+      session: {
+        prompt: async () => {
+          promptAdmitted = true;
+        },
+        wait: async () => {
+          waitCalled = true;
+          await new Promise(() => {});
+        },
+        hook: async () => ({ dispose() {} }),
+        context: async () => ({ data: { messages: [] } }),
+        list: async () => ({ data: [] }),
+        get: async () => ({ data: {} })
+      },
+      tool: {
+        transform: async () => ({ dispose() {} }),
+        hook: async () => ({ dispose() {} })
+      },
+      command: {
+        list: async () => ({ data: [] }),
+        transform: async (fn) => {
+          fn({
+            add(cmd) {
+              if (cmd.name === "goal") registeredGoalCmd = cmd;
+            }
+          });
+          return { dispose() {} };
+        }
+      },
+      event: {
+        subscribe: ({ signal }) => ({
+          [Symbol.asyncIterator]() {
+            return {
+              next: () =>
+                new Promise((resolve) => {
+                  signal.addEventListener("abort", () => resolve({ done: true, value: undefined }), { once: true });
+                })
+            };
+          }
+        })
+      }
+    };
+
+    const prevClient = process.env.OPENCODE_CLIENT;
+    process.env.OPENCODE_CLIENT = "desktop";
+    try {
+      const dispose = await plugin.setup(mockV2Context);
+      await registeredGoalCmd.execute({
+        sessionID: "ses_desktop_test",
+        prompt: { text: "查一下当前的流水线是怎么做的" }
+      });
+      expect(promptAdmitted).toBe(true);
+      expect(waitCalled).toBe(false);
+      await dispose?.();
+    } finally {
+      if (prevClient === undefined) delete process.env.OPENCODE_CLIENT;
+      else process.env.OPENCODE_CLIENT = prevClient;
+    }
+  });
 });

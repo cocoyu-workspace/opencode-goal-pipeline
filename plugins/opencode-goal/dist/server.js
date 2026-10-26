@@ -48576,7 +48576,8 @@ async function setupV2(context4) {
                 delivery: input2.delivery
               });
               admitted = true;
-              if (pursue && typeof context4.session.wait === "function") {
+              const holdCommandExecution = typeof options.wait_for_command === "boolean" ? options.wait_for_command : process.env.OPENCODE_CLIENT === "acp";
+              if (pursue && holdCommandExecution && typeof context4.session.wait === "function") {
                 let pursuedGoalID;
                 do {
                   await context4.session.wait({ sessionID: input2.sessionID }, { signal });
