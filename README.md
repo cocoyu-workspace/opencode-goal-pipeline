@@ -22,6 +22,11 @@ Self-maintained zero-dependency **`opencode-goal` plugin** + **Atomic Lego Skill
 
 无论顶层走的是「单端一条龙」还是「双阶段跨端交接」，中间的 Skills 节点均可像乐高一样按需插拔，并且**所有节点的产出统一收束进单张权威主卡 `issue.md`（主会话单写者 Single-Writer，默认阅读预算 `~120 行`，严禁新建 `investigation.md` 等散装过程文件）**：
 
+> **为什么坚持「单文件百行 `issue.md`」而非多文件瀑布流？（业界实证与外拆边界）**
+> - **单点编辑（One-Place Edit）根治返工失步**：业界实测表明 60% 的需求在编码期会发生 Spec 级调整，多文件（`spec.md` + `design.md` + `tasks.md`）逆向同步耗时是直接改代码的 3~4 倍，导致 61% 的变更未回写并演化为误导 Agent 的过期毒药（Context Poisoning）。`BMAD-METHOD` v7（PR #3100）亦因此废弃分离的 `bmad-spec` 与 `bmad-ticket`，合流为 *"The ticket is the spec"*。
+> - **注意力甜点区与代码指针**：Anthropic 官方指南与大厂实测确认 Agent 常驻契约在 **100~150 行**（`< 200 行` 一页纸内）遵循率最高；用 `相对路径 + 符号名 + 参考行号` 指针替代抄写代码结构，消除双倍审查负担（Double Code Review）。
+> - **3 条法定外拆物理边界**：仅当命中 ① **跨多会话长跑（>4 个独立切片，防后续步骤诱发 Agent 抢跑 Premature Completion）**、② **多 worktree 并行派工（防并发写冲突）**、③ **>2,000 tokens 原始抓包日志或分支专属参考资料（入 `.scratch/` 或按需引用）** 时，才外拆 `tickets/01-slug.md` 或附件。
+
 | 执行顺序与积木节点 | 核心机制来源 | 运行属性 | 在主卡 `issue.md` 中的唯一对应章节 | 什么时候插上 / 什么时候拔掉 |
 | :--- | :--- | :--- | :--- | :--- |
 | **`N1` / `B2` · 需求澄清 (`Grill`)** | Matt Pocock `grill-with-docs` (`#1193`) + `team-grilling` | `HITL`（问完等确认） | **§1 需求与不改边界（`R1..Rn` + `Out of Scope`）**：用稳定编号 `R1..Rn` 列出全部明确需求（零删减），明确禁止越界范围 | 想法模糊时插上（提问自带推荐，回复「可以」即采纳）；需求明确直接拔掉 |

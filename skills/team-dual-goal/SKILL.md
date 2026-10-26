@@ -9,7 +9,8 @@ description: "[弹性原子积木Goal调度] OpenCode 自维护 opencode-goal �
 
 1. **拒绝死板固定模板与散装文档臃肿**：
    - 每个需求或 Bug 按清晰度与复杂度动态插拔原子积木。
-   - **主卡单写者（Single-Writer）原则**：所有节点的产出统一收束进单张权威主卡 `issue.md`（或 GitHub Issue 正文），**由主会话唯一执笔更新**；`explore`、`research`、`coder`、`reviewer` 子代理只返回结构化结论、diff 与证据，严禁子代理并发直接覆写 `issue.md` 或私自新建 `investigation.md`、`preflight.md` 等散装过程文件（临时大日志统一放 `.scratch/`，不入 Git）。
+   - **主卡单写者（Single-Writer）与单点编辑（One-Place Edit）原则**：所有节点的产出统一收束进单张权威主卡 `issue.md`（或 GitHub Issue 正文），**由主会话唯一执笔更新**（对齐 Matt Pocock `writing-for-agents` 共址定律、Anthropic `<200 行` 单文件 `SPEC.md` 规范与 `BMAD-METHOD` v7 PR #3100 *"The ticket is the spec"*，根治 60% 编码期返工导致的多文件失步投毒）；`explore`、`research`、`coder`、`reviewer` 子代理只返回结构化结论、diff 与证据，严禁子代理并发直接覆写 `issue.md` 或私自新建 `investigation.md`、`preflight.md` 等散装过程文件（>2,000 tokens 临时大日志统一放 `.scratch/`，不入 Git）。
+   - **3 条法定外拆物理边界**：90%+ 任务保持单文件闭环；仅当命中 ① 跨多会话长跑（>4 个独立切片，需隐藏后续步骤防止诱发 Agent 抢跑 Premature Completion）、② 多 worktree / 跨仓并行认领（防并发写覆盖）、③ 大体积原始抓包日志或分支参考材料时，才外拆 `tickets/01-slug.md` 或独立附件。
 2. **需求完整性（`R1..Rn` 零删减）优先于行数预算**：
    - `issue.md` 默认阅读预算为 **`~120 行`**（指导值），**严禁为了凑行数或凑「5 条上限」而删减老板明确提出的任何需求**。
    - 必须用稳定需求编号 `R1..Rn` 完整覆盖所有需求并 100% 映射到切片与验收；超预算时优先砍掉重复背景叙述、过程流水账与大段代码，其次按独立交付边界拆卡。
