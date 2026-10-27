@@ -209,18 +209,18 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 ## 四、模型路由、3 类子 Agent 通道与日常排障边界
 
 ### 1. 模型一二三优先级与异构防自审（详见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md) §四）
-- **前台全模型汇聚（`Antigravity.app` 11 模型 × 3 档强度）**：`Antigravity.app` 下拉框已同步 11 个基础模型 × `Medium / High / Max` 3 档强度（`Gemini 4 Argon`、6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`、3 个 `Claude (Perplexity)`）。日常问答、单点直接改码（配方 1）、同模型并发子任务全部可在 `agy` 内闭环。注意：在 `agy` GUI 直接写/改代码时优先选 **`Claude (Word)`** 或 **`GPT-6 Astra / 6.1 Sol`**，`Claude (Perplexity)` 优先用于调研、排障定位与只读审查（防上游 `markdown_block` 改写文件内裸 URL）。
+- **前台全模型汇聚（`Antigravity.app` 11 模型 × 3 档强度）**：`Antigravity.app` 下拉框已同步 11 个基础模型 × `Medium / High / Max` 3 档强度（`Gemini 4 Argon`、6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`、3 个 `Claude (Perplexity)`）。主会话自身负责日常问答、需求澄清（`B2`）、原生 `/goal` 长控、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）与 `<20 行` 单点直接小改（配方 1）。注意：在 `agy` GUI 直接写/改代码时优先选 **`Claude (Word)`** 或 **`GPT-6 Astra / 6.1 Sol`**，`Claude (Perplexity)` 优先用于调研、排障定位与只读审查（防上游 `markdown_block` 改写文件内裸 URL）。
 - **第一优先级（老板当轮点名，最高优先）**：当老板点名「用 Opus 审」「用 Astra 跑」时，显式传入 `-m "<provider>/<model>#<effort>"`（或 `subagent(..., model="...")`）强制覆盖。
 - **第二优先级（角色默认配置与复杂度分级）**：未点名时走 `opencode.json` 默认模型（`explore` 默认 `word-claude/claude-sonnet-5-5#medium` 秒级快筛，`research` / `coder` / `general` 默认 `word-claude/claude-opus-5-5#medium`，`reviewer` 默认 `perplexity/fable-5.1#high`）。
 - **第三优先级（`auto-continue-harness.js` 三级自动降级与按实际作者模型异构防自审）**：`opencode run` 与子 Agent 遇限流或渠道异常（403 除外）时自动按三级备选链同会话降级续跑并追加 `[Fallback Executed: requested=... -> actual=...]`；`B3` / `B8` / `B11` 评审严格对比**被审产物的实际作者模型**保持异构。
 
-### 2. 3 类子 Agent 通道：默认自动分流 vs 显式口令指派
+### 2. 子 Agent 通道铁律：默认 100% 锁死 `opencode run`，仅老板显式点名才切 `agy` 子 Agent
 
-| 子 Agent 通道 | 底层调用方式 | 默认何时自动选用（零口令） | 老板显式指派口令（最高优先级） |
+| 子 Agent 通道 | 底层调用方式 | 默认策略（老板未指定通道时） | 老板显式指派口令（最高优先级） |
 | :--- | :--- | :--- | :--- |
-| **① `agy` 原生内置子 Agent (`invoke_subagent`)** | 调内置 `invoke_subagent`（`Model: "inherit"`，继承当前 GUI 选定模型，独立子 UUID） | 同模型并行查码、同模型小步实施或 `tester` 验收（无需切模型或异构冷审时） | **「用 agy 原生子 Agent」** / **「用内置子 Agent」** |
-| **② `opencode run` 跨模型后台子 Agent** | 调 `opencode run --agent <role> [-m <model#effort>] --auto` | **`B1~B12` 跨模型积木主力通道**：`B4a` 秒级快筛（`Sonnet`）、`B4b/B10` 深度复现与编码（`Opus`）、`B3/B8/B11` 异构独立冷审（`Fable`）及三层容灾降级 | **「派给 opencode」** / **「用 opencode run 子 Agent」** |
-| **③ `agy-gpt` CLI 命令行子进程** | 调 `~/.local/bin/agy-gpt --model <id> -p "..."` | 默认不自动触发，仅专项验证 `agy` CLI + Magpie 引擎时使用 | **「用 agy cli 子 Agent」** / **「用 agy-gpt 跑」** |
+| **① `opencode run` 子 Agent（默认 100% 锁死）** | 调 `opencode run --agent <role> [-m <model#effort>] --auto` | **所有子 Agent 任务默认唯一通道**：`B4a` 秒级快筛（`Sonnet`）、`B4b/B10` 深度复现与编码（`Opus`）、`B5` 探路调研、`B3/B8/B11` 异构独立冷审（`Fable`）及三层容灾降级一律走它 | 默认即走此通道；也可显式说 **「派给 opencode」** / **「用 opencode run 子 Agent」** |
+| **② `agy` 原生内置子 Agent (`invoke_subagent`)** | 调内置 `invoke_subagent`（`Model: "inherit"`，继承当前 GUI 选定模型） | **默认禁用（严禁自动触发）** | 仅当老板当轮明确要求：**「用 agy 原生子 Agent」** / **「用内置子 Agent」** |
+| **③ `agy-gpt` CLI 命令行子进程** | 调 `~/.local/bin/agy-gpt --model <id> -p "..."` | **默认禁用（严禁自动触发）** | 仅当老板当轮明确要求：**「用 agy cli 子 Agent」** / **「用 agy-gpt 跑」** |
 
 ### 3. 日常排障与维护边界（以后出 Bug 改哪里？）
 

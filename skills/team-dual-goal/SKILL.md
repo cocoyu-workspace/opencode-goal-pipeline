@@ -103,17 +103,17 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 
 ---
 
-## 五、`agy` $\times$ `opencode` 场景化灵活调度判据与 3 类子 Agent 通道规程（唯一正文，其余文件只写指针）
+## 五、`agy` $\times$ `opencode` 场景化灵活调度判据与子 Agent 锁死规程（唯一正文，其余文件只写指针）
 
-> **一句总判据**：**前台操作 100% 汇聚在 `Antigravity.app`**（已注入 11 个主力模型 × `Medium/High/Max` 3 档强度：6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`、3 个 `Claude (Perplexity)`）。日常对话、需求澄清（`B2`）、原生 `/goal` 长控、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）、单模型直接改码（配方 1）及**同模型并行子任务**直接在 **`agy`** 内完成；凡涉及**按积木专长跨模型分工**（如 `B4a` 切 `Sonnet` 秒级快筛、`B10` 切 `Opus` 重构）、**异构独立冷审防自审**（`B3/B8/B11` 强制切 `Fable 5.1#high`）或**三层跨渠道自动降级**的后台任务，由 `agy` 在后台静默调度 **`opencode run`**。
+> **一句总判据**：**前台操作 100% 汇聚在 `Antigravity.app`**（已注入 11 个主力模型 × `Medium/High/Max` 3 档强度：6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`、3 个 `Claude (Perplexity)`）。主会话自身负责日常对话、需求澄清（`B2`）、原生 `/goal` 长控、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）与 `<20 行` 单点直接小改（配方 1）；**一旦需要派发任何子 Agent（探路、调研、编码、冷审、批处理），默认 100% 锁死走 `opencode run --agent <role> --auto`，严禁默认调用 `agy` 自己的内置 `invoke_subagent`（除非老板当轮明确口令指定）**。
 
-### 1. 3 类子 Agent 执行通道：默认自动分流 vs 老板显式口令指派
+### 1. 子 Agent 通道铁律：默认 100% 锁死 `opencode run`，仅老板显式点名才切 `agy` 子 Agent
 
-| 子 Agent 通道名称 | 底层调用方式 | 模型与容灾特征 | 默认何时自动选用（零口令） | 老板显式口令指派（说哪条走哪条，最高优先） |
+| 子 Agent 通道名称 | 底层调用方式 | 模型与容灾特征 | 默认策略（老板未指定通道时） | 老板显式口令指派（说哪条走哪条，最高优先） |
 | :--- | :--- | :--- | :--- | :--- |
-| **通道 ① · `agy` 原生内置子 Agent (`invoke_subagent`)** | 调 `agy` 内置工具 `invoke_subagent`（`scout` / `research` / `coder` / `tester` / `general-purpose` / `self`，`Model: "inherit"`） | 强制继承当前 `Antigravity.app` 主会话选中的模型（二进制 `ParseModelTier` 锁死），父子会话独立 UUID 不串线 | 你已在 `agy` 选好目标模型，只需**同模型并行查码、同模型小步实施或跑 `tester` 验收**，不需要换模型或异构冷审时 | **「用 agy 原生子 Agent」**<br>**「用内置子 Agent / 派 agy subagent」** |
-| **通道 ② · `opencode run` 跨模型后台子 Agent（流水线主力底座）** | 调 `run_command` 执行 `opencode run --agent <explore\|research\|coder\|reviewer\|general> [-m <provider/model#effort>] --auto` | 支持按积木精准指定任意异构模型与档位，自带 `auto-continue-harness.js` **三层跨渠道自动降级**（401/429/5xx 同轮无缝切备选） | **`B1~B12` 跨模型积木调度默认通道**：`B4a` 秒级快筛（`Sonnet 5.5#medium`）、`B4b/B10` 深度复现与编码（`Opus 5.5#medium`）、`B3/B8/B11` 异构独立冷审（`Fable 5.1#high`） | **「派给 opencode」**<br>**「用 opencode run 子 Agent」** |
-| **通道 ③ · `agy-gpt` CLI 命令行子进程** | 调 `run_command` 执行 `~/.local/bin/agy-gpt --model <model-id> -p "<prompt>"` | 通过 `agy` CLI + 本地 Magpie（`127.0.0.1:3425`）直连 11 个模型 × 3 档强度（无 OpenCode 三层自动降级插件） | 默认不自动触发（避免与通道 ② 重复），仅在专项验证 `agy` CLI 引擎时使用 | **「用 agy cli 子 Agent」**<br>**「用 agy-gpt 跑」** |
+| **通道 ① · `opencode run` 子 Agent（默认 100% 锁死）** | 调 `run_command` 执行 `opencode run --agent <explore\|research\|coder\|reviewer\|general> [-m <provider/model#effort>] --auto` | 支持按积木精准指定任意异构模型与档位，自带 `auto-continue-harness.js` **三层跨渠道自动降级**（401/429/5xx 同轮无缝切备选） | **所有子 Agent 任务默认唯一通道**：`B4a` 秒级快筛（`Sonnet 5.5#medium`）、`B4b/B10` 深度复现与编码（`Opus 5.5#medium`）、`B5` 探路调研、`B3/B8/B11` 异构冷审（`Fable 5.1#high`）一律走它 | 默认即走此通道；也可显式说 **「派给 opencode」** / **「用 opencode run 子 Agent」** |
+| **通道 ② · `agy` 原生内置子 Agent (`invoke_subagent`)** | 调 `agy` 内置工具 `invoke_subagent`（`scout` / `research` / `coder` / `tester` / `general-purpose` / `self`，`Model: "inherit"`） | 强制继承当前 `Antigravity.app` 主会话选中的模型（二进制 `ParseModelTier` 锁死），无跨模型路由与三层降级 | **默认禁用（严禁自动触发）** | 仅当老板当轮明确说：<br>**「用 agy 原生子 Agent」**<br>**「用内置子 Agent / 派 agy subagent」** |
+| **通道 ③ · `agy-gpt` CLI 命令行子进程** | 调 `run_command` 执行 `~/.local/bin/agy-gpt --model <model-id> -p "<prompt>"` | 通过 `agy` CLI + 本地 Magpie（`127.0.0.1:3425`）直连 11 个模型 × 3 档强度（无 OpenCode 三层自动降级插件） | **默认禁用（严禁自动触发）** | 仅当老板当轮明确说：<br>**「用 agy cli 子 Agent」**<br>**「用 agy-gpt 跑」** |
 
 > **GUI 直接选模型的写码安全提示**：在 `Antigravity.app` 下拉框直接选模型写/改代码时，优先选 **`Claude Opus/Sonnet 5.5 (Word)`** 或 **`GPT-6 Astra / 6.1 Sol`**；`Claude (Perplexity)` 因上游 `markdown_block` 可能将文件内容中的裸 URL 改写为 `[https://X](https://X)`，优先用于方案分析、排障定位与只读审查。
 
@@ -123,11 +123,11 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 | :--- | :--- | :--- |
 | **需求澄清追问（`B2: req-grill`）与按需需求评审（`B3: req-review`）** | **`agy` 主会话（Gemini / GPT-6 Astra / 6.1 Sol）** + 按需调 **`opencode reviewer`** | **按需触发不写死**：主会话对齐意图；仅当需求与现码/规则冲突、疑似伪命题或老板点名时，才调 `opencode run --agent reviewer --auto` 审需求（`B3`） |
 | **长任务主控、`/goal` 编排、`issue.md` 单写与最终交付（`B1` / `B6` / `B7` / `B9` / `B12b`）** | **`agy` 主会话（原生 `/goal`）** | 原生 `/goal` + 后台异步任务唤醒（`run_command` + `manage_task`），唯一执笔主卡与 GitHub 交付不乱账 |
-| **多模态理解（图片/PDF/音视频）与浏览器/桌面 GUI 真机验收（`B12a`）** | **`agy` 原生多模态 + `tabbit-cli` / MCP + 内置 `tester`** | 直接使用 `agy` 原生多模态 `read_file`、**`tabbit` CLI（`~/.local/bin/tabbit-cli` 控制 Tabbit 浏览器）**、`chrome-devtools` MCP、`cua-driver` / `computer-use` 与起服务长控能力完成视觉和真机链路验收 |
+| **多模态理解（图片/PDF/音视频）与浏览器/桌面 GUI 真机验收（`B12a`）** | **`agy` 主会话原生多模态 + `tabbit-cli` / MCP** | 主会话直接使用原生多模态 `read_file`、**`tabbit` CLI（`~/.local/bin/tabbit-cli` 控制 Tabbit 浏览器）**、`chrome-devtools` MCP、`cua-driver` / `computer-use` 完成视觉和真机链路验收 |
 | **`<20 行` 低风险单点小改或快速只读核查（配方 1）** | **`agy` 主会话直接动手** | 免除跨进程派单开销，秒级办完 |
-| **Bug 浅层秒级定位（`B4a: bug-locate`）与未知代码位置快速探路（`B5`）** | **OpenCode `explore`（默认 `Sonnet 5.5` 快模型）**（或 `agy` 原生 `scout`） | `opencode run --agent explore --auto "<prompt>"`（强制只读，默认 `word-claude/claude-sonnet-5-5#medium` 秒级定位报错时间线、堆栈与 `file:line`；需高思考分析长日志时传 `-m perplexity/sonnet-5.5#high`） |
+| **Bug 浅层秒级定位（`B4a: bug-locate`）与未知代码位置快速探路（`B5`）** | **OpenCode `explore`（默认 `Sonnet 5.5` 快模型）** | `opencode run --agent explore --auto "<prompt>"`（强制只读，默认 `word-claude/claude-sonnet-5-5#medium` 秒级定位报错时间线、堆栈与 `file:line`；需高思考分析长日志时传 `-m perplexity/sonnet-5.5#high`） |
 | **Bug 深度根因诊断与最小红灯复现（`B4b: bug-repro`）** | **OpenCode `coder`（`Opus 5.5`）** 或 **`explore`（`-m Opus 5.5`）/ `reviewer`（`Fable 5.1`）** | 原因未 100% 坐实或需构造最小红灯复现脚本时，调 `opencode run --agent coder --auto`（`Opus 5.5`）写/跑变红复现环并查根；纯只读深挖跨模块状态机或破局调 `explore -m word-claude/claude-opus-5-5#medium` 或 `reviewer` |
-| **`memex` 知识库、`OV` 文档与高星开源方案深度调研（`B5`）** | **OpenCode `research`**（或 `agy` 原生 `research`） | `opencode run --agent research --auto "<prompt>"`（只读，复用 OpenCode 已配齐的 `openviking`/`zread`/`exa` MCP 与三级降级） |
+| **`memex` 知识库、`OV` 文档与高星开源方案深度调研（`B5`）** | **OpenCode `research`** | `opencode run --agent research --auto "<prompt>"`（只读，复用 OpenCode 已配齐的 `openviking`/`zread`/`exa` MCP 与三级降级） |
 | **跨文件业务编码、重构、修 Bug、补单测与精简落盘（`B10`）** | **OpenCode `coder`** | `opencode run --agent coder --auto "<prompt>"`（默认复用已深度适配的 `word-claude/claude-opus-5-5#medium`） |
 | **需求评审（`B3`）、方案独立冷审（`B8`）、代码三合一评审（`B11`）** | **OpenCode `reviewer`** | `opencode run --agent reviewer --auto "<prompt>"`（严格只读，默认 `perplexity/fable-5.1#high`，按被审产物实际作者模型保持异构，高风险方案支持 `Astra + Fable` 双审） |
 | **批量资料整理、数据转换、独立报告与任务内一次性脚本** | **OpenCode `general`** | `opencode run --agent general --auto "<prompt>"`（同批混合产物与校验一次包办） |
