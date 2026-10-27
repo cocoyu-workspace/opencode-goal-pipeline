@@ -13,6 +13,17 @@ set -euo pipefail
 export GEMINI_API_KEY="${GEMINI_API_KEY:-magpie-agy}"
 export GOOGLE_GEMINI_BASE_URL="${GOOGLE_GEMINI_BASE_URL:-http://127.0.0.1:3425}"
 
+python3 -c '
+import json
+from pathlib import Path
+p = Path.home() / ".gemini/antigravity-cli/settings.json"
+if p.exists():
+    d = json.loads(p.read_text())
+    if d.get("modelProvider") != "gemini":
+        d["modelProvider"] = "gemini"
+        p.write_text(json.dumps(d, indent=2) + "\n")
+' 2>/dev/null || true
+
 MODEL="magpie/codex/gpt-6.1-sol"
 HAS_MODEL=0
 ARGS=()

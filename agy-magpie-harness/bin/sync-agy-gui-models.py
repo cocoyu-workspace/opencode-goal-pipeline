@@ -27,22 +27,17 @@ def discover_ports() -> list[int]:
     return ports
 
 
-ALLOWED_MODELS = {
-    "magpie/codex/gpt-6-astra",
-    "magpie/codex/gpt-6-astra-fast",
-    "magpie/codex/gpt-6-astra-ultrafast",
-    "magpie/codex/gpt-6.1-sol",
-    "magpie/codex/gpt-6.1-sol-fast",
-    "magpie/codex/gpt-6.1-sol-ultrafast",
-    "magpie/codex-all/gpt-6.1-sol-codex",
-    "magpie/codex-all/gpt-6.1-sol-standard",
-    "magpie/word-claude/word/claude-opus-5-5",
-    "magpie/word-claude/word/claude-sonnet-5-5",
-    "magpie/word-sol/word/gpt-6.1-sol",
-    "magpie/perplexity/perplexity/fable-5.1",
-    "magpie/perplexity/perplexity/gpt-6.1-sol",
-    "magpie/perplexity/perplexity/opus-5.5",
-    "magpie/perplexity/perplexity/sonnet-5.5",
+# GUI 下拉框显示名（Redux 里 label 即 map key）。key 为 settings.json 里的原始 ID，
+# 请求用的真实模型名仍取自原始 ID，改显示名不影响路由。
+GUI_LABELS = {
+    "magpie/codex/gpt-6-astra": "GPT-6 Astra",
+    "magpie/codex/gpt-6-astra-fast": "GPT-6 Astra Fast",
+    "magpie/codex/gpt-6-astra-ultrafast": "GPT-6 Astra Ultra Fast",
+    "magpie/codex/gpt-6.1-sol": "GPT-6.1 Sol",
+    "magpie/codex/gpt-6.1-sol-fast": "GPT-6.1 Sol Fast",
+    "magpie/codex/gpt-6.1-sol-ultrafast": "GPT-6.1 Sol Ultra Fast",
+    "magpie/codex-all/gpt-6.1-sol-codex": "GPT-6.1 Sol (Codex Source)",
+    "magpie/codex-all/gpt-6.1-sol-standard": "GPT-6.1 Sol (Standard Source)",
 }
 
 
@@ -54,7 +49,7 @@ def build_gui_models() -> dict:
     cli_models = settings.get("customModelsConfig", {}).get("customModels", {})
     gui_models = {}
     for k, v in cli_models.items():
-        if k not in ALLOWED_MODELS:
+        if k not in GUI_LABELS:
             continue
         entry = dict(v)
         entry["modelId"] = "MODEL_GOOGLE_GEMINI_INTERNAL_BYOM"
@@ -64,9 +59,10 @@ def build_gui_models() -> dict:
         if raw_name.startswith("magpie/"):
             raw_name = raw_name[len("magpie/") :]
         entry["modelName"] = "gemini-api://" + raw_name
-        entry["chatModelName"] = k
+        label = GUI_LABELS[k]
+        entry["chatModelName"] = label
         entry["apiProvider"] = "API_PROVIDER_GOOGLE_GEMINI"
-        gui_models[k] = entry
+        gui_models[label] = entry
     return gui_models
 
 
