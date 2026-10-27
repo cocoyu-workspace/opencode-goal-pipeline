@@ -1,30 +1,35 @@
 # opencode-goal-pipeline
 
-**`agy`（GPT-6 Astra / GPT-6.1 Sol 深度需求澄清 + 原生 `/goal` 长任务主控 + 多模态/GUI 真机验收交付）$\times$ `opencode run`（全能后台异构执行底座：按场景灵活调度 `explore` / `research` / `coder` / `reviewer` / `general` 与 CLI 测试）协同流水线**。
+**`agy`（Gemini / GPT-6 Astra / GPT-6.1 Sol 深度需求澄清 + 原生 `/goal` 长任务主控 + 多模态/GUI 真机验收交付）$\times$ `opencode run`（全能后台异构执行底座：按场景灵活调度 `explore` / `research` / `coder` / `reviewer` / `general` 与 CLI 测试）四大阶段 12 块标准积木（`B1`~`B12`）协同流水线**。
 
 ---
 
 ## 〇、现行主力工作流：`agy` 抓两头（需求澄清 + `/goal` 长控 + 多模态真机验收交付）$\times$ 灵活调度全能 `opencode run`（[`agy-magpie-harness/`](agy-magpie-harness/README.md)）
 
-由于 OpenCode 旧 `opencode-goal` 插件采用定时器轮询续跑，在长任务下容易出现轮询空转与状态卡死，现已**彻底移除 `opencode-goal` 插件**，确立 **「按场景优势互补、灵活调度不写死」** 的双端协同架构：
+由于旧 `opencode-goal` 插件采用定时器轮询续跑，在长任务下容易出现轮询空转与状态卡死，现已**彻底移除 `opencode-goal` 插件**，确立 **「四大阶段 12 块标准积木（`B1`~`B12`）+ 选块 4 问自检 + 6 套标准配方」** 的双端协同架构（唯一权威正文见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md)）：
 
 ```
-用户在 Antigravity.app 桌面端（下拉选 GPT-6 Astra / GPT-6.1 Sol）或终端运行 agy-gpt
+用户在 Antigravity.app 桌面端（自由选用 Gemini / GPT-6 Astra / GPT-6.1 Sol）或终端运行 agy-gpt
   │
-  ├─ 1. 前段：需求理解与澄清（agy 主会话 + GPT-6 Astra / GPT-6.1 Sol）：
-  │     ├─ 深度思考（High/Max）配合快速交互（Fast/Ultra Fast）与原生提问弹窗迅速对齐意图
-  │     ├─ 按需调 OpenCode 探路/调研/预审：opencode run --agent explore|research|reviewer --auto
-  │     └─ 落盘单文件精简契约 issue.md（agy 主会话唯一单写者，~120 行）
+  ├─ 1. 立项与需求阶段（B1 ~ B3）：
+  │     ├─ B1 (issue-track)：建 GitHub Issue 或本地 issue.md 权威主卡并初始化已知需求 R1..Rn（agy 单写者）
+  │     ├─ B2 (req-grill)：需求有模糊分叉时，agy 主会话带正向推荐追问对齐 What
+  │     └─ B3 (req-review)：需求与现码/规则冲突或疑似伪命题时，调 opencode reviewer 只读挑刺 Why
   │
-  ├─ 2. 中段：原生 /goal 长任务主控 + 按场景灵活调度全能 OpenCode：
-  │     ├─ 依托 agy 原生 /goal + 后台异步任务唤醒（run_command + manage_task）统筹全局进度
-  │     ├─ 异构冷审/双审：opencode run --agent reviewer --auto（Fable 5.1 High / Astra 双审）
-  │     ├─ 跨文件编码与补单测：opencode run --agent coder --auto（Word Claude Opus 5.5 / Sonnet 5.5）
-  │     └─ 脚本/产物/CLI 测试：opencode run --agent general --auto 或 opencode run --auto 跑命令行测试
+  ├─ 2. 取证与定位阶段（B4 ~ B5）：
+  │     ├─ B4 (bug-repro)：Bug 任务调 explore 定位 file:line 并由 agy/coder 构造最小红灯复现
+  │     └─ B5 (explore & research)：非 Bug 任务查本仓可复用实现 + 调 opencode research 查 memex 与 500 星开源方案
   │
-  └─ 3. 后段：原生多模态 + 浏览器/桌面 GUI 真机验收与最终交付（agy 主导）：
-        ├─ 涉及读图/PDF/音视频、tabbit-cli / chrome-devtools 浏览器交互、cua-driver 桌面点击与长链路起服务验收时，由 agy 原生多模态 + 内置 tester 直接执行
-        └─ 汇总 CLI 测试与 GUI 截图证据回填 issue.md §6，满足全部判据后输出 <!-- GOAL_COMPLETE --> 收尾
+  ├─ 3. 方案与拆图阶段（B6 ~ B9，对称闭环）：
+  │     ├─ B6 (spec-draft)：agy 主会话设计深接口、过复用四问梯子、锁定最高层公共测试接缝 Seam（§3）
+  │     ├─ B7 (slice-tickets)：依赖 B6，多模块长链路按 Tracer-Bullet 切出垂直切片 S1..Sn（§4）
+  │     ├─ B8 (spec-review)：调异构 opencode reviewer 对 B6/B7 做三合一独立冷审（按需 Astra + Fable 双审）
+  │     └─ B9 (approval-gate)：受控模式下输出 ≤10 行方案简报等老板拍板（/goal 模式自动跳过常规确认，四道硬停机红线除外）
+  │
+  └─ 4. 实施与交付阶段（B10 ~ B12）：
+        ├─ B10 (slice-impl)：调 opencode coder（或 agy 直接改 <20 行小修）跑先红后绿 TDD，并承接 B11 精简回流
+        ├─ B11 (code-review)：调异构 opencode reviewer 做代码 Diff 三合一独立评审（Spec + Standards + Reuse & Simplify）
+        └─ B12 (verify & deliver)：B12a 由 agy 原生多模态 + tabbit-cli + chrome-devtools + cua-driver + tester 真机验收；B12b 回填 §6 并在授权边界内完成 Commit / PR / 关单
 ```
 
 ### 日常排障与维护边界（以后出 Bug 改哪里？）
@@ -37,112 +42,78 @@
 
 ---
 
-## 一、核心调度理念（唯一判据表见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md) §五）
+## 一、平时在 `agy` 使用 Gemini / GPT 的三档触发与 6 套标准配方
 
-1. **按场景选执行方，不把分工写死在某两个角色上**：
-   - **`agy` 主抓两头**：前段需求深度思考与快速澄清（Grill）、全程原生 `/goal` 长任务控制与 `issue.md` 单写者记账、后段多模态理解与浏览器/Computer Use 真机测试及最终交付。
-   - **`opencode run` 全能后台底座**：充分发挥 OpenCode 对 Word（Claude）与 Perplexity（Fable）渠道的深度兼容与 `auto-continue-harness.js`（`v6`）三级自动故障降级优势，按需调度 `explore`、`research`、`coder`、`reviewer`、`general` 或直接执行 CLI 测试套件。
-2. **老板显式指令永远排第一顺位（Priority 1）**：
-   - 用户说「先做某某评审」「让 Astra 和 Fable 双审」「跳过某步」→ 立即按指令动态调整积木顺序并透传指定模型，绝不机械套用固定模板。
-3. **「单 `/goal` 全自动闭环」与「双阶段受控交接」自由切换**：
-   - 插上 **`N6 / B6: 决策门禁 (Gate)`** → 方案与互辩完成后停机等待人工拍板（受控双阶段）。
-   - 拔掉 **`N6 / B6: 决策门禁 (Gate)`** 并拼入 **`N7 / B7: 编码与审查 (Impl)`** → 在 OpenCode 里一个 `/goal` 自动跑完从取证、方案、评审到 TDD 编码与三合一代码审查的全闭环。
+完整 12 块积木职责表、「4 问自检」算法与 4 条动态覆盖规则见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md) §一、§二，日常使用只需记住以下三档触发方式：
 
----
+1. **日常零口令直接说（默认推荐）**：
+   - 直接说需求或贴报错，主会话自动跑「4 问自检」并在首轮顶部一行宣告本次选中的积木链（如 `本次走 [配方 2 · Bug 修复]：B1 -> B4 -> B10 -> B12`），随即开工。
+2. **长任务一键跑到底（在 `agy` 输入 `/goal <目标>`）**：
+   - 自动拔掉常规方案拍板门禁 `B9 (approval-gate)`，从取证、方案、冷审、TDD 实施到真机验收一气呵成跑完（遇到需求分叉、缺权限/未授权外部写操作、同故障连续 3 次验证失败或明确要求只出方案时仍安全停机）。
+3. **手动点菜 / 插拔（第一优先级 Priority 1）**：
+   - 随时说「先跑 `B3` 审一下这个需求」「让 Astra 和 Fable 双审 `B8` 方案」「跳过调研直接改」，Agent 立即按指令重排或裁剪积木。
 
-## 二、7 个标准原子积木节点与单文件精简 `issue.md` 契约（`N1`~`N7` / `B1`~`B7`）
+### 6 套标准配方速查
 
-无论顶层走的是「单端一条龙」还是「双阶段跨端交接」，中间的 Skills 节点均可像乐高一样按需插拔，并且**所有节点的产出统一收束进单张权威主卡 `issue.md`（主会话单写者 Single-Writer，默认阅读预算 `~120 行`，严禁新建 `investigation.md` 等散装过程文件）**：
-
-> **为什么坚持「单文件百行 `issue.md`」而非多文件瀑布流？（业界实证与外拆边界）**
-> - **单点编辑（One-Place Edit）根治返工失步**：业界实测表明 60% 的需求在编码期会发生 Spec 级调整，多文件（`spec.md` + `design.md` + `tasks.md`）逆向同步耗时是直接改代码的 3~4 倍，导致 61% 的变更未回写并演化为误导 Agent 的过期毒药（Context Poisoning）。`BMAD-METHOD` v7（PR #3100）亦因此废弃分离的 `bmad-spec` 与 `bmad-ticket`，合流为 *"The ticket is the spec"*。
-> - **注意力甜点区与代码指针**：Anthropic 官方指南与大厂实测确认 Agent 常驻契约在 **100~150 行**（`< 200 行` 一页纸内）遵循率最高；用 `相对路径 + 符号名 + 参考行号` 指针替代抄写代码结构，消除双倍审查负担（Double Code Review）。
-> - **3 条法定外拆物理边界**：仅当命中 ① **跨多会话长跑（>4 个独立切片，防后续步骤诱发 Agent 抢跑 Premature Completion）**、② **多 worktree 并行派工（防并发写冲突）**、③ **>2,000 tokens 原始抓包日志或分支专属参考资料（入 `.scratch/` 或按需引用）** 时，才外拆 `tickets/01-slug.md` 或附件。
-
-| 执行顺序与积木节点 | 核心机制来源 | 运行属性 | 在主卡 `issue.md` 中的唯一对应章节 | 什么时候插上 / 什么时候拔掉 |
-| :--- | :--- | :--- | :--- | :--- |
-| **`N1` / `B2` · 需求澄清 (`Grill`)** | Matt Pocock `grill-with-docs` (`#1193`) + `team-grilling` | `HITL`（问完等确认） | **§1 需求与不改边界（`R1..Rn` + `Out of Scope`）**：用稳定编号 `R1..Rn` 列出全部明确需求（零删减），明确禁止越界范围 | 想法模糊时插上（提问自带推荐，回复「可以」即采纳）；需求明确直接拔掉 |
-| **`N2` / `B3` · 现状取证 (`Research`)** | 三轨灵活取证（日志复现 / `explore` 源码 / `research` 查 `memex` 与开源） | `AFK`（全自动） | **§2 根因与代码复用锚点**：记录 `相对路径 + 符号名 + 参考行号` 根因与本仓可复用现成函数、必要性与不改判据门禁（大日志放 `.scratch/`） | 需查日志复现或核实本仓/外部方案时插上；已给明确结论或几行小改直接拔掉 |
-| **`N3` / `B4` · 规格合成 (`Spec`)** | Matt Pocock `to-spec` + `team-codebase-design`（深模块 + 复用四问梯） | `AFK`（全自动） | **§3 精简 Spec 与测试接缝（Seams）**：写明接口变更与复用四问结论（禁贴 >15 行代码），锁定最高层公共测试接缝（Seam） | 涉及多文件协议或架构调整时插上；小修小补直接跳过（仅需 §1+§2） |
-| **`N5` · 任务图拆解 (`Tickets`)** | Matt Pocock `to-tickets`（带 `depends_on` 阻塞边的 DAG 垂直切片） | `AFK`（全自动） | **§4 垂直切片任务图（Vertical Slices）**：每片切穿端到端可独立验证行为（`- [ ] [S1] 交付行为 (Covers: R1 \| depends_on: [])`）；插件原生校验 `depends_on` 无环且前置完成后才可启动下一片 | 涉及多步或大 Spec 时插上（先拆图再进 `N4` 一并评审）；单点改动无需拆图 |
-| **`N4` / `B5` · 异构互辩 (`Review`)** | 异构双模型对抗挑刺（`team-review-governance` + `reviewer`） | `AFK`（全自动） | **§5 Review & Decision Log**：一并审查 §1~§4（含 Spec、Seam 与垂直切片依赖图），记录审查模型、版本号与关键取舍 | 重大方案防自嗨时插上；用户说「不用审方案」或紧急小修直接拔掉 |
-| **`N6` / `B6` · 决策门禁 (`Gate`)** | 人工拍板门禁卡（`wait_reason="approval"` + Handoff 简报） | `HITL`（等确认） | **受控/连贯插拔开关**：受控模式在此停机（若用户回复「先别做，解释一下」保持 `paused` 仅解释，明确批准才恢复 `active` 进入 `N7`） | **走双阶段受控模式时插上**；**走单端一条龙时拔掉** |
-| **`N7` / `B7` · 编码与审查 (`Impl`)** | Matt `implement-spec`（最小完整交接包指针）+ `tdd` + 三合一独立 Review | `AFK`（全自动闭环） | **§6 交付与持久验收证据**：主会话传「最小完整交接包」派发 `coder`，按切片依序跑先红后绿 TDD，收尾跑三合一审查并回填持久验证输出 | 所有需要写代码的场景插上；纯调研或咨询任务直接拔掉 |
+| 配方 | 适用场景 | 自动拼装的积木链 |
+| :--- | :--- | :--- |
+| **配方 1 · 低风险随手小改** | 明确的单文件 `<20 行` 低风险改文案/调配置/微补丁 | `[B1] -> B10 -> B12a` |
+| **配方 2 · 常规 Bug 修复** | 报错明确或可本地复现的故障修复（若遇协议/状态机改动动态补 `B6 -> B8`） | `B1 -> B4 -> B10 -> [按风险挂 B11] -> B12` |
+| **配方 3 · 中等明确需求 / 高风险小改** | 需求清楚但跨文件改逻辑，或触及鉴权/并发/迁移/计费等高风险面 | `B1 -> B5 -> B6 -> B8 -> B10 -> B11 -> B12` |
+| **配方 4 · 模糊想法或复杂架构大需求** | 需求待磨清、涉及多模块重构或分片交付 | `B1 -> B2 -> [B3] -> B5 -> B6 -> B7 -> B8 -> [B9] -> B10 -> B11 -> B12` |
+| **配方 5 · 纯调研 / 排障定位 / 架构咨询（只读）** | 只查根因、调研开源方案或出设计评估，不改业务代码 | `[B1] -> B4/B5 -> [B6 -> B8] -> B12a` |
+| **配方 6 · 独立专项评审（只审不改）** | 对已有需求、方案或代码 diff 做独立冷审 | 单独运行 `B3`、`B8` 或 `B11` |
 
 ---
 
-## 三、什么情况使用？如何使用？（4 类典型场景速查）
+## 二、常见输入示例（在 `Antigravity` 对话框中直接输入）
 
-### 场景 1：想法还比较模糊，想先磨清楚需求再出方案
-- **适用情况**：只有一个初步想法，还不确定边界或交互细节。
-- **动态积木链**：`B1 -> N1 (Grill 挂起等澄清) -> N2 (Research) -> N3 (Spec) -> N4 (Review) -> N6 (Gate)`
-- **怎么用（在 OpenCode 输入）**：
-  ```text
-  /goal 我想给列表页加一个批量导出功能，具体规则还没定，先帮我做需求澄清和评审，磨清后再出方案
-  ```
-- **交互体验**：Agent 先查现有代码事实，再抛出 ≤3 个带推荐选项的澄清问题并自动挂起；你直接回复「按推荐的来」，它会自动唤醒继续跑完取证、Spec 与评审。
+```text
+# 示例 1：想法还比较模糊，先磨需求并审视需求真伪（配方 4 前段：B1 -> B2 -> B3 -> B5 -> B6 -> B8 -> B9）
+我想给列表页加一个批量导出功能，具体规则还没定，先帮我做需求澄清和需求评审，磨清后再出技术方案等我拍板
 
-### 场景 2：需求明确，希望在 OpenCode 里一个 `/goal` 全自动走完（写完代码+测通+审完）
-- **适用情况**：常规功能开发或 Bug 修复，不需要中途停下来人工审批方案，希望 Agent 一气呵成把代码改好、测试跑通并做完代码精简审查。
-- **动态积木链**：`B1 -> N2 (Research) -> N3 (Spec) -> N4 (Review) -> N7 (Impl)`（自动拔掉 `N6` 门禁）
-- **怎么用（在 OpenCode 输入）**：
-  ```text
-  /goal 一个 goal 自动走完：修复导出空数组时的崩溃问题，跑通单测并完成三合一代码审查
-  ```
+# 示例 2：常规 Bug 一键跑到底（配方 2 + /goal：B1 -> B4 -> B10 -> B11 -> B12）
+/goal 修复导出空数组时的崩溃问题，跑通复现红灯与修复绿灯并完成代码三合一审查
 
-### 场景 3：重大架构改造，走「双阶段受控模式」（阶段 1 先拍板方案，阶段 2 再实施）
-- **适用情况**：涉及多模块协议、数据库或高风险重构，写代码前必须先看一眼方案。
-- **动态积木链**：`B1 -> N2 (Research) -> N3 (Spec) -> N4 (Review) -> N5 (Tickets) -> N6 (Gate 停机等拍板)`
-- **怎么用（在 OpenCode 输入）**：
-  ```text
-  /goal 梳理并设计多租户权限隔离方案，完成异构互辩后停下来等我拍板
-  ```
-- **交互体验**：跑完方案互辩后自动停在 `N6 (Gate)` 并输出 ≤15 行决策简报；你回复「通过，开始实施」即可在当前会话继续跑 `N7`，或一键复制看板生成的阶段 2 命令交由后台执行。
+# 示例 3：复杂需求先出方案并通过 Astra + Fable 双审（B1 -> B5 -> B6 -> B7 -> B8 双审 -> B9）
+梳理并设计多租户权限隔离方案，起草技术方案后让 Astra 和 Fable 双审，停下来等我拍板
 
-### 场景 4：钦定某个动作排第一位，或钦定特定模型（如 Opus / Astra / Fable）去评审
-- **适用情况**：你已经有现成方案或刚改完代码，只想立刻让指定模型做审查，或者要求把某项评审排在第一位。
-- **动态积木链**：`N4 (Review 置顶第 1 位) -> N3 (Spec) -> N7 (Impl)`
-- **怎么用（在 OpenCode 输入）**：
-  ```text
-  /goal 把方案评审放在第一位，并且指定用 Opus 5.5 high 去审当前方案，审完直接按结论改代码
-  ```
+# 示例 4：钦定专项评审排第一位（配方 6：B8 -> B10 -> B12）
+把技术方案评审放在第一位，指定用 Opus 5.5 high 去审当前方案，审完直接按结论改代码
+```
 
 ---
 
-## 四、模型路由：主会话自由切换 + 子 Agent 一二三优先级
+## 三、模型路由：主会话自由切换 + 子 Agent 一二三优先级
 
-1. **主会话模型完全自定义**：可在 OpenCode 顶栏或 `-m` 自由切换 `GPT-6 Astra`、`GPT-6 Sol`、`GPT-6.1 Sol`、`Fable 5.1`、`Claude Opus 5.5` 等任意模型。
-2. **子 Agent 选模严格按一、二、三优先级执行**：
-   - **第一优先级（用户当轮点名，最高优先）**：当用户点名「用 Opus 审」「用 Astra 跑」时，主会话调用 `subagent` 显式传入 `model="<provider>/<model>#<effort>"` 强制覆盖。
-   - **第二优先级（角色默认配置）**：未点名时使用 `opencode.json` 默认模型（`reviewer` 默认 `perplexity/fable-5.1#high`，`research` / `coder` / `explore` 默认 `word-claude/claude-opus-5-5#medium`）。
-    - **按任务复杂度分级启用**：`word-claude/claude-opus-5-5#medium` 用于复杂主干编码（含 `N3: Spec` / `N5: Tickets` 的多文件改动、并发与状态机修复）；`word-claude/claude-sonnet-5-5#medium` 用于跳过 `N3: Spec` 的小修小补（单文件机械小改、改配置/文案、几行补丁）与轻量 `explore` 检索，由主会话显式传入，不挂 `#high`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`）。
-   - **第三优先级（`auto-continue-harness.js` 三级自动降级）**：上游限流或报错时自动按三级备选链同会话降级续跑，并持久记录实际切换模型。启动前模型解析错误的回退另在工具结果追加 `[Fallback Executed: requested=... -> actual=...]` 标记。
-
----
-
-## 五、三合一精简 Review 体系（`skills/team-review-governance/SKILL.md`）
-
-将 Matt Pocock `v1.3.1` 工程技能与代码复用精简纪律合流为单次三轴审查：
-1. **轴 1 · 针对需求的 `Spec` 忠实度审查**：逐条核对是否兑现需求、有无越界添头（Scope Creep）。
-2. **轴 2 · 通用代码质量 `Standards` 审查**：排查 Fowler 12 种代码坏味道（重复代码、投机性通用、过度耦合、霰弹式修改等）与浅层透传模块。
-3. **轴 3 · 代码复用与极致精简 `Reuse & Simplify` 审查**：
-   - **复用四问梯子**：需要存在吗 → 本仓已有同款吗 → 标准库/已装依赖能解吗 → 能一行吗。
-   - **反过度防御编码**：只在信任边界校验一次，禁止对内部定型数据层层判空或套 `try/catch` 吞错；只调用一次的短逻辑直接内联。
-   - **五类腐烂注释净化**：清理卡号、PR 号、日期戳、轮次代号、跨文件裸行号。
+1. **主会话模型自由切换**：在 `Antigravity` 中自由选用 `Gemini`、`GPT-6 Astra`、`GPT-6.1 Sol` 等模型，在 OpenCode 独立会话中也可自由切换任意模型。
+2. **子 Agent 选模严格按一、二、三优先级执行**（详见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md) §四）：
+   - **第一优先级（用户当轮点名，最高优先）**：当用户点名「用 Opus 审」「用 Astra 跑」时，显式传入 `-m "<provider>/<model>#<effort>"`（或 `subagent(..., model="...")`）强制覆盖。
+   - **第二优先级（角色默认配置與复杂度分级）**：未点名时走 `opencode.json` 默认模型（`reviewer` 默认 `perplexity/fable-5.1#high`，`research` / `coder` / `explore` / `general` 默认 `word-claude/claude-opus-5-5#medium`）。复杂主干编码（含 `B6: spec-draft` / `B7: slice-tickets`）保持 `word-claude/claude-opus-5-5#medium`；跳过 `B6: spec-draft` 的低风险小修小补与轻量 `explore` 检索可由 `agy` 直接改或显式传 `word-claude/claude-sonnet-5-5#medium`（不挂 `#high`）。
+   - **第三优先级（`auto-continue-harness.js` 三级自动降级与按实际作者模型异构防自审）**：`opencode run` 与子 Agent 遇限流或渠道异常（403 除外）时自动按三级备选链同会话降级续跑并追加 `[Fallback Executed: requested=... -> actual=...]`；`B3` / `B8` / `B11` 评审严格对比被审产物的实际作者模型保持异构。
 
 ---
 
-## 六、仓库结构与一键安装
+## 四、三合一精简 Review 体系（[`skills/team-review-governance/SKILL.md`](skills/team-review-governance/SKILL.md)）
+
+覆盖 **`B3 (req-review)`**、**`B8 (spec-review)`** 与 **`B11 (code-review)`** 三个独立评审积木：
+1. **轴 1 · 针对需求的 `Spec` 忠实度审查**：核对需求必要性、测试接缝 Seam、是否兑现 `R1..Rn` 及有无越界添头（Scope Creep）。
+2. **轴 2 · 通用代码质量 `Standards` 审查**：排查 Fowler 12 种代码坏味道与浅层透传模块。
+3. **轴 3 · 代码复用与极致精简 `Reuse & Simplify` 审查**：过复用四问梯子、反过度防御编码、清理腐烂注释，`B11` 精简结论回流 `B10` 落盘。
+
+---
+
+## 五、仓库结构与一键安装
 
 | 目录 / 文件 | 说明 |
 | :--- | :--- |
 | `agy-magpie-harness/` | `Antigravity.app` 桌面端 GUI 8 个大写 GPT 模型注入、透明包装器 `ls-wrapper`、`agy-gpt` 启动器与 Magpie 适配补丁 |
-| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与角色会话原生重试与三级模型故障回退护栏插件（`v6`，已移除废弃的 `opencode-goal`） |
-| `plugins/harness.test.js` | `auto-continue-harness.js` 子 Agent 三级回退与后台强制同步单测 |
+| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与 `opencode run` / `subagent` 三级模型故障回退护栏插件（`v6`） |
+| `plugins/harness.test.js` | `auto-continue-harness.js` 三级回退与后台强制同步单测 |
 | `config/opencode.agents.json` | OpenCode 五大专职子 Agent（`coder`、`reviewer`、`research`、`explore`、`general`）模型与只读权限配置 |
-| `skills/team-dual-goal/SKILL.md` | `agy` 原生 `/goal` + `opencode run` 7 大原子积木（`N1`~`N7` / `B1`~`B7`）动态装配与模型三级路由规程 |
-| `skills/team-review-governance/SKILL.md` | 需求 + 方案 + 代码三合一精简 Review 规程 |
-| `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的正向推荐需求澄清规程 |
+| `skills/team-dual-goal/SKILL.md` | 四大阶段 12 块标准积木（`B1`~`B12`）、4 问自检与 6 套选块配方及三级模型路由唯一权威规程 |
+| `skills/team-review-governance/SKILL.md` | 需求（`B3`）+ 方案（`B8`）+ 代码（`B11`）三合一精简 Review 规程 |
+| `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的 `B2: req-grill` 正向推荐需求澄清规程 |
 | `tools/install.py` | 一键状态检查与安装脚本（安装 `auto-continue-harness.js` 并清理旧 `opencode-goal`） |
 
 ```bash
@@ -155,23 +126,3 @@ python3 tools/install.py install
 # 运行护栏单测
 bun test plugins/harness.test.js
 ```
-
-
-## 后台运行故障转移
-
-护栏通过 OpenCode 2.1 的原生 `session.retry` 钩子保护 `opencode run --agent coder|reviewer|research|explore|general` 与内部子会话。渠道认证、额度、限流、服务端和网络超时失败时，在同一会话切换到角色备选表中的可用模型。启动前也会检查当前模型和 variant 是否仍可用，不可用时切换到可用备选。候选不会重复，全部失败后退出。没有角色备选表的主会话不自动切换。
-
-内部 `subagent` 工具包装器仅处理启动前的模型或推理档位解析错误。运行时故障由会话钩子处理，避免同一错误在两层重复回退。取消、权限拒绝、403、无效请求和内容策略错误不由护栏接管。
-
-故障转移复用请求的 `timeout`、`headerTimeout` 和 `chunkTimeout`。插件不为正常长任务另加总时长强杀。请求没有结束前不会仅因计时器到期另起执行。现有生产超时不会被安装器修改。
-
-降级记录存入插件 storage 的 `fallback/<sessionID>`，包含 requested、actual 与 tried。控制台标记不保证所有客户端都会显示。该记录表示发生了切换，不表示任务已经完成。显式选模优先，但失败后仍可降级。异构评审的作者模型约束仍由派单方负责，插件不会猜测作者。
-
-验证命令：
-
-```bash
-bun test plugins/harness.test.js
-python3 tools/test_fallback_cli.py --plugin plugins/auto-continue-harness.js --case 401
-```
-
-CLI 故障脚本还支持 `429`、`503`、`400`、`success`、`exhaust`、`header-timeout` 、`chunk-timeout`、`cancel` 和 `cross-provider`。测试使用隔离配置与本地模拟服务，不改全局配置，不消耗真实渠道额度。测试中为加速而采用短超时，这不代表生产接管耗时。真实供应商之间的历史格式兼容与工具副作用恢复仍需单独验收，同会话不保证外部写入恰好一次。

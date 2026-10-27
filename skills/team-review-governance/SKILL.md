@@ -1,39 +1,41 @@
 ---
 name: team-review-governance
-description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通用质量与 Fowler 12 类代码坏味道评审（Standards Axis）、以及代码复用与极致精简评审（Reuse & Simplify Axis）。覆盖需求预审（B2）、技术方案冷审（B5）与代码改动评审（B7 / PR Review），支持按一二三优先级动态指定评审模型。"
+description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通用质量与 Fowler 12 类代码坏味道评审（Standards Axis）、以及代码复用与极致精简评审（Reuse & Simplify Axis）。覆盖需求独立评审（B3: req-review）、技术方案独立评审（B8: spec-review）与代码三合一独立评审（B11: code-review / PR Review），支持按一二三优先级动态指定异构评审模型。"
 ---
 
 # 三合一评审规程（需求忠实度 `Spec` + 通用质量 `Standards` + 代码复用与精简 `Reuse & Simplify`）
 
-> 本技能统一承接团队「需求评审（`B2`）→ 方案/Spec 评审（`B5`）→ 代码 Diff 评审（`B7` / PR Review）」，融合 Matt Pocock `v1.3.1` 双轴审查（`Spec` + `Standards` 12 类坏味道）与团队独有的「代码复用与极致精简（`Reuse & Simplify`）」门禁。原独立 `mattpocock-code-review` 已并入本技能并退役。
+> 本技能统一承接团队四大阶段 12 块标准积木中的三个独立评审积木：**「需求独立评审（`B3: req-review`）→ 技术方案独立评审（`B8: spec-review`）→ 代码三合一独立评审（`B11: code-review` / PR Review）」**，融合 Matt Pocock `v1.3.1` 双轴审查（`Spec` + `Standards` 12 类坏味道）与团队独有的「代码复用与极致精简（`Reuse & Simplify`）」门禁。`reviewer` 角色严格只读，审查结论交回 `agy` 主会话（更新 `issue.md`）或回流至 `B10: slice-impl`（由 `coder` 或主会话落盘修改并重跑验证）。
 
 ---
 
-## 一、评审触发与模型一二三优先级
+## 一、评审触发与模型一二三优先级（异构防自审）
 
 1. **何时触发**：
-   - 老板要求「审一下需求 / 审一下方案 / 审一下代码 / review since X」；
-   - OpenCode `/goal` 流水线运行至 `B2: req-grill`（需求预审）、`B5: spec-review`（方案冷审）或 `B7: impl-verify`（编码后三合一自审）。
-   - 老板指定「把某某评审放在第一位」时，直接将本技能对应评审节点排在 Goal 计划第 1 位执行。
-2. **评审模型一二三优先级**：
-   - **第一优先级（老板当轮点名，最高优先）**：老板说「这次用 Opus 审」「用 GPT-6 Astra 审」时，派发 `reviewer` 子 Agent 显式传入 `model="<provider>/<model>#<effort>"`（如 `model="word-claude/claude-opus-5-5#high"`）。
-   - **第二优先级（角色默认异构评审）**：老板未点名时，默认由异构 `reviewer` 子 Agent（`perplexity/fable-5.1#high`，Claude 主会话下传 GPT 模型）执行独立冷审，避免同源模型自写自夸。
-   - **第三优先级（自动三级故障兜底）**：首选模型遇限流或渠道异常时，由 `auto-continue-harness.js` 自动切换备选模型并在报告末尾标注 `[Fallback Executed: ...]`。
+   - 老板要求「审一下需求 / 审一下方案 / 审一下代码 / review since X」（或命中 `team-dual-goal` 配方 6 独立专项评审）；
+   - `agy` 流水线运行至 **`B3: req-review`**（需求与现码/规则冲突或疑似伪命题时）、**`B8: spec-review`**（完成 `B6: spec-draft` 及可选 `B7: slice-tickets` 后的技术方案冷审）或 **`B11: code-review`**（`B10: slice-impl` 编码完成后的代码 Diff 三合一独立冷审）；
+   - 老板指定「把某某评审放在第一位」时，直接将对应评审积木排在当前计划第 1 位执行。
+2. **评审模型一二三优先级与异构基准**：
+   - **第一优先级（老板当轮点名，最高优先）**：老板说「这次用 Opus 审」「用 Astra 和 Fable 双审」时，派发 `reviewer` 显式传入 `-m "<provider>/<model>#<effort>"`（如 `-m word-claude/claude-opus-5-5#high` 或并行调 `-m openai/gpt-6-astra#high` 与 `-m perplexity/fable-5.1#high`）。
+   - **第二优先级（按被审产物实际作者模型异构选模）**：老板未点名时，默认调 `opencode run --agent reviewer --auto`（默认 `perplexity/fable-5.1#high`），并**严格对比被审产物的实际作者模型避免同模型自写自审**：
+     * 审 `GPT-6 Astra` 起草的 `B6` 方案时，用 `perplexity/fable-5.1#high` 或 `word-claude/claude-opus-5-5#high`（单审即可，高风险架构变更或老板点名时上 `Astra + Fable` 双审）；
+     * 审 `Claude Opus 5.5` 编写的 `B10` 代码时，用 `perplexity/fable-5.1#high` 或 `openai/gpt-6-astra#high` / `openai/gpt-6.1-sol#high`，严禁让 Opus 审 Opus 自己的代码。
+   - **第三优先级（自动三级故障兜底）**：首选模型遇限流或渠道异常（403 除外）时，由 `auto-continue-harness.js` 自动切换备选模型并标注 `[Fallback Executed: ...]`。
 
 ---
 
 ## 二、三合一评审核心坐标（Three-Axis Review Matrix）
 
-无论是审方案还是审代码，统一按以下三根轴逐项核查并给出 `file:line` 证据：
+无论是审需求（`B3`）、审方案（`B8`）还是审代码（`B11`），统一按以下三根轴逐项核查并给出 `file:line` 证据：
 
 ### 轴 1 · 需求评审与忠实度轴（`Spec Axis` —— 对齐需求与边界）
 
-- **方案阶段（`B2` / `B5` 需求与方案审查）**：
+- **需求与方案阶段（`B3: req-review` / `B8: spec-review`）**：
   1. **必要性与真伪命题**：问题是否真实存在？现状是否已经满足？不做会怎样？（排查类修改建议必过三问门禁：① 真故障还是架构权衡、② 不改的实际损失、③ 改了会破坏哪条现有机制或测试不变量）。
   2. **已拍板约束对齐**：核对当前 Issue 的 `Decision Log` 与老板已定边界，严禁推翻已拍板前提或对已定事实重复提问（No re-interviewing）。
-  3. **最高层测试接缝（Highest-Level Testing Seam）**：验证计划是否優先落在真实接口/CLI/端到端契约层，而非复制被测逻辑写自嗨 mock 单测。
-- **代码阶段（`B7` / Diff 审查）**：
-  1. **漏做检查（Missing from code）**：逐条对照 Issue / Spec 的要求与验收项，检查是否有需求未实现、只写了空壳（stub/TODO）或漏了边界分支。
+  3. **最高层测试接缝（Highest-Level Testing Seam）**：验证计划是否优先落在真实接口/CLI/端到端契约层，而非复制被测逻辑写自嗨 mock 单测；若启用了 `B7 (slice-tickets)`，一并核查切片是否切穿端到端行为且 `depends_on` 无环。
+- **代码阶段（`B11: code-review` / Diff 审查）**：
+  1. **漏做检查（Missing from code）**：逐条对照 Issue / Spec 的 `R1..Rn` 要求与验收项，检查是否有需求未实现、只写了空壳（stub/TODO）或漏了边界分支。
   2. **越界偷加（Unsolicited scope creep）**：检查 diff 中是否混入了需求未要求、且非本次修复所必需的顺手格式化、无关重构或投机性配置。
 
 ### 轴 2 · 通用质量与 12 类代码坏味道轴（`Standards Axis` —— 架构与代码健康度）
@@ -54,16 +56,16 @@ description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通
 
 ### 轴 3 · 代码复用与极致精简轴（`Reuse & Simplify Axis` —— 吸纳复用、砍掉冗余）
 
-每次审方案（`B4`/`B5`）与审代码（`B7`）必须强制执行以下三项复用与精简检查，并在编码阶段将精简后的代码直接落地：
+每次审方案（`B8: spec-review`）与审代码（`B11: code-review`）必须强制执行以下三项复用与精简检查：
 1. **四步复用核查（Reuse Ladder）**：
    - **本仓已有必复用**：先用 `grep` / `glob` / `codegraph_explore` 查同仓是否已有现成 helper、util、状态机或同类模式（必须报出复用的 `file:line`）。在相隔几个文件的地方重新手搓一套同类逻辑直接判 `Blocker`。
    - **标准库与平台原生优先**：语言标准库、运行时内建能力或数据库/CSS 原生约束能解决的，禁止手写复杂应用层轮子。
    - **已装依赖优先**：几行代码或现有依赖能解决的，严禁引入新外部依赖。
    - **合理提炼公共单元**：当本次改动与仓内已有 1~2 处逻辑实质相同时，直接抽离或合并到最小公共函数，消除双份维护。
-2. **反过度防御与就地精简（Anti-Overdefensive & In-Place Simplification）**：
+2. **反过度防御与回流精简（Anti-Overdefensive & Simplification Feedback）**：
    - **只在信任边界校验一次**：未知外部输入（HTTP 请求、CLI 参数、外部文件/API 返回）在边界入口校验并转为定型值后，内部调用链严禁层层重复判空（`if (!x) ...`）或套 `try/catch` 吞错兜底。
    - **单次短逻辑直接内联**：只在一个地方调用的几行短函数与只用一次的中间变量直接内联，用 `const` + 早返回（Early Return）拉直主干。
-   - **B7 节点当场精简落盘**：在 `B7: impl-verify` 中，发现可复用或可精简的代码，直接由 `coder` 将精简后的最短可运行 diff 写回仓库并跑绿测试，不停留在口头建议。
+   - **`B11` 结论回流 `B10` 落盘**：`reviewer`（只读）在 `B11: code-review` 中指出可复用或可精简的代码位置后，由主会话回流至 `B10: slice-impl`（派 `coder` 或主会话直接修改）将精简后的最短可运行 diff 写回仓库并跑绿测试，再由主会话记入 `issue.md` 的 `§5` 与 `§6`。
 3. **注释卫生门禁（Comment Hygiene）**：
    - 代码能表达的一律不写注释；卡号（`MUL-xxx`）、PR/Issue 号、日期戳、跨文件裸行号严禁进代码注释。
    - 仅三类允许保留（一行封顶）：魔数的来源、调用顺序假设、外部 bug 绕行与并发时序前提。
@@ -72,7 +74,7 @@ description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通
 
 ## 三、评审输出格式（简洁高信噪比，每条必带 `file:line`）
 
-评审结果按以下结构输出，没问题的轴一行「已核 `<file:line>` 无问题」带过，不凑字数：
+评审结果按以下结构返回主会话，没问题的轴一行「已核 `<file:line>` 无问题」带过，不凑字数：
 
 1. **评审结论**：`Pass` / `Pass with Minor Fixes` / `Blocked`（附实际执行的评审模型标识）。
 2. **轴 1 · 需求与 Spec 忠实度（`Spec`）**：漏做项 / 越界偷加项 / 必要性与测试接缝核查（附 `file:line`）。
@@ -80,4 +82,4 @@ description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通
 4. **轴 3 · 代码复用与精简清单（`Reuse & Simplify`）**：
    - **已复用 / 应复用项**：复用本仓哪处 `file:line` 替代哪段重复实现；
    - **可精简删除项**：哪处 `file:line` 的冗余判空、薄包装函数、投机抽象或违规注释可直接删减/内联。
-5. **修复与收敛记录（Decision Log）**：采纳了哪些精简与修复、驳回了哪些误报及证据。
+5. **建议回流与收敛项（供主会话更新 `§5 Decision Log`）**：列出需回流 `B6` 或 `B10` 修正的具体项，末尾报本次有没有踩坑（没有写本次没有踩坑）。
