@@ -93,8 +93,8 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
   - **第一优先级（老板当轮点名，最高优先）**：显式传入 `opencode run --agent <role> -m "<provider>/<model>#<effort>" --auto`（或 OpenCode 内部 `subagent(..., model="...")`）。
   - **第二优先级（角色默认配置）**：不传 `-m` 参数，直接走 `~/.config/opencode/opencode.json` 五大专职角色默认配置（`explore`: `word-claude/claude-sonnet-5-5#medium` 秒级快筛；`coder`/`research`/`general`: `word-claude/claude-opus-5-5#medium`；`reviewer`: `perplexity/fable-5.1#high`）。
     - **按任务复杂度与排障阶段分级选模**：
-      * **`B4a (bug-locate)` 浅层快速定位与日常 `explore` 探路**：默认走 `explore` 的 `word-claude/claude-sonnet-5-5#medium`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`，无长思考预热延迟，秒级回传时间线与 `file:line`）；若需带 `#high` 深度思考梳理复杂长日志时间线，显式传 `-m perplexity/sonnet-5.5#high`。
-      * **`B4b (bug-repro)` 深度复现查根与主干/复杂编码（`B6` / `B7` / `B10`）**：保持主力重模型 `word-claude/claude-opus-5-5#medium`（若让只读 `explore` 深挖复杂状态机，显式传 `-m word-claude/claude-opus-5-5#medium`）。跳过 `B6` 的低风险小修小补可由 `agy` 直接动手或给 `coder` 传 `-m word-claude/claude-sonnet-5-5#medium`。
+      * **`B4a (bug-locate)` 浅层快速定位与日常 `explore` 探路（由 `agy` 主会话全自动判别，无需老板指定）**：老板只需丢出故障现象，由 `agy` 主会话（Gemini / Astra / 6.1 Sol）按输入特征自动选路——常规查代码/搜报错栈自动走 `explore` 默认的 `word-claude/claude-sonnet-5-5#medium`（无长思考预热延迟，秒级回传 `file:line`）；遇跨服务大日志或复杂时间线推理时，由 `agy` 自动加传 `-m perplexity/sonnet-5.5#high`。
+      * **`B4b (bug-repro)` 深度复现查根与主干/复杂编码（由 `agy` 根据 `B4a` 结果自动裁决是否升格）**：`B4a` 返回后，`agy` 主会话自动判断——若根因已 100% 一目了然（拼写、漏参、明显空指针）则自动跳过 `B4b` 直接进 `B10`；若原因未 100% 坐实或涉及状态机/并发/时序，`agy` 自动升格进入 `B4b`，派 `coder`（默认 `word-claude/claude-opus-5-5#medium`）跑最小红灯复现并查根（纯只读深挖复杂状态机则由 `agy` 自动传 `explore -m word-claude/claude-opus-5-5#medium`）。跳过 `B6` 的低风险小修小补可由 `agy` 直接动手或给 `coder` 传 `-m word-claude/claude-sonnet-5-5#medium`。
   - **第三优先级（`auto-continue-harness.js` 三级自动降级与按实际作者模型异构防自审）**：
     - `opencode run` 与内部 `subagent` 遇限流/超时/渠道异常（403 权限拒绝除外）时，由 `auto-continue-harness.js` 通过 `SessionHooks.retry` 与 `prompt` 预检自动按三级备选链同会话降级续跑，并输出 `[Fallback Executed: requested=... -> actual=...]`。
     - **异构冷审基准（`B3` / `B8` / `B11`）**：**严格以「被审产物的实际作者模型」判定是否异构**（严禁同源模型自写自审）：
