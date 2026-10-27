@@ -1,26 +1,30 @@
 # opencode-goal-pipeline
 
-**`agy`（GPT-6 Astra / GPT-6.1 Sol 主会话 + 原生 `/goal`）$\times$ `opencode run`（Word Claude Opus 5.5 编码 + Perplexity Fable 5.1 异构审查）协同流水线**，同时保留自维护零依赖 `opencode-goal` 插件与原子积木规范（`N1`~`N7` / `B1`~`B7`）。
+**`agy`（GPT-6 Astra / GPT-6.1 Sol 深度需求澄清 + 原生 `/goal` 长任务主控 + 多模态/GUI 真机验收交付）$\times$ `opencode run`（全能后台异构执行底座：按场景灵活调度 `explore` / `research` / `coder` / `reviewer` / `general` 与 CLI 测试）协同流水线**。
 
 ---
 
-## 〇、现行主力工作流：`agy` 主会话用 GPT 聊需求 + 原生 `/goal` 调 `opencode run` 干重活（[`agy-magpie-harness/`](agy-magpie-harness/README.md)）
+## 〇、现行主力工作流：`agy` 抓两头（需求澄清 + `/goal` 长控 + 多模态真机验收交付）$\times$ 灵活调度全能 `opencode run`（[`agy-magpie-harness/`](agy-magpie-harness/README.md)）
 
-由于 OpenCode 后台的 `opencode-goal` 插件采用定时器轮询续跑，在长任务下容易出现轮询空转与状态卡死，现行主力工作流已升级为 **「`agy` 原生主控 + `opencode run` 异构执行」**：
+由于 OpenCode 旧 `opencode-goal` 插件采用定时器轮询续跑，在长任务下容易出现轮询空转与状态卡死，现已**彻底移除 `opencode-goal` 插件**，确立 **「按场景优势互补、灵活调度不写死」** 的双端协同架构：
 
 ```
 用户在 Antigravity.app 桌面端（下拉选 GPT-6 Astra / GPT-6.1 Sol）或终端运行 agy-gpt
   │
-  ├─ 1. 主会话交互（agy + Magpie GPT-6 Astra / GPT-6.1 Sol）：
-  │     ├─ 聊需求、只读查代码、做需求澄清（N1）与规格收敛（N3）
-  │     ├─ 调 OpenCode 异构参谋审方案：opencode run --agent reviewer --auto "审 issue.md"
-  │     └─ 落盘单文件精简契约 issue.md（主会话单写者，~120 行）
+  ├─ 1. 前段：需求理解与澄清（agy 主会话 + GPT-6 Astra / GPT-6.1 Sol）：
+  │     ├─ 深度思考（High/Max）配合快速交互（Fast/Ultra Fast）与原生提问弹窗迅速对齐意图
+  │     ├─ 按需调 OpenCode 探路/调研/预审：opencode run --agent explore|research|reviewer --auto
+  │     └─ 落盘单文件精简契约 issue.md（agy 主会话唯一单写者，~120 行）
   │
-  └─ 2. 原生自主长任务闭环（在同一 agy 会话直接输入 `/goal`）：
-        ├─ 依托 agy 原生 /goal 守护进程（零 token 轮询、支持 --continue 会话接续与原生上下文压缩）
-        ├─ 重度编码派单：run_command 调用 opencode run --agent coder --auto（走 Word Claude Opus 5.5）
-        ├─ 三合一独立代码终审：run_command 调用 opencode run --agent reviewer --auto（走 Perplexity Fable 5.1）
-        └─ 跑通真实测试并满足全部判据后输出 <!-- GOAL_COMPLETE --> 收尾
+  ├─ 2. 中段：原生 /goal 长任务主控 + 按场景灵活调度全能 OpenCode：
+  │     ├─ 依托 agy 原生 /goal + 后台异步任务唤醒（run_command + manage_task）统筹全局进度
+  │     ├─ 异构冷审/双审：opencode run --agent reviewer --auto（Fable 5.1 High / Astra 双审）
+  │     ├─ 跨文件编码与补单测：opencode run --agent coder --auto（Word Claude Opus 5.5 / Sonnet 5.5）
+  │     └─ 脚本/产物/CLI 测试：opencode run --agent general --auto 或 opencode run --auto 跑命令行测试
+  │
+  └─ 3. 后段：原生多模态 + 浏览器/桌面 GUI 真机验收与最终交付（agy 主导）：
+        ├─ 涉及读图/PDF/音视频、chrome-devtools 浏览器交互、cua-driver 桌面点击与长链路起服务验收时，由 agy 原生多模态 + 内置 tester 直接执行
+        └─ 汇总 CLI 测试与 GUI 截图证据回填 issue.md §6，满足全部判据后输出 <!-- GOAL_COMPLETE --> 收尾
 ```
 
 ### 日常排障与维护边界（以后出 Bug 改哪里？）
@@ -33,15 +37,14 @@
 
 ---
 
-## 一、OpenCode 侧积木与插件设计理念（供 `opencode run` 与独立 OpenCode 会话复用）
+## 一、核心调度理念（唯一判据表见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md) §五）
 
-1. **零外部 npm 依赖的自维护 `/goal` 插件（`plugins/opencode-goal/`）**：
-   - 将 Effect 3 与 Zod 内联打包进 `dist/server.js`，彻底摆脱外部 `@prevalentware/opencode-goal-plugin` npm 缓存覆盖与写死提示词的限制。
-   - 原生新增 **`plan_ops` 动态积木重排算子**（`insert_task`、`remove_task`、`reorder_tasks`、`insert_phase`），支持在运行期随时根据用户指令置顶、插入、裁剪或重排节点。
-   - 原生支持 **`HITL`（Human-in-the-Loop）挂起与普通回复自动唤醒**：当处于需求澄清（`wait_reason="clarification"`）或方案拍板门禁（`wait_reason="approval"`）时自动暂停 watchdog，用户在对话框直接回复一句「可以 / 按推荐的来」即自动恢复 `active`，无需手敲 `/goal resume`。
+1. **按场景选执行方，不把分工写死在某两个角色上**：
+   - **`agy` 主抓两头**：前段需求深度思考与快速澄清（Grill）、全程原生 `/goal` 长任务控制与 `issue.md` 单写者记账、后段多模态理解与浏览器/Computer Use 真机测试及最终交付。
+   - **`opencode run` 全能后台底座**：充分发挥 OpenCode 对 Word（Claude）与 Perplexity（Fable）渠道的深度兼容与 `auto-continue-harness.js`（`v6`）三级自动故障降级优势，按需调度 `explore`、`research`、`coder`、`reviewer`、`general` 或直接执行 CLI 测试套件。
 2. **老板显式指令永远排第一顺位（Priority 1）**：
-   - 用户说「先做某某评审」「用 Opus 审」「把某某放第一位」→ 立即将该原子节点置顶并透传指定模型，绝不机械套用固定模板。
-3. **「单端一条龙」与「双阶段受控交接」自由切换**：
+   - 用户说「先做某某评审」「让 Astra 和 Fable 双审」「跳过某步」→ 立即按指令动态调整积木顺序并透传指定模型，绝不机械套用固定模板。
+3. **「单 `/goal` 全自动闭环」与「双阶段受控交接」自由切换**：
    - 插上 **`N6 / B6: 决策门禁 (Gate)`** → 方案与互辩完成后停机等待人工拍板（受控双阶段）。
    - 拔掉 **`N6 / B6: 决策门禁 (Gate)`** 并拼入 **`N7 / B7: 编码与审查 (Impl)`** → 在 OpenCode 里一个 `/goal` 自动跑完从取证、方案、评审到 TDD 编码与三合一代码审查的全闭环。
 
