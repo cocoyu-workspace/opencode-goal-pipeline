@@ -24,7 +24,7 @@ description: "[弹性原子积木Goal调度] Antigravity (agy) 主会话（Gemin
 收到任务后，主会话在脑中按顺序只判断四件事（不在回复里展开自检过程）：
 Q1（交付与授权终点）：本次是只读排查/咨询、只出方案、写代码验证，还是已获授权对外交付（push / PR / 关单）？
 Q2（需求清晰度与真伪）：是否存在查代码也无法确定的用户可感知分叉（是 → 插 B2: req-grill）？需求本身是否与现码/既有规则冲突或疑似伪命题（是 → 插 B3: req-review）？
-Q3（事实与根因是否已证实）：是否是异常/Bug 且根因尚未证实（是 → 插 B4: bug-repro，含 Bug 定位所需的 explore）？非 Bug 任务是否涉及未知调用链或需查 memex / 500 星开源成熟方案（是 → 插 B5: explore & research）？
+Q3（事实与根因是否已证实）：是否是异常/Bug（是 → 先插 B4a: bug-locate 调 explore 快模型 Sonnet 秒级定位报错时间线与 file:line；若根因仍未 100% 坐实或需构造红灯复现，再进 B4b: bug-repro 用 Opus 深挖）？非 Bug 任务是否涉及未知调用链或需查 memex / 500 星开源成熟方案（是 → 插 B5: explore & research）？
 Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状态机或需设计取舍（是 → 插 B6: spec-draft + B8: spec-review；多步端到端改动再依赖 B6 插 B7: slice-tickets）？是否触及鉴权、并发、迁移、计费等高风险面或跨模块逻辑（是 → 必插 B11: code-review，严禁按行数豁免）？
 ```
 
@@ -33,7 +33,7 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 | 配方名称 | 典型适用场景 | 自动选中的积木链 |
 | :--- | :--- | :--- |
 | **配方 1 · 低风险随手小改** | 需求明确、单文件 `<20 行`、不触及高风险面的改文案/调配置/微补丁 | **`[B1] -> B10 -> B12a`**（一口气秒改秒验，`B1` 按目标仓留痕规则挂接） |
-| **配方 2 · 常规 Bug 修复** | 报错明确或可本地复现的故障修复 | **`B1 -> B4 (复现定位) -> B10 (先红后绿修复) -> [按风险挂 B11] -> B12`** |
+| **配方 2 · 常规 Bug 修复** | 报错明确或可本地复现的故障修复 | **`B1 -> B4a (浅层秒级定位) -> [B4b 深度复现查根] -> B10 (先红后绿修复) -> [按风险挂 B11] -> B12`** |
 | **配方 3 · 中等明确需求 / 高风险小改** | 需求清楚但跨文件改逻辑（需出技术方案并审方案），或虽仅几行但触及鉴权/并发/迁移/计费等高风险面 | **`B1 -> B5 -> B6 -> B8 -> B10 -> B11 -> B12`**（高风险几行小改可省 `B5/B6/B8`，走 `B1 -> B10 -> B11 -> B12`） |
 | **配方 4 · 模糊想法或复杂架构大需求** | 需求待磨清、涉及多模块重构或需分片实施 | **`B1 -> B2 -> [B3] -> B5 -> B6 -> B7 -> B8 -> [B9] -> B10 -> B11 -> B12`** |
 | **配方 5 · 纯调研 / 排障定位 / 架构咨询（只读）** | 只要求查清原因、调研开源方案或输出设计评估，不改业务代码 | **`[B1] -> B4/B5 -> [B6 -> B8] -> B12a（输出结论报告）`**（严禁自动滑入 `B10`） |
@@ -56,7 +56,7 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 | **一、立项与需求阶段** | **`B1` · 任务建档 (`issue-track`)** | 建 GitHub Issue 或本地 `issue.md` 权威主卡并初始化已知 `R1..Rn`（BMAD *"The ticket is the spec"*） | `agy` 主会话 | 建卡并初始化 **§1** | 新需求、Bug 修复、问题排查（遵循目标仓留痕规则） | 已在当前卡内跟进，或无卡仓库的 `<20 行` 低风险微改 |
 | **一、立项与需求阶段** | **`B2` · 需求理解与澄清 (`req-grill`)** | 追问对齐老板真实意图与边界，每问必带正向推荐选项（Matt `grill-me` `#1193` + `team-grilling`） | `agy` 主会话（`HITL`） | **§1 需求与不改边界 (`R1..Rn` + `Out of Scope`)** | 存在查代码也无法确定的用户可感知分叉（≥2 个未决点提议开磨，1 个直接问） | 老板需求、验收标准与边界已经表达清楚时直接跳过 |
 | **一、立项与需求阶段** | **`B3` · 需求独立评审 (`req-review`)** | 跳出给定框架审视需求必要性（Why）、是否与现码/既有规则冲突或属伪命题（本土对称闭环 `#6`） | `opencode reviewer`（`AFK` 只读返回主会话） | **§1 + §5 Review & Decision Log** | 需求与现码/规则冲突、疑似伪命题、代价过高或老板点名审需求 | 常规明确需求、确定性 Bug 修复直接跳过 |
-| **二、取证与定位阶段** | **`B4` · Bug 复现与根因定位 (`bug-repro`)** | 含 Bug 任务的源码探路（`explore` 只读定位 `file:line`）+ 构造最小红灯复现（`team-diagnosing-bugs`） | `agy` 主会话 / `opencode explore`（复现脚本由 `agy` 或 `coder` 执行） | **§2 现状根因与代码复用锚点** | 线上/本地报错、行为异常、性能退化等 Bug 排障任务 | 新功能开发、纯文档/配置调整，或根因 `file:line` 已 100% 坐实 |
+| **二、取证与定位阶段** | **`B4` · 两级渐进排障：浅层快速定位 (`B4a: bug-locate`) + 深度复现查根 (`B4b: bug-repro`)** | • **`B4a` 浅层秒级定位（默认必跑）**：调只读 `explore`（快模型 `Sonnet 5.5`）秒级提取「报错时间线 + 异常堆栈与上下游 1~2 跳精确 `file:line` + 现有测试入口命令」（根因已一目了然的简单 Bug 直接跳过 `B4b` 进 `B10`）<br>• **`B4b` 深度复现与根因诊断（复杂/未坐实 Bug 必跑）**：遵从 `team-diagnosing-bugs`，由 `coder`（`Opus 5.5`）构造并运行最小红灯复现命令/单测，或调 `explore`（`Opus 5.5`）/ `reviewer`（`Fable 5.1`）深挖状态机与并发根因 | • `B4a`：`opencode explore`（默认 `word-claude/claude-sonnet-5-5#medium` 秒回，长日志推理传 `-m perplexity/sonnet-5.5#high`）<br>• `B4b`：`opencode coder` / `explore`（`word-claude/claude-opus-5-5#medium`）或 `reviewer`（`perplexity/fable-5.1#high`） | **§2 现状根因与代码复用锚点** | 线上/本地报错、行为异常、性能退化等 Bug 排障任务（先 `B4a` 快筛，按需进 `B4b` 深挖） | 新功能开发、纯文档/配置调整，或根因 `file:line` 已在输入中 100% 坐实 |
 | **二、取证与定位阶段** | **`B5` · 代码探路与外部方案调研 (`explore & research`)** | 非 Bug 任务查本仓现成可复用实现（`explore`/`scout`）+ 查 `memex` 与 500 星开源成熟方案（`research`） | `opencode explore` / `opencode research`（只读） | **§2 现状根因与代码复用锚点** | 非 Bug 任务涉及未知调用链、新架构选型、跨模块改造或需对照开源方案 | Bug 任务（已由 `B4` 覆盖探路）或本仓几行代码一目了然的小改 |
 | **三、方案与拆图阶段** | **`B6` · 起草技术方案与测试接缝 (`spec-draft`)** | 设计模块深接口、过复用四问梯子、锁定最高层公共测试接缝 Seam（Matt `write-a-prd` + `team-codebase-design`） | `agy` 主会话 | **§3 精简技术方案与公共测试接缝 (Seams)** | 涉及跨文件改动、接口/状态机调整、存在多种实现路线需取舍 | 单点机械小改、纯文案/配置修改（跳过时验证命令直记 `§6`） |
 | **三、方案与拆图阶段** | **`B7` · 垂直切片任务图拆解 (`slice-tickets`)** | **依赖 `B6`**：按端到端可独立验证的 Tracer-Bullet 切出 `S1..Sn` 与 `depends_on` 阻塞边（Matt `prd-to-issues`） | `agy` 主会话 | **§4 垂直切片任务图 (`S1..Sn`)** | 跨 3 个以上模块、多步长链路或需多 worktree 分步交付的大任务 | 1~2 步即可改完测通的中小任务（跳过时 `R1..Rn` 直接关联 `§6`） |
@@ -91,8 +91,10 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 - **主会话模型（`agy`）**：在 `Antigravity`（`Antigravity.app` GUI 或 `agy-gpt` CLI）中自由选用 `Gemini`、`GPT-6 Astra`、`GPT-6.1 Sol`（GPT 模型深度思考用 `High`/`Max`，快速交互切 `Fast` / `Ultra Fast` 档位）负责前段需求澄清（`B2`）、原生 `/goal` 长控与多模态真机验收交付（`B12`）。
 - **OpenCode 子 Agent 一二三优先级**：
   - **第一优先级（老板当轮点名，最高优先）**：显式传入 `opencode run --agent <role> -m "<provider>/<model>#<effort>" --auto`（或 OpenCode 内部 `subagent(..., model="...")`）。
-  - **第二优先级（角色默认配置）**：不传 `-m` 参数，直接走 `~/.config/opencode/opencode.json` 五大专职角色默认配置（`coder`/`research`/`explore`/`general`: `word-claude/claude-opus-5-5#medium`；`reviewer`: `perplexity/fable-5.1#high`）。
-    - **按任务复杂度分级选模**：主干/复杂编码（含 `B6: spec-draft` / `B7: slice-tickets` 的多文件改动、并发与状态机修复）默认保持 `word-claude/claude-opus-5-5#medium`；跳过 `B6: spec-draft` 的低风险小修小补（单文件机械小改、改配置/文案、几行补丁）或轻量 `explore` 检索，可由 `agy` 主会话直接动手，或传 `-m word-claude/claude-sonnet-5-5#medium`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`，不挂 `#high`）。
+  - **第二优先级（角色默认配置）**：不传 `-m` 参数，直接走 `~/.config/opencode/opencode.json` 五大专职角色默认配置（`explore`: `word-claude/claude-sonnet-5-5#medium` 秒级快筛；`coder`/`research`/`general`: `word-claude/claude-opus-5-5#medium`；`reviewer`: `perplexity/fable-5.1#high`）。
+    - **按任务复杂度与排障阶段分级选模**：
+      * **`B4a (bug-locate)` 浅层快速定位与日常 `explore` 探路**：默认走 `explore` 的 `word-claude/claude-sonnet-5-5#medium`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`，无长思考预热延迟，秒级回传时间线与 `file:line`）；若需带 `#high` 深度思考梳理复杂长日志时间线，显式传 `-m perplexity/sonnet-5.5#high`。
+      * **`B4b (bug-repro)` 深度复现查根与主干/复杂编码（`B6` / `B7` / `B10`）**：保持主力重模型 `word-claude/claude-opus-5-5#medium`（若让只读 `explore` 深挖复杂状态机，显式传 `-m word-claude/claude-opus-5-5#medium`）。跳过 `B6` 的低风险小修小补可由 `agy` 直接动手或给 `coder` 传 `-m word-claude/claude-sonnet-5-5#medium`。
   - **第三优先级（`auto-continue-harness.js` 三级自动降级与按实际作者模型异构防自审）**：
     - `opencode run` 与内部 `subagent` 遇限流/超时/渠道异常（403 权限拒绝除外）时，由 `auto-continue-harness.js` 通过 `SessionHooks.retry` 与 `prompt` 预检自动按三级备选链同会话降级续跑，并输出 `[Fallback Executed: requested=... -> actual=...]`。
     - **异构冷审基准（`B3` / `B8` / `B11`）**：**严格以「被审产物的实际作者模型」判定是否异构**（严禁同源模型自写自审）：
@@ -111,7 +113,8 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 | **长任务主控、`/goal` 编排、`issue.md` 单写与最终交付（`B1` / `B6` / `B7` / `B9` / `B12b`）** | **`agy` 主会话（原生 `/goal`）** | 原生 `/goal` + 后台异步任务唤醒（`run_command` + `manage_task`），唯一执笔主卡与 GitHub 交付不乱账 |
 | **多模态理解（图片/PDF/音视频）与浏览器/桌面 GUI 真机验收（`B12a`）** | **`agy` 原生多模态 + `tabbit-cli` / MCP + 内置 `tester`** | 直接使用 `agy` 原生多模态 `read_file`、**`tabbit` CLI（`~/.local/bin/tabbit-cli` 控制 Tabbit 浏览器）**、`chrome-devtools` MCP、`cua-driver` / `computer-use` 与起服务长控能力完成视觉和真机链路验收 |
 | **`<20 行` 低风险单点小改或快速只读核查（配方 1）** | **`agy` 主会话直接动手** | 免除跨进程派单开销，秒级办完 |
-| **Bug 复现定位（`B4`）与未知代码位置快速探路（`B5`）** | **OpenCode `explore`**（或 `agy` 原生 `scout`） | `opencode run --agent explore --auto "<prompt>"`（强制只读，并行定位 `file:line`；Bug 复现脚本由 `agy` 或 `coder` 执行） |
+| **Bug 浅层秒级定位（`B4a: bug-locate`）与未知代码位置快速探路（`B5`）** | **OpenCode `explore`（默认 `Sonnet 5.5` 快模型）**（或 `agy` 原生 `scout`） | `opencode run --agent explore --auto "<prompt>"`（强制只读，默认 `word-claude/claude-sonnet-5-5#medium` 秒级定位报错时间线、堆栈与 `file:line`；需高思考分析长日志时传 `-m perplexity/sonnet-5.5#high`） |
+| **Bug 深度根因诊断与最小红灯复现（`B4b: bug-repro`）** | **OpenCode `coder`（`Opus 5.5`）** 或 **`explore`（`-m Opus 5.5`）/ `reviewer`（`Fable 5.1`）** | 原因未 100% 坐实或需构造最小红灯复现脚本时，调 `opencode run --agent coder --auto`（`Opus 5.5`）写/跑变红复现环并查根；纯只读深挖跨模块状态机或破局调 `explore -m word-claude/claude-opus-5-5#medium` 或 `reviewer` |
 | **`memex` 知识库、`OV` 文档与高星开源方案深度调研（`B5`）** | **OpenCode `research`**（或 `agy` 原生 `research`） | `opencode run --agent research --auto "<prompt>"`（只读，复用 OpenCode 已配齐的 `openviking`/`zread`/`exa` MCP 与三级降级） |
 | **跨文件业务编码、重构、修 Bug、补单测与精简落盘（`B10`）** | **OpenCode `coder`** | `opencode run --agent coder --auto "<prompt>"`（默认复用已深度适配的 `word-claude/claude-opus-5-5#medium`） |
 | **需求评审（`B3`）、方案独立冷审（`B8`）、代码三合一评审（`B11`）** | **OpenCode `reviewer`** | `opencode run --agent reviewer --auto "<prompt>"`（严格只读，默认 `perplexity/fable-5.1#high`，按被审产物实际作者模型保持异构，高风险方案支持 `Astra + Fable` 双审） |

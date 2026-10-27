@@ -29,14 +29,14 @@ const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
    - Primary Orchestrator: \`Antigravity (agy)\` (Gemini / \`GPT-6 Astra\` / \`GPT-6.1 Sol\`) handles requirement clarification (\`B2\`), native \`/goal\` orchestration, and multimodal/GUI verification (\`B12\`), dispatching background tasks via \`opencode run --agent explore|research|coder|reviewer|general --auto\`. OpenCode also supports standalone interactive sessions with any user-selected model.
    - Subagent 3-Tier Model Priority:
      * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 Opus 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`).
-     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`reviewer\`=\`perplexity/fable-5.1#high\`, \`research\`/\`coder\`/\`explore\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`).
-       - Complexity tiering: mainline/complex coding (multi-file changes under \`B6: spec-draft\` / \`B7: slice-tickets\`, concurrency and state-machine fixes) keeps the default \`word-claude/claude-opus-5-5#medium\`. Low-risk small fixes that skip \`B6: spec-draft\` (single-file mechanical edits, config/copy changes, few-line patches, lightweight \`explore\` lookups) may be dispatched with an explicit \`model="word-claude/claude-sonnet-5-5#medium"\`. Do not append \`#high\`: the Word channel carries \`NormalizeSonnet55DisabledThinking:True\`, so a high variant has no effect.
+     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`explore\`=\`word-claude/claude-sonnet-5-5#medium\`, \`reviewer\`=\`perplexity/fable-5.1#high\`, \`research\`/\`coder\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`).
+       - Complexity tiering: \`explore\` defaults to fast \`word-claude/claude-sonnet-5-5#medium\` for \`B4a: bug-locate\` shallow triage (pass \`model="perplexity/sonnet-5.5#high"\` when high-effort log timeline reasoning is needed, or \`model="word-claude/claude-opus-5-5#medium"\` for deep code inspection). Mainline/complex coding and \`B4b: bug-repro\` root-cause reproduction keep \`word-claude/claude-opus-5-5#medium\`. Low-risk small fixes that skip \`B6: spec-draft\` may use \`model="word-claude/claude-sonnet-5-5#medium"\` (no \`#high\` on Word channel due to \`NormalizeSonnet55DisabledThinking:True\`).
      * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
-   - 12 Standard Blocks (see \`team-dual-goal\` for 4-question self-check & 6 recipes): Stage 1 (\`B1: issue-track\`, \`B2: req-grill\`, \`B3: req-review\`), Stage 2 (\`B4: bug-repro\`, \`B5: explore & research\`), Stage 3 (\`B6: spec-draft\`, \`B7: slice-tickets\`, \`B8: spec-review\`, \`B9: approval-gate\`), Stage 4 (\`B10: slice-impl\`, \`B11: code-review\`, \`B12: verify & deliver\`).
+   - 12 Standard Blocks (see \`team-dual-goal\` for 4-question self-check & 6 recipes): Stage 1 (\`B1: issue-track\`, \`B2: req-grill\`, \`B3: req-review\`), Stage 2 (\`B4: bug-locate & bug-repro\` [\`:B4a\` shallow triage via \`explore\` Sonnet -> \`:B4b\` deep repro & root cause via \`coder\`/\`reviewer\` Opus/Fable], \`B5: explore & research\`), Stage 3 (\`B6: spec-draft\`, \`B7: slice-tickets\`, \`B8: spec-review\`, \`B9: approval-gate\`), Stage 4 (\`B10: slice-impl\`, \`B11: code-review\`, \`B12: verify & deliver\`).
 </system-reminder>`;
 
 const ROLE_DEFAULT_MODELS = {
-  explore: "word-claude/claude-opus-5-5#medium",
+  explore: "word-claude/claude-sonnet-5-5#medium",
   research: "word-claude/claude-opus-5-5#medium",
   coder: "word-claude/claude-opus-5-5#medium",
   reviewer: "perplexity/fable-5.1#high",
@@ -44,7 +44,7 @@ const ROLE_DEFAULT_MODELS = {
 };
 
 const SUBAGENT_FALLBACK_TIERS = {
-  explore: ["word-claude/claude-sonnet-5-5#medium", "perplexity/sonnet-5.5#medium", "openai/gpt-6.1-sol#medium"],
+  explore: ["perplexity/sonnet-5.5#high", "word-claude/claude-opus-5-5#medium", "openai/gpt-6.1-sol#medium"],
   research: ["word-claude/claude-opus-5-5#medium", "perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
   general: ["perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
   coder: ["word-claude/claude-sonnet-5-5#medium", "perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],

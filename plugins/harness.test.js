@@ -23,10 +23,10 @@ describe("auto-continue-harness subagent fallback & background coercion (Issue #
     ]);
   });
 
-  test("resolveSubagentFallbackTiers puts word-claude/claude-sonnet-5-5#medium first for explore and coder and deduplicates it", () => {
+  test("resolveSubagentFallbackTiers uses fast sonnet default for explore and puts word-claude/claude-sonnet-5-5#medium first for coder", () => {
     expect(resolveSubagentFallbackTiers("explore", undefined)).toEqual([
-      "word-claude/claude-sonnet-5-5#medium",
-      "perplexity/sonnet-5.5#medium",
+      "perplexity/sonnet-5.5#high",
+      "word-claude/claude-opus-5-5#medium",
       "openai/gpt-6.1-sol#medium",
     ]);
     expect(resolveSubagentFallbackTiers("coder", undefined)).toEqual([
@@ -35,8 +35,8 @@ describe("auto-continue-harness subagent fallback & background coercion (Issue #
       "openai/gpt-6.1-sol#high",
     ]);
 
-    expect(resolveSubagentFallbackTiers("explore", "word-claude/claude-sonnet-5-5#medium")).toEqual([
-      "perplexity/sonnet-5.5#medium",
+    expect(resolveSubagentFallbackTiers("explore", "perplexity/sonnet-5.5#high")).toEqual([
+      "word-claude/claude-opus-5-5#medium",
       "openai/gpt-6.1-sol#medium",
     ]);
     expect(resolveSubagentFallbackTiers("coder", "word-claude/claude-sonnet-5-5#medium")).toEqual([
