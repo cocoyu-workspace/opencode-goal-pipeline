@@ -31,7 +31,7 @@ const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
      * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 Opus 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`).
      * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`reviewer\`=\`perplexity/fable-5.1#high\`, \`research\`/\`coder\`/\`explore\`=\`word-claude/claude-opus-5-5#medium\`).
        - Complexity tiering: mainline/complex coding (multi-file changes under \`N3: Spec\` / \`N5: Tickets\`, concurrency and state-machine fixes) keeps the default \`word-claude/claude-opus-5-5#medium\`. Small fixes that skip \`N3: Spec\` (single-file mechanical edits, config/copy changes, few-line patches, lightweight \`explore\` lookups) may be dispatched with an explicit \`model="word-claude/claude-sonnet-5-5#medium"\`. Do not append \`#high\`: the Word channel carries \`NormalizeSonnet55DisabledThinking:True\`, so a high variant has no effect.
-     * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`. Fallback-protected subagents run in blocking mode (\`background: false\`).
+     * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
    - 7 Composable Atomic Blocks: \`B1: issue-track\`, \`B2: req-grill\` (\`team-grilling\` + \`reviewer\` requirement pre-review), \`B3: fact-research\` (local \`file:line\` + \`research\` subagent), \`B4: spec-draft\` (spec + reuse design), \`B5: spec-review\` (\`team-review-governance\` 3-in-1 independent review), \`B6: gate-brief\` (approval gate), \`B7: impl-verify\` (\`coder\` implementation & simplification + \`reviewer\` 3-in-1 code review + focused tests).
 </system-reminder>`;
 
@@ -40,6 +40,7 @@ const ROLE_DEFAULT_MODELS = {
   research: "word-claude/claude-opus-5-5#medium",
   coder: "word-claude/claude-opus-5-5#medium",
   reviewer: "perplexity/fable-5.1#high",
+  general: "word-claude/claude-opus-5-5#medium",
 };
 
 const SUBAGENT_FALLBACK_TIERS = {
@@ -82,28 +83,13 @@ export function wrapSubagentExecute(origExecute) {
     } catch (firstErr) {
       const firstMsg = String(firstErr?.message || firstErr || "");
       if (/Subagent cancelled/i.test(firstMsg) || callCtx?.signal?.aborted) throw firstErr;
-      const match = firstMsg.match(/sessionID:\s*(ses_[A-Za-z0-9]+)/i);
-      const isPreSessionErr =
-        /Model ".*" is not available|Variant ".*" is not available|Invalid model|Failed to prompt subagent|Failed to switch subagent/i.test(
-          firstMsg,
-        );
-      if ((!match && !isPreSessionErr) || fallbackTiers.length === 0) throw firstErr;
+      const isPreSessionErr = /Model ".*" is not available|Variant ".*" is not available|Invalid model/.test(firstMsg);
+      if (!isPreSessionErr || fallbackTiers.length === 0) throw firstErr;
 
-      let currentSessionID = match?.[1] || input?.sessionID;
       let lastErr = firstErr;
       for (const fallbackModel of fallbackTiers) {
         try {
-          const retryPayload = currentSessionID
-            ? {
-                ...effectiveInput,
-                sessionID: currentSessionID,
-                model: fallbackModel,
-                prompt: "前序模型渠道异常中断，请在同一子会话中直接继续完成上述任务。",
-              }
-            : {
-                ...effectiveInput,
-                model: fallbackModel,
-              };
+          const retryPayload = { ...effectiveInput, model: fallbackModel };
           const retryRes = await origExecute(retryPayload, callCtx);
           const fallbackNote = `${coercedNote}\n\n[Fallback Executed: requested=${input?.model || `${input?.agent || "subagent"}:default`} -> actual=${fallbackModel}]`;
           return appendSubagentAuditNote(retryRes, fallbackNote);
@@ -111,12 +97,50 @@ export function wrapSubagentExecute(origExecute) {
           lastErr = retryErr;
           const retryMsg = String(retryErr?.message || retryErr || "");
           if (/Subagent cancelled/i.test(retryMsg) || callCtx?.signal?.aborted) throw retryErr;
-          const nextMatch = retryMsg.match(/sessionID:\s*(ses_[A-Za-z0-9]+)/i);
-          if (nextMatch?.[1]) currentSessionID = nextMatch[1];
+          if (!/Model ".*" is not available|Variant ".*" is not available|Invalid model/.test(retryMsg)) throw retryErr;
         }
       }
       throw lastErr;
     }
+  };
+}
+
+function createSessionFallback(ctx) {
+  const turns = new Map();
+  return {
+    reset(sessionID) { turns.delete(sessionID); },
+    async retry(input) {
+      const type = input.error.type;
+      if (!["provider.auth", "provider.quota", "provider.rate-limit", "provider.internal", "provider.transport", "provider.timeout"].includes(type)) return;
+      if (input.error.status === 403) return;
+      if (!SUBAGENT_FALLBACK_TIERS[input.agent]) return;
+      const from = `${input.model.providerID}/${input.model.id}${input.model.variant ? `#${input.model.variant}` : ""}`;
+      let turn = turns.get(input.sessionID);
+      if (!turn) {
+        turn = { tried: new Set(), requested: from };
+        turns.set(input.sessionID, turn);
+      }
+      turn.tried.add(from);
+      const { data: available } = await ctx.model.list();
+      const next = resolveSubagentFallbackTiers(input.agent, turn.requested).find((model) => {
+        if (turn.tried.has(model)) return false;
+        const [providerID, rest] = model.split("/");
+        const [id, variant] = rest.split("#");
+        return available.some((candidate) => candidate.providerID === providerID && candidate.id === id && (!variant || candidate.variants.some((value) => value.id === variant)));
+      });
+      if (!next) {
+        input.decision = { retry: false };
+        return;
+      }
+      turn.tried.add(next);
+      const [providerID, rest] = next.split("/");
+      const [id, variant] = rest.split("#");
+      await ctx.session.switchModel({ sessionID: input.sessionID, model: { providerID, id, ...(variant ? { variant } : {}) } });
+      input.decision = { retry: true, delay: 0 };
+      const audit = `[Fallback Executed: requested=${turn.requested} -> actual=${next}]`;
+      if (ctx.storage) await ctx.storage.set(`fallback/${input.sessionID}`, { requested: turn.requested, actual: next, tried: [...turn.tried] });
+      console.error(audit);
+    },
   };
 }
 
@@ -180,6 +204,11 @@ export default {
     }
 
     const disposables = [];
+    const fallback = createSessionFallback(ctx);
+    if (typeof ctx.session?.hook === "function") {
+      const reg = await ctx.session.hook("retry", (input) => fallback.retry(input));
+      if (reg?.dispose) disposables.push(reg);
+    }
 
     // 1. Upgrade conservative gpt-* system prompt to gpt-astra autonomy + explicit confirmation boundary
     if (typeof ctx.session?.hook === "function") {
@@ -258,6 +287,9 @@ export default {
       (async () => {
         try {
           for await (const event of ctx.event.subscribe({ signal: controller.signal })) {
+            if (["session.execution.succeeded", "session.execution.failed", "session.execution.interrupted", "session.deleted"].includes(event?.type)) {
+              fallback.reset(event.data.sessionID);
+            }
             if (!claimHarnessEvent(event?.id)) continue;
             const t = event?.type;
             const d = event?.data || {};

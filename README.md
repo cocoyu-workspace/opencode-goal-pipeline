@@ -116,7 +116,7 @@
    - **第一优先级（用户当轮点名，最高优先）**：当用户点名「用 Opus 审」「用 Astra 跑」时，主会话调用 `subagent` 显式传入 `model="<provider>/<model>#<effort>"` 强制覆盖。
    - **第二优先级（角色默认配置）**：未点名时使用 `opencode.json` 默认模型（`reviewer` 默认 `perplexity/fable-5.1#high`，`research` / `coder` / `explore` 默认 `word-claude/claude-opus-5-5#medium`）。
     - **按任务复杂度分级启用**：`word-claude/claude-opus-5-5#medium` 用于复杂主干编码（含 `N3: Spec` / `N5: Tickets` 的多文件改动、并发与状态机修复）；`word-claude/claude-sonnet-5-5#medium` 用于跳过 `N3: Spec` 的小修小补（单文件机械小改、改配置/文案、几行补丁）与轻量 `explore` 检索，由主会话显式传入，不挂 `#high`（Word 通道含 `NormalizeSonnet55DisabledThinking:True`）。
-   - **第三优先级（`auto-continue-harness.js` 三级自动降级）**：上游限流或报错时自动按三级备选链同会话降级续跑，并在结果末尾追加 `[Fallback Executed: requested=... -> actual=...]` 审计标记。
+   - **第三优先级（`auto-continue-harness.js` 三级自动降级）**：上游限流或报错时自动按三级备选链同会话降级续跑，并持久记录实际切换模型。启动前模型解析错误的回退另在工具结果追加 `[Fallback Executed: requested=... -> actual=...]` 标记。
 
 ---
 
@@ -137,7 +137,7 @@
 | 目录 / 文件 | 说明 |
 | :--- | :--- |
 | `agy-magpie-harness/` | `Antigravity.app` 桌面端 GUI 8 个大写 GPT 模型注入、透明包装器 `ls-wrapper`、`agy-gpt` 启动器与 Magpie 适配补丁 |
-| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与子 Agent 三级模型故障回退护栏插件（`v6`，已移除废弃的 `opencode-goal`） |
+| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与角色会话原生重试与三级模型故障回退护栏插件（`v6`，已移除废弃的 `opencode-goal`） |
 | `plugins/harness.test.js` | `auto-continue-harness.js` 子 Agent 三级回退与后台强制同步单测 |
 | `config/opencode.agents.json` | OpenCode 五大专职子 Agent（`coder`、`reviewer`、`research`、`explore`、`general`）模型与只读权限配置 |
 | `skills/team-dual-goal/SKILL.md` | `agy` 原生 `/goal` + `opencode run` 7 大原子积木（`N1`~`N7` / `B1`~`B7`）动态装配与模型三级路由规程 |
@@ -155,3 +155,23 @@ python3 tools/install.py install
 # 运行护栏单测
 bun test plugins/harness.test.js
 ```
+
+
+## 后台运行故障转移
+
+护栏通过 OpenCode 2.1 的原生 `session.retry` 钩子保护 `opencode run --agent coder|reviewer|research|explore|general` 与内部子会话。渠道认证、额度、限流、服务端和网络超时失败时，在同一会话切换到角色备选表中的可用模型。候选不会重复，全部失败后退出。没有角色备选表的主会话不自动切换。
+
+内部 `subagent` 工具包装器仅处理启动前的模型或推理档位解析错误。运行时故障由会话钩子处理，避免同一错误在两层重复回退。取消、权限拒绝、403、无效请求和内容策略错误不由护栏接管。
+
+故障转移复用请求的 `timeout`、`headerTimeout` 和 `chunkTimeout`。插件不为正常长任务另加总时长强杀。请求没有结束前不会仅因计时器到期另起执行。现有生产超时不会被安装器修改。
+
+降级记录存入插件 storage 的 `fallback/<sessionID>`，包含 requested、actual 与 tried。控制台标记不保证所有客户端都会显示。该记录表示发生了切换，不表示任务已经完成。显式选模优先，但失败后仍可降级。异构评审的作者模型约束仍由派单方负责，插件不会猜测作者。
+
+验证命令：
+
+```bash
+bun test plugins/harness.test.js
+python3 tools/test_fallback_cli.py --plugin plugins/auto-continue-harness.js --case 401
+```
+
+CLI 故障脚本还支持 `429`、`503`、`400`、`success`、`exhaust`、`header-timeout` 、`chunk-timeout`、`cancel` 和 `cross-provider`。测试使用隔离配置与本地模拟服务，不改全局配置，不消耗真实渠道额度。测试中为加速而采用短超时，这不代表生产接管耗时。真实供应商之间的历史格式兼容与工具副作用恢复仍需单独验收，同会话不保证外部写入恰好一次。
