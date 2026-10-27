@@ -25,11 +25,20 @@ if p.exists():
 ' 2>/dev/null || true
 
 MODEL="magpie/codex/gpt-6.1-sol"
+EFFORT_SUFFIX=""
 HAS_MODEL=0
 ARGS=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --high)
+      EFFORT_SUFFIX="-high"
+      shift
+      ;;
+    --max)
+      EFFORT_SUFFIX="-max"
+      shift
+      ;;
     --fast)
       MODEL="magpie/codex/gpt-6.1-sol-fast"
       shift
@@ -67,7 +76,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$HAS_MODEL" -eq 0 ]]; then
-  exec agy --model "$MODEL" "${ARGS[@]}"
+  exec agy --model "${MODEL}${EFFORT_SUFFIX}" "${ARGS[@]}"
 else
   exec agy "${ARGS[@]}"
 fi

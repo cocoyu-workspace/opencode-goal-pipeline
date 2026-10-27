@@ -62,12 +62,20 @@
 
 1. **Web UI 静态包补丁（`~/.gemini/antigravity/web_bundle_custom.zip`）**：
    - 从 `/Applications/Antigravity.app/Contents/Resources/bin/language_server.real` 内置 zip 提取 `main.js`，开启 `aHc` 的 `customModelsFeature:{customModelsProvider:f.customModelsProvider}`、`yac` 的 `showCustomModelHeader:!0` 以及 `zsc` 的 `supportsCustomModels:!0`。
-2. **`RoutingClient` 协议前缀路由与 15 个常用模型精简同步（`bin/sync-agy-gui-models.py`）**：
-   - 桌面端 `language_server` 默认以 `--model_api_client_type=ccpa` 启动，但其 `RoutingClient.resolveClient`（`routing_client.go:100-149`）在解析 `custom_models_config` 时，若发现 `modelName` 带有 `gemini-api://` 前缀（如 `gemini-api://codex/gpt-6.1-sol`）且 `modelId` 为 `MODEL_GOOGLE_GEMINI_INTERNAL_BYOM`，会自动将该会话请求转发给内置 `geminiapi.Client`（直连 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`），而不影响 Google 原生模型继续走 CCPA。
-   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 仅同步精选的 **8 个大写命名 GPT 模型**（`GPT-6 Astra` 三档、`GPT-6.1 Sol` 五档；不展示 Word、Perplexity、Gemini、Kiro、ZCode、Qoder、Cursor 等模型）。
+   - 同时放开 `G4` 对 `isCustom` 模型按 `(Medium)` / `(High)` / `(Max)` 标签后缀的解析，将 `customModels` 并入 `hac` 的 `effortIndex`，并在 `kac` 中将同一基础模型的三个推理档位折叠为单行 `pac` 二级 Effort 子菜单（**默认选中 `Medium`，右侧悬停/展开可切换 `Medium` / `High` / `Max`**）。
+2. **`RoutingClient` 协议前缀路由与 11 个基础模型（33 条档位配置）同步（`bin/sync-agy-gui-models.py`）**：
+   - 桌面端 `language_server` 默认以 `--model_api_client_type=ccpa` 启动，但其 `RoutingClient.resolveClient`（`routing_client.go:100-149`）在解析 `custom_models_config` 时，若发现 `modelName` 带有 `gemini-api://` 前缀（如 `gemini-api://codex/gpt-6.1-sol`、`gemini-api://perplexity/perplexity/sonnet-5.5`）且 `modelId` 为 `MODEL_GOOGLE_GEMINI_INTERNAL_BYOM`，会自动将该会话请求转发给内置 `geminiapi.Client`（直连 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`），而不影响 Google 原生模型继续走 CCPA。
+   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 同步精选的 **11 个基础模型 × 3 档位（`Medium` / `High` / `Max`，共 33 条，UI 折叠为 11 行）**：
+     - **Codex GPT（6 个基础模型）**：`GPT-6 Astra`、`GPT-6 Astra Fast`、`GPT-6 Astra Ultra Fast`（272K 上下文）；`GPT-6.1 Sol`、`GPT-6.1 Sol Fast`、`GPT-6.1 Sol Ultra Fast`（500K 上下文）。默认 `Medium` 发送 `reasoning.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"xhigh"`。
+     - **Word Claude（2 个基础模型）**：`Claude Opus 5.5 (Word)`（`200K` 上下文）、`Claude Sonnet 5.5 (Word)`（`500K` 上下文）。默认 `Medium` 发送 `output_config.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"max"`。
+     - **Perplexity Claude（3 个基础模型，1M 上下文）**：`Claude Fable 5.1 (Perplexity)`、`Claude Opus 5.5 (Perplexity)`、`Claude Sonnet 5.5 (Perplexity)`。默认 `Medium` 发送 `output_config.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"max"`。
+     - 已剔除 Codex 平台双来源（`codex-all`）及 Word / Perplexity 下的 `GPT-6.1 Sol`。
 3. **透明启动包装器（`cmd/ls-wrapper/main.go` $\rightarrow$ `/Applications/Antigravity.app/Contents/Resources/bin/language_server`）**：
    - 原版二进制保留在同目录 `language_server.real`。
-   - 当 `Antigravity.app` 以 `--subclient_type hub` 拉起 `language_server` 时，包装器自动注入 `--web_bundle_path=/Users/mac/.gemini/antigravity/web_bundle_custom.zip`、`GEMINI_API_KEY=magpie-agy` 与 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`，并在后台自动执行 `sync-agy-gui-models.py` 保持 8 个 GPT 模型同步。
+   - 当 `Antigravity.app` 以 `--subclient_type hub` 拉起 `language_server` 时，包装器自动注入 `--web_bundle_path=/Users/mac/.gemini/antigravity/web_bundle_custom.zip`、`GEMINI_API_KEY=magpie-agy` 与 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`，并在后台自动执行 `/Users/mac/dev/opencode-goal-pipeline/agy-magpie-harness/bin/sync-agy-gui-models.py --wait --quiet` 保持 11 个模型同步。
+4. **排障与重同步速查（若后续升级或适配出现异常）**：
+   - **现象 A：`Antigravity.app` 重启后 `Custom` 列表变回旧模型或新增模型消失**：检查 `/Users/mac/dev/opencode-goal-pipeline/agy-magpie-harness/bin/sync-agy-gui-models.py` 的 `GUI_LABELS`（包装器固定在启动 6 秒后调用该路径覆写 `JetboxWriteState`），手动执行 `python3 /Users/mac/dev/opencode-goal-pipeline/agy-magpie-harness/bin/sync-agy-gui-models.py` 即可热写入 `~/.gemini/antigravity/antigravity_state.pbtxt`。
+   - **现象 B：桌面端选 `Custom` 模型报 `gemini-3.1-flash-lite-preview` 404**：检查 `~/.gemini/antigravity-cli/settings.json` 顶层是否包含 `"modelProvider": "gemini"`（`magpie` 的 `agyStandIn` 依赖该字段为后台辅助请求做模型兜底；若曾运行 `agy-notion.py --setup-agy`，可执行 `agy-notion.py --remove-agy` 恢复）。
 
 ---
 

@@ -1,8 +1,8 @@
 diff --git a/internal/agent/agy.go b/internal/agent/agy.go
-index 9b127ef..074d0bc 100644
+index 9b127ef..c512cb1 100644
 --- a/internal/agent/agy.go
 +++ b/internal/agent/agy.go
-@@ -25,12 +25,65 @@ import (
+@@ -25,12 +25,78 @@ import (
  	"github.com/tidwall/gjson"
  	"github.com/tidwall/jsonc"
  
@@ -18,6 +18,23 @@ index 9b127ef..074d0bc 100644
 +// doesn't serve (such as gemini-3.1-flash-lite-preview for worktree/title
 +// naming). Fast/ultrafast suffixes are stripped so background helper turns use
 +// the standard tier.
++func trimAgyVariant(v string) (string, string) {
++	orig := v
++	for _, suf := range []string{"-max", "-xhigh", "-high", "-medium", "-low"} {
++		if base, cut := strings.CutSuffix(v, suf); cut {
++			v = base
++			break
++		}
++	}
++	for _, suf := range []string{"-ultrafast", "-fast"} {
++		if base, cut := strings.CutSuffix(v, suf); cut {
++			v = base
++			break
++		}
++	}
++	return v, strings.TrimPrefix(orig, v)
++}
++
 +func agyStandIn(path string) string {
 +	if p := jsonGet(path, "modelProvider")(); p != "gemini" {
 +		return ""
@@ -27,12 +44,8 @@ index 9b127ef..074d0bc 100644
 +	if !ok {
 +		return ""
 +	}
-+	for _, suf := range []string{"-ultrafast", "-fast"} {
-+		if base, cut := strings.CutSuffix(ref, suf); cut {
-+			return base
-+		}
-+	}
-+	return ref
++	base, _ := trimAgyVariant(ref)
++	return base
 +}
 +
 +// agyModelEntry builds the .exa.codeium_common_pb.ModelInfo JSON entry for one
@@ -68,40 +81,44 @@ index 9b127ef..074d0bc 100644
  // AgyLaunch is the command that starts agy on magpie's gateway and one of
  // its custom models, in the shell of this system. Its key names agy: its
  // requests go out as Google's Gemini SDK's (User-Agent google-genai-sdk/…),
-@@ -76,7 +129,11 @@ func agy(home string) *Agent {
+@@ -76,7 +142,19 @@ func agy(home string) *Agent {
  		}
  		if with {
  			for _, m := range magpieModels("agy") {
 -				ms[magpieID+"/"+m.ID] = map[string]string{"apiProvider": "API_PROVIDER_GOOGLE_GEMINI", "modelName": m.ID}
 +				ms[magpieID+"/"+m.ID] = agyModelEntry(m.ID, m)
++				if m.Reasoning || len(m.Efforts) > 0 {
++					ms[magpieID+"/"+m.ID+"-high"] = agyModelEntry(m.ID+"-high", m)
++					ms[magpieID+"/"+m.ID+"-max"] = agyModelEntry(m.ID+"-max", m)
++				}
 +				if m.CodexFast {
 +					ms[magpieID+"/"+m.ID+"-fast"] = agyModelEntry(m.ID+"-fast", m)
++					ms[magpieID+"/"+m.ID+"-fast-high"] = agyModelEntry(m.ID+"-fast-high", m)
++					ms[magpieID+"/"+m.ID+"-fast-max"] = agyModelEntry(m.ID+"-fast-max", m)
 +					ms[magpieID+"/"+m.ID+"-ultrafast"] = agyModelEntry(m.ID+"-ultrafast", m)
++					ms[magpieID+"/"+m.ID+"-ultrafast-high"] = agyModelEntry(m.ID+"-ultrafast-high", m)
++					ms[magpieID+"/"+m.ID+"-ultrafast-max"] = agyModelEntry(m.ID+"-ultrafast-max", m)
 +				}
  			}
  		}
  		if len(ms) > 0 {
-@@ -100,6 +157,14 @@ func agy(home string) *Agent {
+@@ -100,6 +178,10 @@ func agy(home string) *Agent {
  	return &Agent{
  		ID: "agy", Name: "Antigravity CLI", Icon: "antigravity-color", Aliases: []string{"antigravity-cli"}, Spelled: prefixed, NoNames: true,
  		Bin: "agy", Dir: dir, Path: path,
 +		SplitSuffix: func(v string) (string, string, bool) {
-+			for _, suf := range []string{"-ultrafast", "-fast"} {
-+				if base, ok := strings.CutSuffix(v, suf); ok {
-+					return base, suf, true
-+				}
-+			}
-+			return v, "", true
++			base, suf := trimAgyVariant(v)
++			return base, suf, true
 +		},
  		Launch: func() string {
  			if v := get(); usesMagpie(v) {
  				return AgyLaunch(v)
-@@ -137,7 +202,8 @@ func agy(home string) *Agent {
+@@ -137,7 +219,8 @@ func agy(home string) *Agent {
  			Get: get,
  			Set: func(v string) error {
  				cur := get()
 -				if ref, ok := strings.CutPrefix(v, magpieID+"/"); ok && isMagpie(ref) {
-+				base := strings.TrimSuffix(strings.TrimSuffix(v, "-ultrafast"), "-fast")
++				base, _ := trimAgyVariant(v)
 +				if ref, ok := strings.CutPrefix(base, magpieID+"/"); ok && isMagpie(ref) {
  					if !usesMagpie(cur) {
  						stash(map[string]string{stashModel: cur, stashProvider: provider()})
@@ -149,16 +166,198 @@ index f26e254..e032bd4 100644
  	if agent == "codex" {
  		return codexStandIn(filepath.Join(here(home).codexHome(), "config.toml"))
  	}
+diff --git a/internal/gateway/agenteffort_test.go b/internal/gateway/agenteffort_test.go
+index 4e394a8..fdb6a11 100644
+--- a/internal/gateway/agenteffort_test.go
++++ b/internal/gateway/agenteffort_test.go
+@@ -97,3 +97,104 @@ func TestAgentEffortOnCursorLocal(t *testing.T) {
+ 		t.Fatalf("taken off, an effort was added: %v", body)
+ 	}
+ }
++
++func TestAgyMediumDefaultAndHighMaxEffort(t *testing.T) {
++	s, up := fasted(t)
++	if err := catalog.SaveLive("oa", "https://api.openai.com/v1", []catalog.Model{
++		{ID: "gpt-6.1-sol", Efforts: []string{"low", "medium", "high", "xhigh"}, CodexFast: true},
++		{ID: "gpt-6-astra", Efforts: []string{"low", "medium", "high", "xhigh"}, CodexFast: true},
++	}); err != nil {
++		t.Fatal(err)
++	}
++	if err := provider.Save(provider.Provider{
++		ID:        "word-claude",
++		Name:      "Word Claude",
++		Key:       "kw",
++		Anthropic: "https://word.example",
++		Models:    []string{"word/claude-opus-5-5", "word/claude-sonnet-5-5"},
++	}); err != nil {
++		t.Fatal(err)
++	}
++	if err := provider.Save(provider.Provider{
++		ID:        "perplexity",
++		Name:      "Perplexity",
++		Key:       "kp",
++		Anthropic: "https://pplx.example",
++		Models:    []string{"perplexity/fable-5.1", "perplexity/opus-5.5", "perplexity/sonnet-5.5"},
++	}); err != nil {
++		t.Fatal(err)
++	}
++
++	geminiBody := `{"contents":[{"role":"user","parts":[{"text":"hi"}]}],"generationConfig":{"thinkingConfig":{"thinkingBudget":-1,"includeThoughts":true}}}`
++	effortOf := func(body map[string]any) any {
++		if r, ok := body["reasoning"].(map[string]any); ok {
++			return r["effort"]
++		}
++		if oc, ok := body["output_config"].(map[string]any); ok {
++			return oc["effort"]
++		}
++		return body["reasoning_effort"]
++	}
++
++	// Default agy requests send medium effort across all channels
++	for _, m := range []string{
++		"oa/gpt-6.1-sol",
++		"oa/gpt-6.1-sol-fast",
++		"oa/gpt-6.1-sol-ultrafast",
++		"oa/gpt-6-astra",
++		"word-claude/word/claude-opus-5-5",
++		"word-claude/word/claude-sonnet-5-5",
++		"perplexity/perplexity/fable-5.1",
++		"perplexity/perplexity/opus-5.5",
++		"perplexity/perplexity/sonnet-5.5",
++	} {
++		postFrom(t, s, "agy", "/v1beta/models/"+m+":streamGenerateContent?alt=sse", geminiBody)
++		if _, _, _, body := up.last(t); effortOf(body) != "medium" {
++			t.Fatalf("default %s: got effort %v in %v", m, effortOf(body), body)
++		}
++	}
++
++	// High suffix (-high and :high) sends high across all channels (including -fast-high / -ultrafast-high)
++	for _, m := range []string{
++		"oa/gpt-6.1-sol-high",
++		"oa/gpt-6.1-sol-fast-high",
++		"oa/gpt-6.1-sol-ultrafast-high",
++		"oa/gpt-6-astra-high",
++		"oa/gpt-6-astra-fast-high",
++		"oa/gpt-6-astra-ultrafast-high",
++		"word-claude/word/claude-opus-5-5-high",
++		"word-claude/word/claude-sonnet-5-5-high",
++		"perplexity/perplexity/fable-5.1-high",
++		"perplexity/perplexity/opus-5.5-high",
++		"perplexity/perplexity/sonnet-5.5-high",
++	} {
++		postFrom(t, s, "agy", "/v1beta/models/"+m+":streamGenerateContent?alt=sse", geminiBody)
++		if _, _, _, body := up.last(t); effortOf(body) != "high" {
++			t.Fatalf("high %s: got effort %v in %v", m, effortOf(body), body)
++		}
++	}
++
++	// Max suffix (-max and :max) sends xhigh on Codex and max on Word/Perplexity Claude
++	for _, tc := range []struct {
++		model string
++		want  string
++	}{
++		{"oa/gpt-6.1-sol-max", "xhigh"},
++		{"oa/gpt-6.1-sol-fast-max", "xhigh"},
++		{"oa/gpt-6.1-sol-ultrafast-max", "xhigh"},
++		{"oa/gpt-6-astra-max", "xhigh"},
++		{"oa/gpt-6-astra-fast-max", "xhigh"},
++		{"oa/gpt-6-astra-ultrafast-max", "xhigh"},
++		{"oa/gpt-6.1-sol:max", "xhigh"},
++		{"word-claude/word/claude-opus-5-5-max", "max"},
++		{"word-claude/word/claude-sonnet-5-5-max", "max"},
++		{"perplexity/perplexity/fable-5.1-max", "max"},
++		{"perplexity/perplexity/opus-5.5-max", "max"},
++		{"perplexity/perplexity/sonnet-5.5-max", "max"},
++	} {
++		postFrom(t, s, "agy", "/v1beta/models/"+tc.model+":streamGenerateContent?alt=sse", geminiBody)
++		if _, _, _, body := up.last(t); effortOf(body) != tc.want {
++			t.Fatalf("max %s: got effort %v, want %s in %v", tc.model, effortOf(body), tc.want, body)
++		}
++	}
++}
+diff --git a/internal/gateway/decide.go b/internal/gateway/decide.go
+index cd68143..e3ef722 100644
+--- a/internal/gateway/decide.go
++++ b/internal/gateway/decide.go
+@@ -648,6 +648,16 @@ func withEffort(proto provider.Protocol, body []byte, effort string) []byte {
+ 			}
+ 			return withFields(body, fields)
+ 		}
++	case provider.Gemini:
++		var g struct {
++			GenerationConfig *struct {
++				ThinkingConfig *gThinking `json:"thinkingConfig"`
++			} `json:"generationConfig"`
++		}
++		if decodeJSON(body, &g) != nil || g.GenerationConfig == nil || g.GenerationConfig.ThinkingConfig == nil || g.GenerationConfig.ThinkingConfig.effort() == "" {
++			return body
++		}
++		return withFixedEffort(proto, body, effort)
+ 	}
+ 	return body
+ }
+@@ -694,9 +704,12 @@ func sentEffort(proto provider.Protocol, body []byte, p provider.Provider, model
+ // has — no more than high, which it takes where it turns max away (#214).
+ // A model whose levels just aren't known is asked as the agent asked.
+ func fitFor(p provider.Provider, model, want string) string {
++	if adaptiveOnly(model) && want == "max" {
++		return "max"
++	}
+ 	levels := p.Efforts(model)
+ 	e := fitEffort(want, levels)
+-	if len(levels) == 0 && slices.Index(effortRank, e) > slices.Index(effortRank, "high") && p.Levelless(model) {
++	if len(levels) == 0 && slices.Index(effortRank, e) > slices.Index(effortRank, "high") && p.Levelless(model) && !adaptiveOnly(model) {
+ 		return "high"
+ 	}
+ 	return e
+@@ -762,6 +775,22 @@ func withFixedEffort(proto provider.Protocol, body []byte, effort string) []byte
+ 			return body
+ 		}
+ 		return withFields(body, map[string]any{"thinking": map[string]any{"type": "enabled", "budget_tokens": budget}})
++	case provider.Gemini:
++		var v struct {
++			GenerationConfig map[string]any `json:"generationConfig"`
++		}
++		if decodeJSON(body, &v) != nil {
++			return body
++		}
++		if v.GenerationConfig == nil {
++			v.GenerationConfig = map[string]any{}
++		}
++		if effort == "none" {
++			v.GenerationConfig["thinkingConfig"] = map[string]any{"thinkingBudget": 0}
++		} else {
++			v.GenerationConfig["thinkingConfig"] = map[string]any{"thinkingLevel": effort, "includeThoughts": true}
++		}
++		return withFields(body, map[string]any{"generationConfig": v.GenerationConfig})
+ 	}
+ 	return body
+ }
 diff --git a/internal/gateway/gateway.go b/internal/gateway/gateway.go
-index c39371d..69e1c63 100644
+index c39371d..88ec3a3 100644
 --- a/internal/gateway/gateway.go
 +++ b/internal/gateway/gateway.go
-@@ -1842,6 +1842,23 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
+@@ -1842,6 +1842,39 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
  	}
  	// any Claude Code subagent's turn, moved or not, for the Routing page's tag
  	subagentID := subagentTurnOf(r, call.Kind, body, desktopPick != nil || subagentEffort != "")
 +	var askedFast, askedUltra bool
 +	if !catalogNames.get(struct{}{}, namesInCatalog)[asked] {
++		stripEffort := func() {
++			if askedEffort != "" {
++				return
++			}
++			for _, lvl := range []string{"max", "xhigh", "high", "medium", "low"} {
++				if base, cut := strings.CutSuffix(asked, "-"+lvl); cut {
++					checkBase := strings.TrimSuffix(strings.TrimSuffix(base, "-ultrafast"), "-fast")
++					if bp, bm, bok := provider.Resolve(checkBase); bok && (bp.Thinks(bm) || adaptiveOnly(bm)) {
++						asked, askedEffort = base, lvl
++						break
++					}
++				}
++			}
++		}
++		stripEffort()
 +		for _, suf := range []struct {
 +			suffix string
 +			ultra  bool
@@ -173,11 +372,12 @@ index c39371d..69e1c63 100644
 +				}
 +			}
 +		}
++		stripEffort()
 +	}
  	p, model, ok := provider.Resolve(asked)
  	// a model the user disabled (#1867) — asked by its id, the model a
  	// sub-agent was put on, a group with every model in it disabled — is
-@@ -2112,11 +2129,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
+@@ -2112,14 +2145,17 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
  			// the fallbacks are left (codexFallBack)
  			cands, pl = fallbacksOnly(cands, pl, p.ID, model)
  		}
@@ -191,7 +391,35 @@ index c39371d..69e1c63 100644
  		}
  	}
  	agentPick := provider.AgentEffort(agent)
-@@ -2743,7 +2760,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
++	if agentPick == "" && (agent == "agy" || from == provider.Gemini && callerKey(r) == "magpie-agy") {
++		agentPick = "medium"
++	}
+ 	if sealedTask {
+ 		cands, pl = s.sealedReaders(cands, pl, sealers)
+ 	}
+@@ -2655,7 +2691,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
+ 				fixed = ""
+ 			}
+ 		}
+-		if fixed == "" && ruled == "" && effort == "" && agentPick != "" && c.p.Thinks(c.model) {
++		if fixed == "" && ruled == "" && effort == "" && agentPick != "" && (c.p.Thinks(c.model) || adaptiveOnly(c.model)) {
+ 			// the effort picked in magpie for an agent whose config can't
+ 			// carry one (Cursor Private Inference, #1003), in place of the
+ 			// level it sent, on a model that reasons; a member fixed at
+@@ -2670,7 +2706,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
+ 			// a member fixed at an effort is asked for it, at the level its
+ 			// model has nearest, whatever the agent asked or the turn's
+ 			// pick: even a request that asked for no reasoning
+-			attemptBody = withFixedEffort(from, attemptBody, fitLevel(fixed, c.p.Efforts(c.model)))
++			modelLevels := c.p.Efforts(c.model)
++			if adaptiveOnly(c.model) && (len(modelLevels) == 0 || fixed == "max") {
++				modelLevels = nil
++			}
++			attemptBody = withFixedEffort(from, attemptBody, fitLevel(fixed, modelLevels))
+ 		} else if effort != "" {
+ 			// the level this model has nearest to the one picked; one whose
+ 			// levels aren't known isn't asked for more than high, which
+@@ -2743,7 +2783,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
  		// instead, which every plan with Fast takes (yxinyu715 on X): asked
  		// by the client in either of OpenAI's APIs, or by a pick (#1954)
  		openAI := from == provider.Chat || from == provider.Responses
@@ -200,7 +428,7 @@ index c39371d..69e1c63 100644
  			if j := tierMate(cands[i+1:], c, "ultrafast"); j >= 0 {
  				j += i + 1
  				cs := slices.Clone(cands)
-@@ -2806,7 +2823,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
+@@ -2806,7 +2846,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request, from provider.Pro
  			if ownFast {
  				ctx = withOwnFast(ctx)
  			}
@@ -209,6 +437,34 @@ index c39371d..69e1c63 100644
  				ctx = withUltra(ctx)
  			}
  			hw.stop = stop
+@@ -7050,6 +7090,9 @@ func bodyEffort(proto provider.Protocol, body []byte) string {
+ 		OutputConfig *struct {
+ 			Effort string `json:"effort"`
+ 		} `json:"output_config"`
++		GenerationConfig *struct {
++			ThinkingConfig *gThinking `json:"thinkingConfig"`
++		} `json:"generationConfig"`
+ 	}
+ 	if decodeJSON(body, &v) != nil {
+ 		return ""
+@@ -7061,6 +7104,8 @@ func bodyEffort(proto provider.Protocol, body []byte) string {
+ 		return v.Reasoning.Effort
+ 	case proto == provider.Anthropic && v.OutputConfig != nil:
+ 		return v.OutputConfig.Effort
++	case proto == provider.Gemini && v.GenerationConfig != nil && v.GenerationConfig.ThinkingConfig != nil:
++		return v.GenerationConfig.ThinkingConfig.effort()
+ 	}
+ 	return ""
+ }
+@@ -7091,6 +7136,8 @@ func withBodyEffort(proto provider.Protocol, body []byte, effort string) []byte
+ 		}
+ 		v.Reasoning["effort"] = effort
+ 		return withFields(body, map[string]any{"reasoning": v.Reasoning})
++	case provider.Gemini:
++		return withFixedEffort(proto, body, effort)
+ 	}
+ 	return body
+ }
 diff --git a/internal/gateway/gemini.go b/internal/gateway/gemini.go
 index b52fd9f..621f5c5 100644
 --- a/internal/gateway/gemini.go

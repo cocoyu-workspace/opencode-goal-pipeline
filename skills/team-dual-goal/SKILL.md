@@ -103,9 +103,21 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 
 ---
 
-## 五、`agy` $\times$ `opencode` 场景化灵活调度判据（唯一正文，其余文件只写指针）
+## 五、`agy` $\times$ `opencode` 场景化灵活调度判据与 3 类子 Agent 通道规程（唯一正文，其余文件只写指针）
 
-> **一句总判据**：要跟老板对齐意图（深度思考 + 快速澄清）、要全程 `/goal` 长任务主控与主卡单写、要看屏幕/图片/音视频做多模态或浏览器/Computer Use 真机验收的归 **`agy`**；能在后台独立跑完并回传文本/diff/日志证据的（探路、调研、编码、冷审、脚本产物、CLI 测试套件）由 `agy` 按场景灵活调度全能 **`opencode run`**，不写死单一角色。
+> **一句总判据**：**前台操作 100% 汇聚在 `Antigravity.app`**（已注入 11 个主力模型 × `Medium/High/Max` 3 档强度：6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`、3 个 `Claude (Perplexity)`）。日常对话、需求澄清（`B2`）、原生 `/goal` 长控、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）、单模型直接改码（配方 1）及**同模型并行子任务**直接在 **`agy`** 内完成；凡涉及**按积木专长跨模型分工**（如 `B4a` 切 `Sonnet` 秒级快筛、`B10` 切 `Opus` 重构）、**异构独立冷审防自审**（`B3/B8/B11` 强制切 `Fable 5.1#high`）或**三层跨渠道自动降级**的后台任务，由 `agy` 在后台静默调度 **`opencode run`**。
+
+### 1. 3 类子 Agent 执行通道：默认自动分流 vs 老板显式口令指派
+
+| 子 Agent 通道名称 | 底层调用方式 | 模型与容灾特征 | 默认何时自动选用（零口令） | 老板显式口令指派（说哪条走哪条，最高优先） |
+| :--- | :--- | :--- | :--- | :--- |
+| **通道 ① · `agy` 原生内置子 Agent (`invoke_subagent`)** | 调 `agy` 内置工具 `invoke_subagent`（`scout` / `research` / `coder` / `tester` / `general-purpose` / `self`，`Model: "inherit"`） | 强制继承当前 `Antigravity.app` 主会话选中的模型（二进制 `ParseModelTier` 锁死），父子会话独立 UUID 不串线 | 你已在 `agy` 选好目标模型，只需**同模型并行查码、同模型小步实施或跑 `tester` 验收**，不需要换模型或异构冷审时 | **「用 agy 原生子 Agent」**<br>**「用内置子 Agent / 派 agy subagent」** |
+| **通道 ② · `opencode run` 跨模型后台子 Agent（流水线主力底座）** | 调 `run_command` 执行 `opencode run --agent <explore\|research\|coder\|reviewer\|general> [-m <provider/model#effort>] --auto` | 支持按积木精准指定任意异构模型与档位，自带 `auto-continue-harness.js` **三层跨渠道自动降级**（401/429/5xx 同轮无缝切备选） | **`B1~B12` 跨模型积木调度默认通道**：`B4a` 秒级快筛（`Sonnet 5.5#medium`）、`B4b/B10` 深度复现与编码（`Opus 5.5#medium`）、`B3/B8/B11` 异构独立冷审（`Fable 5.1#high`） | **「派给 opencode」**<br>**「用 opencode run 子 Agent」** |
+| **通道 ③ · `agy-gpt` CLI 命令行子进程** | 调 `run_command` 执行 `~/.local/bin/agy-gpt --model <model-id> -p "<prompt>"` | 通过 `agy` CLI + 本地 Magpie（`127.0.0.1:3425`）直连 11 个模型 × 3 档强度（无 OpenCode 三层自动降级插件） | 默认不自动触发（避免与通道 ② 重复），仅在专项验证 `agy` CLI 引擎时使用 | **「用 agy cli 子 Agent」**<br>**「用 agy-gpt 跑」** |
+
+> **GUI 直接选模型的写码安全提示**：在 `Antigravity.app` 下拉框直接选模型写/改代码时，优先选 **`Claude Opus/Sonnet 5.5 (Word)`** 或 **`GPT-6 Astra / 6.1 Sol`**；`Claude (Perplexity)` 因上游 `markdown_block` 可能将文件内容中的裸 URL 改写为 `[https://X](https://X)`，优先用于方案分析、排障定位与只读审查。
+
+### 2. 场景阶段与默认执行方对照表
 
 | 场景阶段与任务特征 | 优先执行方 | 调用入口与优势说明 |
 | :--- | :--- | :--- |
