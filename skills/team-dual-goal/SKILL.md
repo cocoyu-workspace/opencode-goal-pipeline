@@ -28,7 +28,7 @@ description: "[弹性原子积木Goal调度] Antigravity (agy) 主会话用 GPT 
 | 执行顺序与积木节点 | 推荐执行方与调度方式（详见 §五判据表） | 运行属性 | 在主卡 `issue.md` 中的唯一对应章节 | 何时插上 / 何时拔掉 |
 | :--- | :--- | :--- | :--- | :--- |
 | **`B1` · Issue 建档 (`issue-track`)** | `agy` 主会话（`gh-atg` 或仓内 `TeamIssue`） | `AFK` | 创建或绑定权威主卡 `issue.md` | 新任务留痕时插上；已在当前卡内跟进时跳过 |
-| **`N1` / `B2` · 需求澄清 (`Grill`)** | `agy` 主会话（GPT 深度思考 + 快速追问，必要时调 `opencode run --agent reviewer` 预审） | `HITL` | **§1 需求与不改边界（`R1..Rn` + `Out of Scope`）**：用稳定编号 `R1..Rn` 列出全部明确需求（零删减）与禁止越界范围；长期术语/ADR 更新至仓内文档并引用 | 想法模糊时插上（提问带推荐，回「可以」即采纳）；需求明确直接拔掉 |
+| **`N1` / `B2` · 需求理解与评审 (`Grill / Req-Review`)** | **按需弹性触发，不固定必跑**：<br>• 需对齐意图：`agy` 主会话直接聊<br>• 拿不准需求真伪或老板点名审需求：调 `opencode run --agent reviewer --auto` | `HITL` / `AFK` | **§1 需求与不改边界（`R1..Rn` + `Out of Scope`）**：用稳定编号 `R1..Rn` 列出全部明确需求（零删减）与禁止越界范围；长期术语/ADR 更新至仓内文档并引用 | 想法模糊需对齐、或需审视需求本身时按需启用；**需求已清楚时直接跳过，不搞固定仪式** |
 | **`N2` / `B3` · 现状取证 (`Research`)** | `agy` 就地取证，或灵活调 `opencode run --agent explore/research --auto`（亦可用 `agy` 原生 `scout`/`research`） | `AFK` | **§2 根因与代码复用锚点**：记录基线 Commit SHA、**`相对路径 + 符号名 + 参考行号`**（抗行号漂移）的根因与本仓可复用函数、必要性与不改判据门禁 | 需查日志复现或查本仓/外部方案时插上；内部几行机械小改直接拔掉 |
 | **`N3` / `B4` · 规格合成 (`Spec`)** | `agy` 主会话（`team-codebase-design` + 复用四问梯） | `AFK` | **§3 精简 Spec 与测试接缝（Seams）**：<br>• 模块深接口变更与复用四问结论（禁贴 >15 行实现代码）；<br>• 锁定最高层公共测试接缝（Seam），写明每个 Seam「能捕获什么、不能捕获什么、对应哪条 `R#`」 | 涉及多文件协议或架构调整时插上；小修小补直接跳过（仅保留 §1+§2） |
 | **`N5` · 任务图拆解 (`Tickets`)** | `agy` 主会话（Tracer-Bullet 垂直切片 + `depends_on` 阻塞边） | `AFK` | **§4 垂直切片任务图（Vertical Slices）**：<br>• 每片必须切穿端到端可独立验证行为（禁水平分层），格式：`- [ ] [S1] 交付行为 (Covers: R1 \| depends_on: [])`；<br>• 仅当需多 worktree 并行认领、跨仓发布或单片超出上下文窗口时，才外拆 `tickets/01-slug.md` | 涉及多步或大 Spec 时插上；单点改动无需拆图 |
@@ -73,9 +73,9 @@ description: "[弹性原子积木Goal调度] Antigravity (agy) 主会话用 GPT 
 
 | 场景阶段与任务特征 | 优先执行方 | 调用入口与优势说明 |
 | :--- | :--- | :--- |
-| **需求理解、澄清追问（Grill）与架构取舍** | **`agy` 主会话（GPT-6 Astra / 6.1 Sol）** | 思考深（`High`/`Max`）、切 `Fast`/`Ultra Fast` 响应快，配合 `agy` 原生交互提问迅速对齐意图 |
+| **需求理解、澄清追问（Grill）与按需需求评审** | **`agy` 主会话（GPT-6 Astra / 6.1 Sol）** + 按需调 **`opencode reviewer`** | **按需触发不写死**：主会话用 GPT 深度思考（`High`/`Max`）与快速交互（`Fast`/`Ultra Fast`）对齐意图；仅当需求本身存疑或老板要求时，才调 `opencode run --agent reviewer --auto` 审需求 |
 | **长任务主控、`/goal` 编排、`issue.md` 单写与最终交付** | **`agy` 主会话（原生 `/goal`）** | 原生 `/goal` + 后台异步任务唤醒（`run_command` + `manage_task`），唯一执笔主卡与 GitHub 交付不乱账 |
-| **多模态理解（图片/PDF/音视频）与浏览器/桌面 GUI 真机验收** | **`agy` 原生多模态 + MCP + 内置 `tester`** | 直接使用 `agy` 原生多模态 `read_file`、`chrome-devtools` MCP、`cua-driver` / `computer-use` 与起服务长控能力完成视觉和真机链路验收 |
+| **多模态理解（图片/PDF/音视频）与浏览器/桌面 GUI 真机验收** | **`agy` 原生多模态 + `tabbit-cli` / MCP + 内置 `tester`** | 直接使用 `agy` 原生多模态 `read_file`、**`tabbit` CLI（`~/.local/bin/tabbit-cli` 控制 Tabbit 浏览器）**、`chrome-devtools` MCP、`cua-driver` / `computer-use` 与起服务长控能力完成视觉和真机链路验收 |
 | **<20 行单点小改或快速只读核查** | **`agy` 主会话直接动手** | 免除跨进程派单开销，秒级办完 |
 | **未知代码位置快速探路与调用链定位** | **OpenCode `explore`**（或 `agy` 原生 `scout`） | `opencode run --agent explore --auto "<prompt>"`（强制只读，并行定位 `file:line`） |
 | **`memex` 知识库、`OV` 文档与高星开源方案深度调研** | **OpenCode `research`**（或 `agy` 原生 `research`） | `opencode run --agent research --auto "<prompt>"`（复用 OpenCode 已配齐的 `openviking`/`zread`/`exa` MCP 与三级降级） |

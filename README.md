@@ -23,7 +23,7 @@
   │     └─ 脚本/产物/CLI 测试：opencode run --agent general --auto 或 opencode run --auto 跑命令行测试
   │
   └─ 3. 后段：原生多模态 + 浏览器/桌面 GUI 真机验收与最终交付（agy 主导）：
-        ├─ 涉及读图/PDF/音视频、chrome-devtools 浏览器交互、cua-driver 桌面点击与长链路起服务验收时，由 agy 原生多模态 + 内置 tester 直接执行
+        ├─ 涉及读图/PDF/音视频、tabbit-cli / chrome-devtools 浏览器交互、cua-driver 桌面点击与长链路起服务验收时，由 agy 原生多模态 + 内置 tester 直接执行
         └─ 汇总 CLI 测试与 GUI 截图证据回填 issue.md §6，满足全部判据后输出 <!-- GOAL_COMPLETE --> 收尾
 ```
 
