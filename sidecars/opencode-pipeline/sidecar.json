@@ -1,0 +1,17 @@
+{
+  "command": "/Users/mac/.local/node/bin/node",
+  "args": ["server.mjs"],
+  "restart_policy": "always",
+  "has_web_ui": true,
+  "display_name": "OpenCode 调度流水线",
+  "description": "按 AGY 会话展示其调度的 OpenCode 子会话流水线，点击节点查看消息与工具流或内嵌 OpenCode 原生界面。",
+  "ui_config": {
+    "views": [
+      {
+        "entrypoint": "SIDECAR_UI_ENTRYPOINT_AUX_PANE",
+        "path": "/",
+        "title": "OpenCode 流水线"
+      }
+    ]
+  }
+}

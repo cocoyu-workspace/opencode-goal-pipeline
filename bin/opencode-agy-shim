@@ -1,0 +1,98 @@
+#!/usr/bin/env node
+import { spawn, spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { delimiter, dirname, join, resolve } from 'node:path';
+
+const AGY_DIR = join(homedir(), '.gemini', 'antigravity');
+const SHIM_DIR = join(AGY_DIR, 'bin');
+const LEDGER = join(AGY_DIR, 'opencode-pipeline.json');
+const PREFERRED_REAL = '/opt/homebrew/bin/opencode';
+const SESSION_FLAGS = ['-s', '--session', '-c', '--continue'];
+const argv = process.argv.slice(2);
+
+const findRealOpencode = () => {
+  if (existsSync(PREFERRED_REAL)) return PREFERRED_REAL;
+  const dirs = (process.env.PATH ?? '').split(delimiter).filter((d) => d && resolve(d) !== SHIM_DIR);
+  return dirs.map((d) => join(d, 'opencode')).find((p) => existsSync(p)) ?? 'opencode';
+};
+
+const flag = (...names) => {
+  for (let i = 0; i < argv.length; i++) {
+    for (const n of names) {
+      if (argv[i] === n) return argv[i + 1];
+      if (n.startsWith('--') && argv[i].startsWith(`${n}=`)) return argv[i].slice(n.length + 1);
+    }
+  }
+};
+
+const shouldTrack = () =>
+  Boolean(process.env.ANTIGRAVITY_CONVERSATION_ID) &&
+  argv.find((a) => !a.startsWith('-')) === 'run' &&
+  !argv.some((a) => SESSION_FLAGS.includes(a) || a.startsWith('--session='));
+
+const upsertLedger = (entry) => {
+  const rows = existsSync(LEDGER) ? JSON.parse(readFileSync(LEDGER, 'utf8')) : [];
+  const i = rows.findIndex(
+    (r) => r.conversationId === entry.conversationId && r.stepIndex === entry.stepIndex && r.sessionId === entry.sessionId,
+  );
+  if (i >= 0) rows[i] = { ...rows[i], ...entry };
+  else rows.push(entry);
+  mkdirSync(dirname(LEDGER), { recursive: true });
+  const tmp = `${LEDGER}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(rows, null, 2)}\n`);
+  renameSync(tmp, LEDGER);
+};
+
+const precreate = (real) => {
+  const conversationId = process.env.ANTIGRAVITY_CONVERSATION_ID;
+  const meta = JSON.parse(process.env.ANTIGRAVITY_SOURCE_METADATA ?? '{}');
+  const stepIndex = meta.tool?.stepIndex;
+  const argsJson = meta.tool?.toolCall?.argumentsJson;
+  const toolSummary = argsJson ? JSON.parse(argsJson).toolSummary : undefined;
+  const agent = flag('--agent');
+  const model = flag('-m', '--model');
+  const title = flag('--title') ?? toolSummary ?? `opencode run${agent ? ` --agent ${agent}` : ''}`;
+  const body = {
+    location: { directory: process.cwd() },
+    title,
+    metadata: {
+      agyConversationId: conversationId,
+      agyStepIndex: String(stepIndex ?? ''),
+      agyToolSummary: toolSummary ?? '',
+      agyAgent: agent ?? '',
+      agyModel: model ?? '',
+    },
+  };
+  const out = spawnSync(real, ['api', 'POST', '/api/session', '-d', JSON.stringify(body)], { encoding: 'utf8', timeout: 15_000 });
+  const res = JSON.parse(out.stdout);
+  const sessionId = (res.data ?? res).id;
+  if (!/^ses_/.test(sessionId)) throw new Error('session precreate failed');
+  const entry = { conversationId, stepIndex, toolSummary, sessionId, agent, model, cwd: process.cwd(), startedAt: Date.now(), status: 'running' };
+  upsertLedger(entry);
+  return entry;
+};
+
+const real = findRealOpencode();
+let entry;
+let args = argv;
+if (shouldTrack()) {
+  // 预创建失败绝不阻断命令，静默降级为透传
+  try {
+    entry = precreate(real);
+    const at = argv.indexOf('run') + 1;
+    args = [...argv.slice(0, at), '-s', entry.sessionId, ...argv.slice(at)];
+  } catch {}
+}
+
+const child = spawn(real, args, { stdio: 'inherit' });
+for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => child.kill(sig));
+child.on('close', (code) => {
+  if (entry) {
+    // 账本只做观测，写失败不应改变 opencode 的退出码
+    try {
+      upsertLedger({ ...entry, status: code === 0 ? 'succeeded' : 'failed', exitCode: code, completedAt: Date.now() });
+    } catch {}
+  }
+  process.exit(code ?? 1);
+});

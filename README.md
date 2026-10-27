@@ -223,7 +223,9 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 | `skills/team-dual-goal/SKILL.md` | 四大阶段 12 块标准积木（`B1`~`B12`）、4 问自检与 6 套选块配方及三级模型路由唯一权威规程 |
 | `skills/team-review-governance/SKILL.md` | 需求（`B3`）+ 方案（`B8`）+ 代码（`B11`）三合一精简 Review 规程 |
 | `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的 `B2: req-grill` 正向推荐需求澄清规程 |
-| `tools/install.py` | 一键状态检查与安装脚本（安装 `auto-continue-harness.js` 并清理旧 `opencode-goal`） |
+| `bin/opencode-agy-shim` | `opencode` 透明包装层：在 AGY 会话内执行 `opencode run` 时预创建 `ses_...` 并写入 `~/.gemini/antigravity/opencode-pipeline.json` 账本，安装为 `~/.gemini/antigravity/bin/opencode`，预创建失败则静默透传 |
+| `sidecars/opencode-pipeline/` | AGY 副栏「OpenCode 流水线」看板 Sidecar（`sidecar.json` + `server.mjs` + `pipeline.test.js`）：按 AGY 会话列出调度的 OpenCode 子会话，点击节点查看消息与工具流或内嵌 OpenCode 原生界面，历史会话从 `transcript.jsonl` 自动回溯匹配 |
+| `tools/install.py` | 一键状态检查与安装脚本（安装 `auto-continue-harness.js` 并清理旧 `opencode-goal`，同时安装 `opencode-pipeline` Sidecar 与 `opencode` 包装层并调用 `ManageSidecar` 启用） |
 
 ```bash
 # 查看当前安装状态
