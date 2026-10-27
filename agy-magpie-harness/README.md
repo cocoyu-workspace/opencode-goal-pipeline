@@ -81,7 +81,7 @@
 2. **为什么 Word / Perplexity 留在 OpenCode 通过 `opencode run` 调度**：
    - `agy` 原生 `invoke_subagent` 的 `Model` 参数仅支持预设枚举（`inherit / flash_lite / flash / pro`），无法按角色动态传入自定义模型 ID。
    - OpenCode 已在 `opencode.json` 与 `auto-continue-harness.js` 中配齐了 `coder`（`word-claude/claude-opus-5-5#medium`）和 `reviewer`（`perplexity/fable-5.1#high`）的专属系统提示词、`question: deny` 防卡死权限与渠道流式/思考块兼容。
-   - 顶层直接执行 `opencode run --agent reviewer --auto` 或 `opencode run --agent coder --auto` 耗时仅约 30 秒（免去 `agy` 桌面端 50+ 内置 Skill 的加载开销），若遇单渠道偶发限流，在命令行后追加 `|| opencode run -m perplexity/sonnet-5.5#high --auto` 即可兜底。
+   - 顶层直接执行 `opencode run --agent reviewer --auto` 或 `opencode run --agent coder --auto` 耗时仅约 30 秒（免去 `agy` 桌面端 50+ 内置 Skill 的加载开销），若遇单渠道偶发限流，在重跑时保留 `--agent` 角色并显式覆写模型（如 `opencode run --agent reviewer -m perplexity/sonnet-5.5#high --auto`）即可兜底。
 
 ---
 

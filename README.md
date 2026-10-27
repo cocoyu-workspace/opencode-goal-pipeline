@@ -1,10 +1,39 @@
 # opencode-goal-pipeline
 
-Self-maintained zero-dependency **`opencode-goal` plugin** + **Atomic Lego Skill Pipeline (`N1`~`N7` / `B1`~`B7`)** + **3-Tier Subagent Model Routing** + **3-in-1 Streamlined Review (`Spec` + `Standards` + `Reuse & Simplify`)** for OpenCode (`v2.1.2+`).
+**`agy`（GPT-6 Astra / GPT-6.1 Sol 主会话 + 原生 `/goal`）$\times$ `opencode run`（Word Claude Opus 5.5 编码 + Perplexity Fable 5.1 异构审查）协同流水线**，同时保留自维护零依赖 `opencode-goal` 插件与原子积木规范（`N1`~`N7` / `B1`~`B7`）。
 
 ---
 
-## 一、核心设计理念（为什么不用死板线性流水线）
+## 〇、现行主力工作流：`agy` 主会话用 GPT 聊需求 + 原生 `/goal` 调 `opencode run` 干重活（[`agy-magpie-harness/`](agy-magpie-harness/README.md)）
+
+由于 OpenCode 后台的 `opencode-goal` 插件采用定时器轮询续跑，在长任务下容易出现轮询空转与状态卡死，现行主力工作流已升级为 **「`agy` 原生主控 + `opencode run` 异构执行」**：
+
+```
+用户在 Antigravity.app 桌面端（下拉选 GPT-6 Astra / GPT-6.1 Sol）或终端运行 agy-gpt
+  │
+  ├─ 1. 主会话交互（agy + Magpie GPT-6 Astra / GPT-6.1 Sol）：
+  │     ├─ 聊需求、只读查代码、做需求澄清（N1）与规格收敛（N3）
+  │     ├─ 调 OpenCode 异构参谋审方案：opencode run --agent reviewer --auto "审 issue.md"
+  │     └─ 落盘单文件精简契约 issue.md（主会话单写者，~120 行）
+  │
+  └─ 2. 原生自主长任务闭环（在同一 agy 会话直接输入 `/goal`）：
+        ├─ 依托 agy 原生 /goal 守护进程（零 token 轮询、支持 --continue 会话接续与原生上下文压缩）
+        ├─ 重度编码派单：run_command 调用 opencode run --agent coder --auto（走 Word Claude Opus 5.5）
+        ├─ 三合一独立代码终审：run_command 调用 opencode run --agent reviewer --auto（走 Perplexity Fable 5.1）
+        └─ 跑通真实测试并满足全部判据后输出 <!-- GOAL_COMPLETE --> 收尾
+```
+
+### 日常排障与维护边界（以后出 Bug 改哪里？）
+
+| 问题所属层 | 维护位置 | 是否需要动 `agy`？ |
+| :--- | :--- | :--- |
+| **Word / Perplexity 渠道兼容、流式超时、思考块过滤、子 Agent 提示词或降级策略** | 只改 OpenCode 配置（`~/.config/opencode/opencode.json` 与 `~/.config/opencode/plugins/auto-continue-harness.js`） | **完全不用动 `agy`**（`agy` 仅通过 `opencode run` 消费结果） |
+| **`Antigravity.app` 桌面端下拉框的 8 个大写 GPT 模型列表** | `agy-magpie-harness/bin/sync-agy-gui-models.py` | 运行一次该脚本即实时同步至桌面端 |
+| **`agy` 主会话 GPT 模型的 Fast / Ultra Fast 加速档位或 Gemini $\leftrightarrow$ Responses 协议转换** | `/Users/mac/开源工具/magpie`（补丁归档于 `agy-magpie-harness/patches/`） | 不改 `agy`，仅更新本地 `magpie` 网关 |
+
+---
+
+## 一、OpenCode 侧积木与插件设计理念（供 `opencode run` 与独立 OpenCode 会话复用）
 
 1. **零外部 npm 依赖的自维护 `/goal` 插件（`plugins/opencode-goal/`）**：
    - 将 Effect 3 与 Zod 内联打包进 `dist/server.js`，彻底摆脱外部 `@prevalentware/opencode-goal-plugin` npm 缓存覆盖与写死提示词的限制。
@@ -110,6 +139,7 @@ Self-maintained zero-dependency **`opencode-goal` plugin** + **Atomic Lego Skill
 | `skills/team-review-governance/SKILL.md` | 需求 + 方案 + 代码三合一精简 Review 规程 |
 | `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的正向推荐需求澄清规程（配合 `HITL` 自动挂起唤醒） |
 | `desktop-pipeline/` | OpenCode Desktop 流水线看板动态积木推导与单测（`status.ts` / `status.test.ts`） |
+| `agy-magpie-harness/` | `Antigravity.app` 桌面端 GUI 8 个大写 GPT 模型注入、透明包装器 `ls-wrapper`、`agy-gpt` 启动器与 Magpie 适配补丁 |
 | `tools/install.py` | 一键状态检查与安装脚本 |
 
 ```bash
