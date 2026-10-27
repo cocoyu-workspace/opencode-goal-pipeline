@@ -15,12 +15,12 @@ description: "[三合一评审] 融合需求忠实度评审（Spec Axis）、通
    - 老板要求「审一下需求 / 审一下方案 / 审一下代码 / review since X」（或命中 `team-dual-goal` 配方 6 独立专项评审）；
    - `agy` 流水线运行至 **`B3: req-review`**（需求与现码/规则冲突或疑似伪命题时）、**`B8: spec-review`**（完成 `B6: spec-draft` 及可选 `B7: slice-tickets` 后的技术方案冷审）或 **`B11: code-review`**（`B10: slice-impl` 编码完成后的代码 Diff 三合一独立冷审）；
    - 老板指定「把某某评审放在第一位」时，直接将对应评审积木排在当前计划第 1 位执行。
-2. **评审模型一二三优先级与异构基准（支持 Magpie 积木网关 GLM 5.3 Max）**：
-   - **第一优先级（老板当轮点名，最高优先）**：老板说「这次用 Opus 审」「用 GLM 5.3 Max 审」「用 Astra 和 Opus 双审」时，派发 `reviewer` 显式传入 `-m "<provider>/<model>#<effort>"`（如 `-m magpie/glm-5.3#max`、`-m word-claude/claude-opus-5-5#high` 或并行调 `-m openai/gpt-6-astra#high` 与 `-m word-claude/claude-opus-5-5#high`）。若点名的 `magpie/glm-5.3#max` 当时无额度（报 502/429 `exceed quota limit`），`auto-continue-harness.js` 会自动降级到 `word-claude/claude-opus-5-5#high` / `openai/gpt-6-astra#high`。
+2. **评审模型一二三优先级与异构基准（OpenCode 直连 + 原生降级路由）**：
+   - **第一优先级（老板当轮点名，最高优先）**：老板说「这次用 Opus 审」「用 Astra 和 Opus 双审」时，派发 `reviewer` 显式传入 `-m "<provider>/<model>#<effort>"`（如 `-m word-claude/claude-opus-5-5#high` 或并行调 `-m openai/gpt-6-astra#high` 与 `-m word-claude/claude-opus-5-5#high`）。
    - **第二优先级（按被审产物实际作者模型异构选模）**：老板未点名时，默认调 `opencode run --agent reviewer --auto`（默认 `word-claude/claude-opus-5-5#high`），并**严格对比被审产物的实际作者模型避免同模型自写自审**：
      * 审 `GPT-6 Astra / 6.1 Sol` 正式定稿的 `B6` 方案时，用 `word-claude/claude-opus-5-5#high`（单审即可，高风险架构变更或老板点名时上 `Astra + Opus` 双审）；
-     * 审 `Word Claude Opus 5.5` 编写的 `B10` 代码（或主要由 Opus 起草的方案）时，**必须显式传 `-m openai/gpt-6-astra#high`（或 `-m openai/gpt-6.1-sol#high`、`-m magpie/glm-5.3#max`）**，严禁让 Opus 审 Opus 自己的产出。
-   - **第三优先级（自动多级故障兜底，含 GLM 5.3 Max）**：首选模型遇限流、配额耗尽或渠道异常（403 除外）时，由 `auto-continue-harness.js` 按 `word-claude/claude-opus-5-5#high` $\rightarrow$ `openai/gpt-6-astra#high` $\rightarrow$ `magpie/glm-5.3#max` $\rightarrow$ `magpie/glm-5.3-flash#max` $\rightarrow$ `openai/gpt-6.1-sol#high` 自动切换备选模型并标注 `[Fallback Executed: ...]`。
+     * 审 `Word Claude Opus 5.5` 编写的 `B10` 代码（或主要由 Opus 起草的方案）时，**必须显式传 `-m openai/gpt-6-astra#high`（或 `-m openai/gpt-6.1-sol#high`）**，严禁让 Opus 审 Opus 自己的产出。
+   - **第三优先级（OpenCode 原生多级降级路由）**：首选模型遇限流、配额耗尽或渠道异常（403 除外）时，由 OpenCode 自身的 `auto-continue-harness.js` 按 `word-claude/claude-opus-5-5#high` $\rightarrow$ `openai/gpt-6-astra#high` $\rightarrow$ `openai/gpt-6.1-sol#high` 自动切换备选模型并标注 `[Fallback Executed: ...]`。
 3. **思考强度与 Ultra Fast / Fast 档位铁律**：
    - **Ultra Fast 严禁私自开启（铁律）**：除了老板当轮明确允许或口头指定（例如老板说「开 ultrafast 审」「这次用 Ultra Fast」）以外，其他任何时候**一律严禁开启任何 `Ultra Fast` 档位模型**（包括 `openai/gpt-6-astra-ultrafast`、`openai/gpt-6.1-sol-ultrafast`、`--ultrafast`、`--astra-ultrafast` 等）参与评审或后台执行。
    - **Fast 档位偶尔可用（由 Agent 自行权衡决定）**：

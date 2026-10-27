@@ -26,11 +26,11 @@ const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
 2. Self-Check Gate on "要做什么" (Forbid Self-Assigned Read-Only Next Steps): Before writing "要做什么", inspect item #1. If its executor is you or a subagent (e.g. "由我只读检查", "由我执行", "由我继续核对", "先确认 X 再决定怎么修") and the action is a read-only check or already-authorized work, DO NOT output it in "要做什么" and DO NOT end the turn — delete the draft summary and invoke the tool right now in this turn. "要做什么" is strictly reserved for decisions/approvals that only the user can provide.
 3. Architecture & Fix Confirmation Gate (Stop ONLY Before Mutating Code/Config): After completing all read-only checks and proving the root cause, if the user only asked for diagnosis or if multiple fix/architectural directions exist with user-visible trade-offs, STOP BEFORE mutating code or config (\`patch\`, \`edit\`, \`write\`, state-changing \`shell\`). Present the verified root cause and recommended options (or call the \`question\` tool with your recommended option first), and wait for the user's decision.
 4. Elastic Atomic Skill Blocks (\`B1\`~\`B12\`) & 3-Tier Model Routing (\`team-dual-goal\`):
-   - Primary Orchestrator: \`Antigravity (agy)\` (Gemini / \`GPT-6 Astra\` / \`GPT-6.1 Sol\`) handles requirement clarification (\`B2\`), native \`/goal\` orchestration, and multimodal/GUI verification (\`B12\`), dispatching background tasks via \`opencode run --agent explore|research|coder|reviewer|general --auto\`. OpenCode also supports standalone interactive sessions with any user-selected model.
+   - Primary Orchestrator: \`Antigravity (agy)\` (Gemini / \`GPT-6 Astra\` / \`GPT-6.1 Sol\`) handles requirement clarification (\`B2\`), native \`/goal\` orchestration, and multimodal/GUI verification (\`B12\`), dispatching background tasks directly via \`opencode run --agent explore|research|coder|reviewer|general --auto\` without routing OpenCode through Magpie.
    - Subagent 3-Tier Model Priority:
-     * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 GLM 5.3 Max 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`, e.g. \`-m "magpie/glm-5.3#max"\`).
-     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`explore\`/\`research\`/\`coder\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`, \`reviewer\`=\`word-claude/claude-opus-5-5#high\`; for \`B11: code-review\` heterogeneous review when \`coder\` used Opus, pass \`-m "openai/gpt-6-astra#high"\` or \`-m "magpie/glm-5.3#max"\`).
-     * Priority 3 (Automatic Multi-Tier Fallback with Magpie GLM 5.3 Max): On rate-limit/quota/timeout/channel error, the harness automatically retries backup tiers (including \`magpie/glm-5.3#max\` and \`magpie/glm-5.3-flash#max\` when quota is available, falling back to \`word-claude\` / \`openai\` when GLM quota is exhausted) and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
+     * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 GPT-6 Astra High 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`, e.g. \`-m "openai/gpt-6-astra#high"\`).
+     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`explore\`/\`research\`/\`coder\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`, \`reviewer\`=\`word-claude/claude-opus-5-5#high\`; for \`B11: code-review\` heterogeneous review when \`coder\` used Opus, pass \`-m "openai/gpt-6-astra#high"\` or \`-m "openai/gpt-6.1-sol#high"\`).
+     * Priority 3 (OpenCode Native Multi-Tier Fallback): On rate-limit/quota/timeout/channel error, OpenCode's own harness automatically degrades down direct providers (\`word-claude/claude-opus-5-5\` -> \`word-claude/claude-sonnet-5-5\` -> \`openai/gpt-6-astra\` / \`openai/gpt-6.1-sol\`) and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
    - 12 Standard Blocks (see \`team-dual-goal\` for 4-question self-check & 6 recipes): Stage 1 (\`B1: issue-track\`, \`B2: req-grill\`, \`B3: req-review\`), Stage 2 (\`B4: bug-locate & bug-repro\` [\`:B4a\` shallow triage via \`explore\` -> \`:B4b\` deep repro & root cause via \`coder\`/\`reviewer\`], \`B5: explore & research\`), Stage 3 (\`B6: spec-draft\`, \`B7: slice-tickets\`, \`B8: spec-review\`, \`B9: approval-gate\`), Stage 4 (\`B10: slice-impl\`, \`B11: code-review\`, \`B12: verify & deliver\`).
 </system-reminder>`;
 
@@ -46,39 +46,26 @@ const SUBAGENT_FALLBACK_TIERS = {
   explore: [
     "word-claude/claude-opus-5-5#medium",
     "word-claude/claude-sonnet-5-5#medium",
-    "magpie/glm-5.3-flash#max",
-    "magpie/gpt-6.1-sol#medium",
     "openai/gpt-6.1-sol#medium",
   ],
   research: [
     "word-claude/claude-opus-5-5#medium",
-    "magpie/glm-5.3#max",
-    "magpie/glm-5.3-flash#max",
-    "magpie/gpt-6.1-sol#high",
+    "word-claude/claude-sonnet-5-5#medium",
     "openai/gpt-6.1-sol#high",
   ],
   general: [
     "word-claude/claude-opus-5-5#medium",
-    "magpie/glm-5.3#max",
-    "magpie/glm-5.3-flash#max",
-    "magpie/gpt-6.1-sol#high",
+    "word-claude/claude-sonnet-5-5#medium",
     "openai/gpt-6.1-sol#high",
   ],
   coder: [
     "word-claude/claude-opus-5-5#medium",
     "word-claude/claude-sonnet-5-5#medium",
-    "magpie/glm-5.3#max",
-    "magpie/glm-5.3-flash#max",
-    "magpie/gpt-6.1-sol#high",
     "openai/gpt-6.1-sol#high",
   ],
   reviewer: [
     "word-claude/claude-opus-5-5#high",
-    "magpie/gpt-6-astra#high",
     "openai/gpt-6-astra#high",
-    "magpie/glm-5.3#max",
-    "magpie/glm-5.3-flash#max",
-    "magpie/gpt-6.1-sol#high",
     "openai/gpt-6.1-sol#high",
   ],
 };
