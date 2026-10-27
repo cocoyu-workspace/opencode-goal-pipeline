@@ -64,14 +64,28 @@
    - 从 `/Applications/Antigravity.app/Contents/Resources/bin/language_server.real` 内置 zip 提取 `main.js`，开启 `aHc` 的 `customModelsFeature:{customModelsProvider:f.customModelsProvider}`、`yac` 的 `showCustomModelHeader:!0` 以及 `zsc` 的 `supportsCustomModels:!0`。
 2. **`RoutingClient` 协议前缀路由与 15 个常用模型精简同步（`bin/sync-agy-gui-models.py`）**：
    - 桌面端 `language_server` 默认以 `--model_api_client_type=ccpa` 启动，但其 `RoutingClient.resolveClient`（`routing_client.go:100-149`）在解析 `custom_models_config` 时，若发现 `modelName` 带有 `gemini-api://` 前缀（如 `gemini-api://codex/gpt-6.1-sol`）且 `modelId` 为 `MODEL_GOOGLE_GEMINI_INTERNAL_BYOM`，会自动将该会话请求转发给内置 `geminiapi.Client`（直连 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`），而不影响 Google 原生模型继续走 CCPA。
-   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 仅同步精选的 **15 个常用模型**（OpenCode `gpt-6-astra` 三档、`gpt-6.1-sol` 五档、`word-claude` / `word-sol` 三档、`perplexity` 四档；不展示 Gemini、Kiro、ZCode、Qoder、Cursor 等冗余项）。
+   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 仅同步精选的 **8 个大写命名 GPT 模型**（`GPT-6 Astra` 三档、`GPT-6.1 Sol` 五档；不展示 Word、Perplexity、Gemini、Kiro、ZCode、Qoder、Cursor 等模型）。
 3. **透明启动包装器（`cmd/ls-wrapper/main.go` $\rightarrow$ `/Applications/Antigravity.app/Contents/Resources/bin/language_server`）**：
    - 原版二进制保留在同目录 `language_server.real`。
-   - 当 `Antigravity.app` 以 `--subclient_type hub` 拉起 `language_server` 时，包装器自动注入 `--web_bundle_path=/Users/mac/.gemini/antigravity/web_bundle_custom.zip`、`GEMINI_API_KEY=magpie-agy` 与 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`，并在后台自动执行 `sync-agy-gui-models.py` 保持 15 个常用模型同步。
+   - 当 `Antigravity.app` 以 `--subclient_type hub` 拉起 `language_server` 时，包装器自动注入 `--web_bundle_path=/Users/mac/.gemini/antigravity/web_bundle_custom.zip`、`GEMINI_API_KEY=magpie-agy` 与 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`，并在后台自动执行 `sync-agy-gui-models.py` 保持 8 个 GPT 模型同步。
 
 ---
 
-## 5. 补丁重放方法
+## 5. 架构决策记录（ADR）：为什么主会话在 `agy` 用 GPT，而子任务通过 `opencode run` 调 Word / Perplexity
+
+经 `agy-gpt --astra`（会话 `190fef7e-61da-475b-bbde-00714058fa5c`）与 `opencode run -m openai/gpt-6-astra` 同题盲测对比，正式拍板采用 **路线 A（`agy` 跑 GPT 主会话与原生 `/goal`，通过 `run_command` 调 `opencode run --agent coder/reviewer` 消费 Word / Perplexity）**，不在 `agy` 内重复适配 Word / Perplexity：
+
+1. **为什么 `agy` 里用 `GPT-6 Astra` / `GPT-6.1 Sol` 聊需求不需要额外适配**：
+   - OpenCode 之所以需要 `auto-continue-harness.js` 补丁，是因为 OpenCode V2 二进制对非 GPT-4 的 `gpt-*` 模型硬编码剥离了 `edit/write` 工具并注入了保守的 `# Autonomy: Do not infer authorization` 限制。
+   - `agy` 原生底座对 `GPT-6 Astra` / `GPT-6.1 Sol` 无此类限制，完整开放 `read_file`、`edit_file`、`write_file`、`run_command`、`ask_question` 与 `/goal`，实测单轮内自动并发调用 `read_file` 并命中 47K 缓存（`cache_read_tokens: 47872`），直接可用。
+2. **为什么 Word / Perplexity 留在 OpenCode 通过 `opencode run` 调度**：
+   - `agy` 原生 `invoke_subagent` 的 `Model` 参数仅支持预设枚举（`inherit / flash_lite / flash / pro`），无法按角色动态传入自定义模型 ID。
+   - OpenCode 已在 `opencode.json` 与 `auto-continue-harness.js` 中配齐了 `coder`（`word-claude/claude-opus-5-5#medium`）和 `reviewer`（`perplexity/fable-5.1#high`）的专属系统提示词、`question: deny` 防卡死权限与渠道流式/思考块兼容。
+   - 顶层直接执行 `opencode run --agent reviewer --auto` 或 `opencode run --agent coder --auto` 耗时仅约 30 秒（免去 `agy` 桌面端 50+ 内置 Skill 的加载开销），若遇单渠道偶发限流，在命令行后追加 `|| opencode run -m perplexity/sonnet-5.5#high --auto` 即可兜底。
+
+---
+
+## 6. 补丁重放方法
 
 当上游 `/Users/mac/开源工具/magpie` 拉取新版本后，可执行以下命令一键重放本目录补丁并重编译：
 
