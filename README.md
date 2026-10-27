@@ -159,7 +159,7 @@ bun test plugins/harness.test.js
 
 ## 后台运行故障转移
 
-护栏通过 OpenCode 2.1 的原生 `session.retry` 钩子保护 `opencode run --agent coder|reviewer|research|explore|general` 与内部子会话。渠道认证、额度、限流、服务端和网络超时失败时，在同一会话切换到角色备选表中的可用模型。候选不会重复，全部失败后退出。没有角色备选表的主会话不自动切换。
+护栏通过 OpenCode 2.1 的原生 `session.retry` 钩子保护 `opencode run --agent coder|reviewer|research|explore|general` 与内部子会话。渠道认证、额度、限流、服务端和网络超时失败时，在同一会话切换到角色备选表中的可用模型。启动前也会检查当前模型和 variant 是否仍可用，不可用时切换到可用备选。候选不会重复，全部失败后退出。没有角色备选表的主会话不自动切换。
 
 内部 `subagent` 工具包装器仅处理启动前的模型或推理档位解析错误。运行时故障由会话钩子处理，避免同一错误在两层重复回退。取消、权限拒绝、403、无效请求和内容策略错误不由护栏接管。
 

@@ -112,7 +112,7 @@ describe("auto-continue-harness subagent fallback & background coercion (Issue #
   });
 });
 
-async function setupFallback(availableOverride) {
+async function setupFallback(availableOverride, sessionOverride) {
   const events = [];
   let wake;
   const storage = new Map();
@@ -129,9 +129,10 @@ async function setupFallback(availableOverride) {
     }
   } }, session: {
     hook: async (name, callback) => { hooks.set(name, callback); return { dispose() {} }; },
+    get: async () => (sessionOverride ?? {agent:"coder",model:{providerID:"word-claude",id:"claude-opus-5-5",variant:"medium"}}),
     switchModel: async (input) => { switches.push(input); },
   } });
-  return { retry: hooks.get("retry"), switches, dispose, storage,
+  return { prepare: hooks.get("prompt"), retry: hooks.get("retry"), switches, dispose, storage,
     async emit(type) { events.push({id:crypto.randomUUID(),type,data:{sessionID:"ses_test"}}); wake?.(); await new Promise(resolve=>setTimeout(resolve,0)); }
   };
 }
@@ -196,4 +197,34 @@ test("unavailable candidates are skipped", async () => {
   await h.retry(failure());
   expect(h.switches[0].model.providerID).toBe("perplexity");
   await h.dispose();
+});
+
+
+describe("startup model preflight", () => {
+  test("switches an unavailable model before execution", async () => {
+    const h = await setupFallback();
+    await h.prepare({sessionID:"ses_test"});
+    expect(h.switches[0].model.id).toBe("claude-sonnet-5-5");
+    await h.retry(failure("provider.auth",401,h.switches[0].model));
+    expect(h.switches[1].model.providerID).toBe("perplexity");
+    await h.dispose();
+  });
+  test("keeps an available explicitly selected model", async () => {
+    const h = await setupFallback(undefined,{agent:"coder",model:{providerID:"word-claude",id:"claude-sonnet-5-5",variant:"medium"}});
+    await h.prepare({sessionID:"ses_test"});
+    expect(h.switches).toHaveLength(0);
+    await h.dispose();
+  });
+  test("does not replace a role without a fallback policy", async () => {
+    const h = await setupFallback(undefined,{agent:"build",model:{providerID:"missing",id:"missing"}});
+    await h.prepare({sessionID:"ses_test"});
+    expect(h.switches).toHaveLength(0);
+    await h.dispose();
+  });
+  test("keeps the original error when no candidate exists", async () => {
+    const h = await setupFallback([]);
+    await h.prepare({sessionID:"ses_test"});
+    expect(h.switches).toHaveLength(0);
+    await h.dispose();
+  });
 });

@@ -107,39 +107,50 @@ export function wrapSubagentExecute(origExecute) {
 
 function createSessionFallback(ctx) {
   const turns = new Map();
+  async function advance(input, available) {
+    const from = `${input.model.providerID}/${input.model.id}${input.model.variant ? `#${input.model.variant}` : ""}`;
+    let turn = turns.get(input.sessionID);
+    if (!turn) {
+      turn = { tried: new Set(), requested: from };
+      turns.set(input.sessionID, turn);
+    }
+    turn.tried.add(from);
+    const next = resolveSubagentFallbackTiers(input.agent, turn.requested).find((model) => {
+      if (turn.tried.has(model)) return false;
+      const [providerID, rest] = model.split("/");
+      const [id, variant] = rest.split("#");
+      return available.some((candidate) => candidate.providerID === providerID && candidate.id === id && (!variant || candidate.variants.some((value) => value.id === variant)));
+    });
+    if (!next) {
+      input.decision = { retry: false };
+      return;
+    }
+    turn.tried.add(next);
+    const [providerID, rest] = next.split("/");
+    const [id, variant] = rest.split("#");
+    await ctx.session.switchModel({ sessionID: input.sessionID, model: { providerID, id, ...(variant ? { variant } : {}) } });
+    input.decision = { retry: true, delay: 0 };
+    const audit = `[Fallback Executed: requested=${turn.requested} -> actual=${next}]`;
+    if (ctx.storage) await ctx.storage.set(`fallback/${input.sessionID}`, { requested: turn.requested, actual: next, tried: [...turn.tried] });
+    console.error(audit);
+  }
   return {
     reset(sessionID) { turns.delete(sessionID); },
+    async prepare({ sessionID }) {
+      const session = await ctx.session.get({ sessionID });
+      if (!SUBAGENT_FALLBACK_TIERS[session.agent] || !session.model) return;
+      const { data: available } = await ctx.model.list();
+      const { providerID, id, variant } = session.model;
+      if (available.some((candidate) => candidate.providerID === providerID && candidate.id === id && (!variant || candidate.variants.some((value) => value.id === variant)))) return;
+      await advance({ sessionID, agent: session.agent, model: session.model }, available);
+    },
     async retry(input) {
       const type = input.error.type;
       if (!["provider.auth", "provider.quota", "provider.rate-limit", "provider.internal", "provider.transport", "provider.timeout"].includes(type)) return;
       if (input.error.status === 403) return;
       if (!SUBAGENT_FALLBACK_TIERS[input.agent]) return;
-      const from = `${input.model.providerID}/${input.model.id}${input.model.variant ? `#${input.model.variant}` : ""}`;
-      let turn = turns.get(input.sessionID);
-      if (!turn) {
-        turn = { tried: new Set(), requested: from };
-        turns.set(input.sessionID, turn);
-      }
-      turn.tried.add(from);
       const { data: available } = await ctx.model.list();
-      const next = resolveSubagentFallbackTiers(input.agent, turn.requested).find((model) => {
-        if (turn.tried.has(model)) return false;
-        const [providerID, rest] = model.split("/");
-        const [id, variant] = rest.split("#");
-        return available.some((candidate) => candidate.providerID === providerID && candidate.id === id && (!variant || candidate.variants.some((value) => value.id === variant)));
-      });
-      if (!next) {
-        input.decision = { retry: false };
-        return;
-      }
-      turn.tried.add(next);
-      const [providerID, rest] = next.split("/");
-      const [id, variant] = rest.split("#");
-      await ctx.session.switchModel({ sessionID: input.sessionID, model: { providerID, id, ...(variant ? { variant } : {}) } });
-      input.decision = { retry: true, delay: 0 };
-      const audit = `[Fallback Executed: requested=${turn.requested} -> actual=${next}]`;
-      if (ctx.storage) await ctx.storage.set(`fallback/${input.sessionID}`, { requested: turn.requested, actual: next, tried: [...turn.tried] });
-      console.error(audit);
+      await advance(input, available);
     },
   };
 }
@@ -196,7 +207,6 @@ export default {
     function getSession(id) {
       if (!sessions.has(id)) {
         sessions.set(id, {
-          todos: [],
           codeEditsSinceVerify: 0,
         });
       }
@@ -206,8 +216,10 @@ export default {
     const disposables = [];
     const fallback = createSessionFallback(ctx);
     if (typeof ctx.session?.hook === "function") {
-      const reg = await ctx.session.hook("retry", (input) => fallback.retry(input));
-      if (reg?.dispose) disposables.push(reg);
+      for (const [name, callback] of [["retry", (input) => fallback.retry(input)], ["prompt", (input) => fallback.prepare(input)]]) {
+        const reg = await ctx.session.hook(name, callback);
+        if (reg?.dispose) disposables.push(reg);
+      }
     }
 
     // 1. Upgrade conservative gpt-* system prompt to gpt-astra autonomy + explicit confirmation boundary
@@ -225,8 +237,6 @@ export default {
     function buildTodowriteHarnessSuffix(items, s) {
       const allDone =
         items.length > 0 && items.every((t) => t.status === "completed" || t.status === "cancelled");
-      s.todos = allDone ? [] : items;
-
       const openItems = items.filter((t) => t.status === "in_progress" || t.status === "pending");
       if (openItems.length > 0) {
         const next = openItems.find((t) => t.status === "in_progress") || openItems[0];

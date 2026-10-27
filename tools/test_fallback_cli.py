@@ -11,7 +11,7 @@ import time
 
 parser = argparse.ArgumentParser(description='Run isolated OpenCode CLI fault injection against a local mock provider.')
 parser.add_argument('--plugin', required=True, type=Path)
-parser.add_argument('--case', choices=['401', '429', '503', '400', 'success', 'exhaust', 'header-timeout', 'chunk-timeout', 'cancel', 'cross-provider'], required=True)
+parser.add_argument('--case', choices=['401', '429', '503', '400', 'success', 'exhaust', 'header-timeout', 'chunk-timeout', 'cancel', 'cross-provider', 'missing-model'], required=True)
 args = parser.parse_args()
 args.plugin = args.plugin.resolve()
 requests = []
@@ -71,6 +71,8 @@ with tempfile.TemporaryDirectory(prefix='fallback-acceptance-') as temp:
     providers={}
     for provider, ids in [('word-claude',models),('perplexity',{'sonnet-5.5':'perplexity/sonnet-5.5'}),('openai',{'gpt-6.1-sol':'gpt-6.1-sol'})]:
         providers[provider]={'package':'@opencode/ai/providers/anthropic-compatible','settings':settings,'models':{k:{'modelID':v,'capabilities':{'tools':True,'input':['text'],'output':['text'],'reasoning':{'supported':True,'effort':['medium','high']}},'limit':{'context':100000,'input':80000,'output':4000}} for k,v in ids.items()}}
+    if args.case == 'missing-model':
+        del providers['word-claude']['models']['claude-opus-5-5']
     config={'plugins':[str(package)],'providers':providers,'agents':{'coder':{'mode':'subagent','model':'word-claude/claude-opus-5-5#medium'}},'mcp':{'servers':{}}}
     env=os.environ.copy()
     env['OPENCODE_CONFIG_DIR']=str(root/'config')
