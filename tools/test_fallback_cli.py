@@ -69,8 +69,8 @@ with tempfile.TemporaryDirectory(prefix='fallback-acceptance-') as temp:
     settings={'baseURL':f'http://127.0.0.1:{server.server_port}/v1','apiKey':'local-test-key','timeout':1500,'headerTimeout':500,'chunkTimeout':500}
     models={'claude-opus-5-5':'word/claude-opus-5-5','claude-sonnet-5-5':'word/claude-sonnet-5-5'}
     providers={}
-    for provider, ids in [('word-claude',models),('perplexity',{'sonnet-5.5':'perplexity/sonnet-5.5'}),('openai',{'gpt-6.1-sol':'gpt-6.1-sol'})]:
-        providers[provider]={'package':'@opencode/ai/providers/anthropic-compatible','settings':settings,'models':{k:{'modelID':v,'capabilities':{'tools':True,'input':['text'],'output':['text'],'reasoning':{'supported':True,'effort':['medium','high']}},'limit':{'context':100000,'input':80000,'output':4000}} for k,v in ids.items()}}
+    for provider, ids in [('word-claude',models),('magpie',{'glm-5.3':'zcode/GLM-5.3','glm-5.3-flash':'zcode/GLM-5.3-Flash'}),('openai',{'gpt-6.1-sol':'gpt-6.1-sol'})]:
+        providers[provider]={'package':'@opencode/ai/providers/anthropic-compatible','settings':settings,'models':{k:{'modelID':v,'capabilities':{'tools':True,'input':['text'],'output':['text'],'reasoning':{'supported':True,'effort':['medium','high','max']}},'limit':{'context':100000,'input':80000,'output':4000}} for k,v in ids.items()}}
     if args.case == 'missing-model':
         del providers['word-claude']['models']['claude-opus-5-5']
     config={'plugins':[str(package)],'providers':providers,'agents':{'coder':{'mode':'subagent','model':'word-claude/claude-opus-5-5#medium'}},'mcp':{'servers':{}}}
@@ -110,4 +110,4 @@ if args.case in ['400','success','cancel']:
 elif not expected_failure:
     assert any(model!='word/claude-opus-5-5' for model in requests), summary
 else:
-    assert 'perplexity/sonnet-5.5' in requests and 'gpt-6.1-sol' in requests, summary
+    assert 'zcode/GLM-5.3' in requests and 'gpt-6.1-sol' in requests, summary

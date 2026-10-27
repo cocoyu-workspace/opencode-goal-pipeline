@@ -20,8 +20,8 @@
     },
     "reviewer": {
       "mode": "subagent",
-      "model": "perplexity/fable-5.1#high",
-      "description": "异构只读参谋与冷审子 Agent（默认 Perplexity Fable 5.1 High，老板可按第一优先级指定 Claude Opus 5.5 等模型）：专供主会话做需求澄清、需求评审、方案与代码独立冷审（team-review-governance）及疑难 bug 根因诊断",
+      "model": "word-claude/claude-opus-5-5#high",
+      "description": "只读参谋与冷审子 Agent（默认 Word Claude Opus 5.5 High，支持按异构规则传 GPT-6 Astra / 6.1 Sol 或 GLM 5.3 Max）：专供主会话做需求澄清、需求评审、方案与代码独立冷审（team-review-governance）及疑难 bug 根因诊断",
       "permissions": [
         {
           "action": "edit",

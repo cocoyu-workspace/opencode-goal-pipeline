@@ -209,10 +209,11 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 ## 四、模型路由、3 类子 Agent 通道与日常排障边界
 
 ### 1. 模型一二三优先级与异构防自审（详见 [`skills/team-dual-goal/SKILL.md`](skills/team-dual-goal/SKILL.md) §四）
-- **前台全模型汇聚（`Antigravity.app` 11 模型 × 3 档强度）**：`Antigravity.app` 下拉框已同步 11 个基础模型 × `Medium / High / Max` 3 档强度（`Gemini 4 Argon`、6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`、3 个 `Claude (Perplexity)`）。主会话自身负责日常问答、需求澄清（`B2`）、原生 `/goal` 长控、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）与 `<20 行` 单点直接小改（配方 1）。注意：在 `agy` GUI 直接写/改代码时优先选 **`Claude (Word)`** 或 **`GPT-6 Astra / 6.1 Sol`**，`Claude (Perplexity)` 优先用于调研、排障定位与只读审查（防上游 `markdown_block` 改写文件内裸 URL）。
-- **第一优先级（老板当轮点名，最高优先）**：当老板点名「用 Opus 审」「用 Astra 跑」时，显式传入 `-m "<provider>/<model>#<effort>"`（或 `subagent(..., model="...")`）强制覆盖。
-- **第二优先级（角色默认配置与复杂度分级）**：未点名时走 `opencode.json` 默认模型（`explore` 默认 `word-claude/claude-sonnet-5-5#medium` 秒级快筛，`research` / `coder` / `general` 默认 `word-claude/claude-opus-5-5#medium`，`reviewer` 默认 `perplexity/fable-5.1#high`）。
-- **第三优先级（`auto-continue-harness.js` 三级自动降级与按实际作者模型异构防自审）**：`opencode run` 与子 Agent 遇限流或渠道异常（403 除外）时自动按三级备选链同会话降级续跑并追加 `[Fallback Executed: requested=... -> actual=...]`；`B3` / `B8` / `B11` 评审严格对比**被审产物的实际作者模型**保持异构。
+- **前台全模型汇聚（`Antigravity.app` 8 模型 × 3 档强度）**：`Antigravity.app` 下拉框已同步 8 个基础模型 × `Medium / High / Max` 3 档强度（`Gemini 4 Argon`、6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`，已全面移除 Perplexity 模型）。主会话自身负责日常问答、需求澄清（`B2`）、原生 `/goal` 长控（支持前 GPT 理解定稿 + 后 Gemini 实施交付按需双棒）、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）与 `<20 行` 单点直接小改（配方 1）。
+- **Magpie 积木网关接入 OpenCode（`providers.magpie`）**：OpenCode 通过 `magpie` provider（`http://127.0.0.1:3425/v1`）按积木形式接入 `magpie/glm-5.3#max`、`magpie/glm-5.3-flash#max` 等模型。`GLM 5.3 Max` 专用于**老板显式指定**或**主力模型限流时的自动兜底**（有额度则用 GLM 5.3 Max，无额度自动降级到 Word / OpenAI）。
+- **第一优先级（老板当轮点名，最高优先）**：当老板点名「用 Opus 审」「用 GLM 5.3 Max 审」「用 Astra 跑」时，显式传入 `-m "<provider>/<model>#<effort>"`（或 `subagent(..., model="...")`）强制覆盖。
+- **第二优先级（角色默认配置与复杂度分级）**：未点名时走 `opencode.json` 默认模型（`explore` / `research` / `coder` / `general` 默认 `word-claude/claude-opus-5-5#medium`，`reviewer` 默认 `word-claude/claude-opus-5-5#high`）。
+- **第三优先级（`auto-continue-harness.js` 多级自动降级与按实际作者模型异构防自审）**：`opencode run` 与子 Agent 遇限流、配额耗尽或渠道异常（403 除外）时自动按备选链同会话降级续跑并追加 `[Fallback Executed: requested=... -> actual=...]`；`B3` / `B8` / `B11` 评审严格对比**被审产物的实际作者模型**保持异构（如 `coder` 用 Opus 写码时，`B11` 必传 `-m openai/gpt-6-astra#high` 或 `-m magpie/glm-5.3#max`）。
 
 ### 2. 子 Agent 通道铁律：默认 100% 锁死 `opencode run`，仅老板显式点名才切 `agy` 子 Agent
 

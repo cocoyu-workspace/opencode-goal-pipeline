@@ -1,6 +1,6 @@
 # `agy + magpie + OpenCode` Harness Adapter (`agy-magpie-harness`)
 
-本目录归档了将 **Antigravity CLI（`agy`）** 与 **Magpie 本地网关（`127.0.0.1:3425`）+ OpenCode 多厂商模型池（Codex GPT-6.1-Sol / GPT-6-Astra、Word Claude Opus/Sonnet 5.5、Perplexity Fable 5.1）** 深度打通的源码补丁、启动器与实测验证记录（对应 Issue `#7`）。
+本目录归档了将 **Antigravity CLI（`agy`）** 与 **Magpie 本地网关（`127.0.0.1:3425`）+ OpenCode 多厂商模型池（Codex GPT-6.1-Sol / GPT-6-Astra、Word Claude Opus/Sonnet 5.5、ZCode GLM 5.3 / Flash Max）** 深度打通的源码补丁、启动器与实测验证记录（对应 Issue `#7`）。
 
 ---
 
@@ -63,13 +63,13 @@
 1. **Web UI 静态包补丁（`~/.gemini/antigravity/web_bundle_custom.zip`）**：
    - 从 `/Applications/Antigravity.app/Contents/Resources/bin/language_server.real` 内置 zip 提取 `main.js`，开启 `aHc` 的 `customModelsFeature:{customModelsProvider:f.customModelsProvider}`、`yac` 的 `showCustomModelHeader:!0` 以及 `zsc` 的 `supportsCustomModels:!0`。
    - 同时放开 `G4` 对 `isCustom` 模型按 `(Medium)` / `(High)` / `(Max)` 标签后缀的解析，将 `customModels` 并入 `hac` 的 `effortIndex`，并在 `kac` 中将同一基础模型的三个推理档位折叠为单行 `pac` 二级 Effort 子菜单（**默认选中 `Medium`，右侧悬停/展开可切换 `Medium` / `High` / `Max`**）。
-2. **`RoutingClient` 协议前缀路由与 11 个基础模型（33 条档位配置）同步（`bin/sync-agy-gui-models.py`）**：
-   - 桌面端 `language_server` 默认以 `--model_api_client_type=ccpa` 启动，但其 `RoutingClient.resolveClient`（`routing_client.go:100-149`）在解析 `custom_models_config` 时，若发现 `modelName` 带有 `gemini-api://` 前缀（如 `gemini-api://codex/gpt-6.1-sol`、`gemini-api://perplexity/perplexity/sonnet-5.5`）且 `modelId` 为 `MODEL_GOOGLE_GEMINI_INTERNAL_BYOM`，会自动将该会话请求转发给内置 `geminiapi.Client`（直连 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`），而不影响 Google 原生模型继续走 CCPA。
-   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 同步精选的 **11 个基础模型 × 3 档位（`Medium` / `High` / `Max`，共 33 条，UI 折叠为 11 行）**：
-     - **Codex GPT（6 个基础模型）**：`GPT-6 Astra`、`GPT-6 Astra Fast`、`GPT-6 Astra Ultra Fast`（272K 上下文）；`GPT-6.1 Sol`、`GPT-6.1 Sol Fast`、`GPT-6.1 Sol Ultra Fast`（500K 上下文）。默认 `Medium` 发送 `reasoning.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"xhigh"`。
+   - **聊天区外部链接左键默认调起系统默认浏览器 Tabbit（`MUL-720`）**：在 `BDb` 组件中移除纯左键点击优先拦截到内置预览（`t&&L(M)&&HC(O)&&t(M)!==!1` 与 `t&&L(a)&&HC(M)&&t(a)!==!1`）的分支，使左键直接点击 `http/https` 链接走 `openUri` $\rightarrow$ `electron.shell.openExternal` 调起 Tabbit，同时保留右键菜单 `Open in Built-in Browser`。
+2. **`RoutingClient` 协议前缀路由与 8 个基础模型（24 条档位配置）同步（`bin/sync-agy-gui-models.py`）**：
+   - 桌面端 `language_server` 默认以 `--model_api_client_type=ccpa` 启动，但其 `RoutingClient.resolveClient`（`routing_client.go:100-149`）在解析 `custom_models_config` 时，若发现 `modelName` 带有 `gemini-api://` 前缀（如 `gemini-api://codex/gpt-6.1-sol`、`gemini-api://word-claude/word/claude-opus-5-5`）且 `modelId` 为 `MODEL_GOOGLE_GEMINI_INTERNAL_BYOM`，会自动将该会话请求转发给内置 `geminiapi.Client`（直连 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`），而不影响 Google 原生模型继续走 CCPA。
+   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 同步精选的 **8 个基础模型 × 3 档位（`Medium` / `High` / `Max`，共 24 条，UI 折叠为 8 行）**：
+     - **Codex GPT（6 个基础模型）**：`GPT-6 Astra`、`GPT-6 Astra Fast`、`GPT-6 Astra Ultra Fast`（272K 上下文）；`GPT-6.1 Sol`、`GPT-6.1 Sol Fast`、`GPT-6.1 Sol Ultra Fast`（500K 上下文）。默认 `Medium` 发送 `reasoning.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"xhigh"`（Magpie `agentEfforts.agy` 默认配 `"high"`）。
      - **Word Claude（2 个基础模型）**：`Claude Opus 5.5 (Word)`（`200K` 上下文）、`Claude Sonnet 5.5 (Word)`（`500K` 上下文）。默认 `Medium` 发送 `output_config.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"max"`。
-     - **Perplexity Claude（3 个基础模型，1M 上下文）**：`Claude Fable 5.1 (Perplexity)`、`Claude Opus 5.5 (Perplexity)`、`Claude Sonnet 5.5 (Perplexity)`。默认 `Medium` 发送 `output_config.effort = "medium"`，`High` 发送 `"high"`，`Max` 发送 `"max"`。
-     - 已剔除 Codex 平台双来源（`codex-all`）及 Word / Perplexity 下的 `GPT-6.1 Sol`。
+     - 已全面移除 Perplexity 模型，以及 Codex 平台双来源（`codex-all`）与 Word 下的 `GPT-6.1 Sol`。
 3. **透明启动包装器（`cmd/ls-wrapper/main.go` $\rightarrow$ `/Applications/Antigravity.app/Contents/Resources/bin/language_server`）**：
    - 原版二进制保留在同目录 `language_server.real`。
    - 当 `Antigravity.app` 以 `--subclient_type hub` 拉起 `language_server` 时，包装器自动注入 `--web_bundle_path=/Users/mac/.gemini/antigravity/web_bundle_custom.zip`、`GEMINI_API_KEY=magpie-agy` 与 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`，并在后台自动执行 `/Users/mac/dev/opencode-goal-pipeline/agy-magpie-harness/bin/sync-agy-gui-models.py --wait --quiet` 保持 11 个模型同步。

@@ -5,42 +5,53 @@ describe("auto-continue-harness subagent fallback & background coercion (Issue #
   test("resolveSubagentFallbackTiers deduplicates ROLE_DEFAULT_MODELS when initialModel is omitted", () => {
     // research default is word-claude/claude-opus-5-5#medium, so Tier 1 should skip it
     expect(resolveSubagentFallbackTiers("research", undefined)).toEqual([
-      "perplexity/sonnet-5.5#high",
+      "magpie/glm-5.3#max",
+      "magpie/glm-5.3-flash#max",
+      "magpie/gpt-6.1-sol#high",
       "openai/gpt-6.1-sol#high",
     ]);
 
-    // reviewer default is perplexity/fable-5.1#high
+    // reviewer default is word-claude/claude-opus-5-5#high
     expect(resolveSubagentFallbackTiers("reviewer", undefined)).toEqual([
-      "word-claude/claude-opus-5-5#high",
-      "perplexity/opus-5.5#medium",
+      "magpie/gpt-6-astra#high",
+      "openai/gpt-6-astra#high",
+      "magpie/glm-5.3#max",
+      "magpie/glm-5.3-flash#max",
+      "magpie/gpt-6.1-sol#high",
       "openai/gpt-6.1-sol#high",
     ]);
 
-    // explicit override deduplicates the overridden model
-    expect(resolveSubagentFallbackTiers("reviewer", "word-claude/claude-opus-5-5#high")).toEqual([
-      "perplexity/opus-5.5#medium",
+    // explicit override deduplicates the overridden model (e.g. when user specifies magpie/glm-5.3#max)
+    expect(resolveSubagentFallbackTiers("reviewer", "magpie/glm-5.3#max")).toEqual([
+      "word-claude/claude-opus-5-5#high",
+      "magpie/gpt-6-astra#high",
+      "openai/gpt-6-astra#high",
+      "magpie/glm-5.3-flash#max",
+      "magpie/gpt-6.1-sol#high",
       "openai/gpt-6.1-sol#high",
     ]);
   });
 
-  test("resolveSubagentFallbackTiers uses fast sonnet default for explore and puts word-claude/claude-sonnet-5-5#medium first for coder", () => {
+  test("resolveSubagentFallbackTiers supports explore and coder with Magpie GLM 5.3 Max fallback", () => {
     expect(resolveSubagentFallbackTiers("explore", undefined)).toEqual([
-      "perplexity/sonnet-5.5#high",
-      "word-claude/claude-opus-5-5#medium",
+      "word-claude/claude-sonnet-5-5#medium",
+      "magpie/glm-5.3-flash#max",
+      "magpie/gpt-6.1-sol#medium",
       "openai/gpt-6.1-sol#medium",
     ]);
     expect(resolveSubagentFallbackTiers("coder", undefined)).toEqual([
       "word-claude/claude-sonnet-5-5#medium",
-      "perplexity/sonnet-5.5#high",
+      "magpie/glm-5.3#max",
+      "magpie/glm-5.3-flash#max",
+      "magpie/gpt-6.1-sol#high",
       "openai/gpt-6.1-sol#high",
     ]);
 
-    expect(resolveSubagentFallbackTiers("explore", "perplexity/sonnet-5.5#high")).toEqual([
+    expect(resolveSubagentFallbackTiers("coder", "magpie/glm-5.3#max")).toEqual([
       "word-claude/claude-opus-5-5#medium",
-      "openai/gpt-6.1-sol#medium",
-    ]);
-    expect(resolveSubagentFallbackTiers("coder", "word-claude/claude-sonnet-5-5#medium")).toEqual([
-      "perplexity/sonnet-5.5#high",
+      "word-claude/claude-sonnet-5-5#medium",
+      "magpie/glm-5.3-flash#max",
+      "magpie/gpt-6.1-sol#high",
       "openai/gpt-6.1-sol#high",
     ]);
   });
@@ -120,7 +131,7 @@ async function setupFallback(availableOverride, sessionOverride) {
   const switches = [];
   const dispose = await plugin.setup({ model: { list: async () => ({ data: availableOverride ?? [
     {providerID:"word-claude",id:"claude-sonnet-5-5",variants:[{id:"medium"}]},
-    {providerID:"perplexity",id:"sonnet-5.5",variants:[{id:"high"},{id:"medium"}]},
+    {providerID:"magpie",id:"glm-5.3",variants:[{id:"max"},{id:"high"}]},
     {providerID:"openai",id:"gpt-6.1-sol",variants:[{id:"high"},{id:"medium"}]},
   ] }) }, storage: { set: async (key,value) => storage.set(key,value) }, event: { subscribe: async function* ({signal}) {
     while (!signal.aborted) {
@@ -165,14 +176,14 @@ describe("native session retry registration", () => {
       input = failure("provider.auth",401,h.switches.at(-1).model);
     }
     await h.retry(input);
-    expect(h.switches.map(x=>x.model.providerID)).toEqual(["word-claude","perplexity","openai"]);
+    expect(h.switches.map(x=>x.model.providerID)).toEqual(["word-claude","magpie","openai"]);
     expect(input.decision).toEqual({retry:false});
     await h.dispose();
   });
   test("explicitly selected backup is not attempted twice", async () => {
     const h = await setupFallback();
     await h.retry(failure("provider.auth",401,{providerID:"word-claude",id:"claude-sonnet-5-5",variant:"medium"}));
-    expect(h.switches[0].model.providerID).toBe("perplexity");
+    expect(h.switches[0].model.providerID).toBe("magpie");
     await h.dispose();
   });
 });
@@ -188,14 +199,14 @@ describe("session lifecycle and audit", () => {
     await h.dispose();
   });
   test("general role default is omitted from backups", () => {
-    expect(resolveSubagentFallbackTiers("general")).toEqual(["perplexity/sonnet-5.5#high","openai/gpt-6.1-sol#high"]);
+    expect(resolveSubagentFallbackTiers("general")).toEqual(["magpie/glm-5.3#max","magpie/glm-5.3-flash#max","magpie/gpt-6.1-sol#high","openai/gpt-6.1-sol#high"]);
   });
 });
 
 test("unavailable candidates are skipped", async () => {
-  const h = await setupFallback([{providerID:"perplexity",id:"sonnet-5.5",variants:[{id:"high"}]}]);
+  const h = await setupFallback([{providerID:"magpie",id:"glm-5.3",variants:[{id:"max"}]}]);
   await h.retry(failure());
-  expect(h.switches[0].model.providerID).toBe("perplexity");
+  expect(h.switches[0].model.providerID).toBe("magpie");
   await h.dispose();
 });
 
@@ -206,7 +217,7 @@ describe("startup model preflight", () => {
     await h.prepare({sessionID:"ses_test"});
     expect(h.switches[0].model.id).toBe("claude-sonnet-5-5");
     await h.retry(failure("provider.auth",401,h.switches[0].model));
-    expect(h.switches[1].model.providerID).toBe("perplexity");
+    expect(h.switches[1].model.providerID).toBe("magpie");
     await h.dispose();
   });
   test("keeps an available explicitly selected model", async () => {

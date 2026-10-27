@@ -38,9 +38,6 @@ BASE_GUI_MODELS = {
     "magpie/codex/gpt-6.1-sol-ultrafast": "GPT-6.1 Sol Ultra Fast",
     "magpie/word-claude/word/claude-opus-5-5": "Claude Opus 5.5 (Word)",
     "magpie/word-claude/word/claude-sonnet-5-5": "Claude Sonnet 5.5 (Word)",
-    "magpie/perplexity/perplexity/fable-5.1": "Claude Fable 5.1 (Perplexity)",
-    "magpie/perplexity/perplexity/opus-5.5": "Claude Opus 5.5 (Perplexity)",
-    "magpie/perplexity/perplexity/sonnet-5.5": "Claude Sonnet 5.5 (Perplexity)",
 }
 
 EFFORT_TIERS = [

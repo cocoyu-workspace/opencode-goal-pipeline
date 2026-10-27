@@ -28,27 +28,59 @@ const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
 4. Elastic Atomic Skill Blocks (\`B1\`~\`B12\`) & 3-Tier Model Routing (\`team-dual-goal\`):
    - Primary Orchestrator: \`Antigravity (agy)\` (Gemini / \`GPT-6 Astra\` / \`GPT-6.1 Sol\`) handles requirement clarification (\`B2\`), native \`/goal\` orchestration, and multimodal/GUI verification (\`B12\`), dispatching background tasks via \`opencode run --agent explore|research|coder|reviewer|general --auto\`. OpenCode also supports standalone interactive sessions with any user-selected model.
    - Subagent 3-Tier Model Priority:
-     * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 Opus 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`).
-     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`explore\`=\`word-claude/claude-sonnet-5-5#medium\`, \`reviewer\`=\`perplexity/fable-5.1#high\`, \`research\`/\`coder\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`).
-       - Complexity tiering: \`explore\` defaults to fast \`word-claude/claude-sonnet-5-5#medium\` for \`B4a: bug-locate\` shallow triage (pass \`model="perplexity/sonnet-5.5#high"\` when high-effort log timeline reasoning is needed, or \`model="word-claude/claude-opus-5-5#medium"\` for deep code inspection). Mainline/complex coding and \`B4b: bug-repro\` root-cause reproduction keep \`word-claude/claude-opus-5-5#medium\`. Low-risk small fixes that skip \`B6: spec-draft\` may use \`model="word-claude/claude-sonnet-5-5#medium"\` (no \`#high\` on Word channel due to \`NormalizeSonnet55DisabledThinking:True\`).
-     * Priority 3 (Automatic 3-Tier Fallback): On rate-limit/timeout/channel error, the harness automatically retries backup tiers and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
-   - 12 Standard Blocks (see \`team-dual-goal\` for 4-question self-check & 6 recipes): Stage 1 (\`B1: issue-track\`, \`B2: req-grill\`, \`B3: req-review\`), Stage 2 (\`B4: bug-locate & bug-repro\` [\`:B4a\` shallow triage via \`explore\` Sonnet -> \`:B4b\` deep repro & root cause via \`coder\`/\`reviewer\` Opus/Fable], \`B5: explore & research\`), Stage 3 (\`B6: spec-draft\`, \`B7: slice-tickets\`, \`B8: spec-review\`, \`B9: approval-gate\`), Stage 4 (\`B10: slice-impl\`, \`B11: code-review\`, \`B12: verify & deliver\`).
+     * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 GLM 5.3 Max 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`, e.g. \`-m "magpie/glm-5.3#max"\`).
+     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`explore\`/\`research\`/\`coder\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`, \`reviewer\`=\`word-claude/claude-opus-5-5#high\`; for \`B11: code-review\` heterogeneous review when \`coder\` used Opus, pass \`-m "openai/gpt-6-astra#high"\` or \`-m "magpie/glm-5.3#max"\`).
+     * Priority 3 (Automatic Multi-Tier Fallback with Magpie GLM 5.3 Max): On rate-limit/quota/timeout/channel error, the harness automatically retries backup tiers (including \`magpie/glm-5.3#max\` and \`magpie/glm-5.3-flash#max\` when quota is available, falling back to \`word-claude\` / \`openai\` when GLM quota is exhausted) and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
+   - 12 Standard Blocks (see \`team-dual-goal\` for 4-question self-check & 6 recipes): Stage 1 (\`B1: issue-track\`, \`B2: req-grill\`, \`B3: req-review\`), Stage 2 (\`B4: bug-locate & bug-repro\` [\`:B4a\` shallow triage via \`explore\` -> \`:B4b\` deep repro & root cause via \`coder\`/\`reviewer\`], \`B5: explore & research\`), Stage 3 (\`B6: spec-draft\`, \`B7: slice-tickets\`, \`B8: spec-review\`, \`B9: approval-gate\`), Stage 4 (\`B10: slice-impl\`, \`B11: code-review\`, \`B12: verify & deliver\`).
 </system-reminder>`;
 
 const ROLE_DEFAULT_MODELS = {
-  explore: "word-claude/claude-sonnet-5-5#medium",
+  explore: "word-claude/claude-opus-5-5#medium",
   research: "word-claude/claude-opus-5-5#medium",
   coder: "word-claude/claude-opus-5-5#medium",
-  reviewer: "perplexity/fable-5.1#high",
+  reviewer: "word-claude/claude-opus-5-5#high",
   general: "word-claude/claude-opus-5-5#medium",
 };
 
 const SUBAGENT_FALLBACK_TIERS = {
-  explore: ["perplexity/sonnet-5.5#high", "word-claude/claude-opus-5-5#medium", "openai/gpt-6.1-sol#medium"],
-  research: ["word-claude/claude-opus-5-5#medium", "perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
-  general: ["perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
-  coder: ["word-claude/claude-sonnet-5-5#medium", "perplexity/sonnet-5.5#high", "openai/gpt-6.1-sol#high"],
-  reviewer: ["word-claude/claude-opus-5-5#high", "perplexity/opus-5.5#medium", "openai/gpt-6.1-sol#high"],
+  explore: [
+    "word-claude/claude-opus-5-5#medium",
+    "word-claude/claude-sonnet-5-5#medium",
+    "magpie/glm-5.3-flash#max",
+    "magpie/gpt-6.1-sol#medium",
+    "openai/gpt-6.1-sol#medium",
+  ],
+  research: [
+    "word-claude/claude-opus-5-5#medium",
+    "magpie/glm-5.3#max",
+    "magpie/glm-5.3-flash#max",
+    "magpie/gpt-6.1-sol#high",
+    "openai/gpt-6.1-sol#high",
+  ],
+  general: [
+    "word-claude/claude-opus-5-5#medium",
+    "magpie/glm-5.3#max",
+    "magpie/glm-5.3-flash#max",
+    "magpie/gpt-6.1-sol#high",
+    "openai/gpt-6.1-sol#high",
+  ],
+  coder: [
+    "word-claude/claude-opus-5-5#medium",
+    "word-claude/claude-sonnet-5-5#medium",
+    "magpie/glm-5.3#max",
+    "magpie/glm-5.3-flash#max",
+    "magpie/gpt-6.1-sol#high",
+    "openai/gpt-6.1-sol#high",
+  ],
+  reviewer: [
+    "word-claude/claude-opus-5-5#high",
+    "magpie/gpt-6-astra#high",
+    "openai/gpt-6-astra#high",
+    "magpie/glm-5.3#max",
+    "magpie/glm-5.3-flash#max",
+    "magpie/gpt-6.1-sol#high",
+    "openai/gpt-6.1-sol#high",
+  ],
 };
 
 export function resolveSubagentFallbackTiers(agentId, initialModel) {
