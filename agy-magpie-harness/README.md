@@ -56,7 +56,22 @@
 
 ---
 
-## 4. 补丁重放方法
+## 4. `Antigravity.app` 桌面端 GUI 原生自定义模型下拉框接入（Issue `#8`）
+
+除 `agy` CLI 外，本目录还提供让 **`Antigravity.app` 桌面端 GUI** 左下角模型下拉框直接展示并调用 Magpie 常用模型的完整方案（无需切 CLI，支持与 Google 官方模型随时混用切换）：
+
+1. **Web UI 静态包补丁（`~/.gemini/antigravity/web_bundle_custom.zip`）**：
+   - 从 `/Applications/Antigravity.app/Contents/Resources/bin/language_server.real` 内置 zip 提取 `main.js`，开启 `aHc` 的 `customModelsFeature:{customModelsProvider:f.customModelsProvider}`、`yac` 的 `showCustomModelHeader:!0` 以及 `zsc` 的 `supportsCustomModels:!0`。
+2. **`RoutingClient` 协议前缀路由与 15 个常用模型精简同步（`bin/sync-agy-gui-models.py`）**：
+   - 桌面端 `language_server` 默认以 `--model_api_client_type=ccpa` 启动，但其 `RoutingClient.resolveClient`（`routing_client.go:100-149`）在解析 `custom_models_config` 时，若发现 `modelName` 带有 `gemini-api://` 前缀（如 `gemini-api://codex/gpt-6.1-sol`）且 `modelId` 为 `MODEL_GOOGLE_GEMINI_INTERNAL_BYOM`，会自动将该会话请求转发给内置 `geminiapi.Client`（直连 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`），而不影响 Google 原生模型继续走 CCPA。
+   - `bin/sync-agy-gui-models.py` 通过 `JetboxWriteState` Connect RPC 向 `~/.gemini/antigravity/antigravity_state.pbtxt` 仅同步精选的 **15 个常用模型**（OpenCode `gpt-6-astra` 三档、`gpt-6.1-sol` 五档、`word-claude` / `word-sol` 三档、`perplexity` 四档；不展示 Gemini、Kiro、ZCode、Qoder、Cursor 等冗余项）。
+3. **透明启动包装器（`cmd/ls-wrapper/main.go` $\rightarrow$ `/Applications/Antigravity.app/Contents/Resources/bin/language_server`）**：
+   - 原版二进制保留在同目录 `language_server.real`。
+   - 当 `Antigravity.app` 以 `--subclient_type hub` 拉起 `language_server` 时，包装器自动注入 `--web_bundle_path=/Users/mac/.gemini/antigravity/web_bundle_custom.zip`、`GEMINI_API_KEY=magpie-agy` 与 `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:3425`，并在后台自动执行 `sync-agy-gui-models.py` 保持 15 个常用模型同步。
+
+---
+
+## 5. 补丁重放方法
 
 当上游 `/Users/mac/开源工具/magpie` 拉取新版本后，可执行以下命令一键重放本目录补丁并重编译：
 
