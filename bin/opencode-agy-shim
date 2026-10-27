@@ -8,7 +8,7 @@ const AGY_DIR = join(homedir(), '.gemini', 'antigravity');
 const SHIM_DIR = join(AGY_DIR, 'bin');
 const LEDGER = join(AGY_DIR, 'opencode-pipeline.json');
 const PREFERRED_REAL = '/opt/homebrew/bin/opencode';
-const SESSION_FLAGS = ['-s', '--session', '-c', '--continue'];
+const SESSION_FLAGS = ['-s', '--session', '-c', '--continue', '-h', '--help'];
 const argv = process.argv.slice(2);
 
 const findRealOpencode = () => {

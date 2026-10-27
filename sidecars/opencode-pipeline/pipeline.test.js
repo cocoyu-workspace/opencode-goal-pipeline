@@ -8,6 +8,7 @@ buildOpenCodeSessionWebUrl,
 matchDispatchesWithSessions,
 parseTranscriptDispatches,
 startServer,
+  renderMarkdown,
 } from "./server.mjs";
 
 const CID = "54273816-ad86-4db5-bc88-5aeb8f028062";
@@ -76,6 +77,96 @@ const b64 = Buffer.from(ORIGIN).toString("base64url");
 expect(b64).not.toContain("=");
 expect(buildOpenCodeSessionWebUrl(ORIGIN, "ses_abc")).toBe(`${ORIGIN}/server/${b64}/session/ses_abc`);
 });
+});
+
+describe("buildOpenCodeSessionWebUrl auth_token", () => {
+  test("appends an encoded auth_token only when non-empty", () => {
+    const base = buildOpenCodeSessionWebUrl(ORIGIN, "ses_abc");
+    expect(base).not.toContain("?");
+    expect(buildOpenCodeSessionWebUrl(ORIGIN, "ses_abc", "")).toBe(base);
+    expect(buildOpenCodeSessionWebUrl(ORIGIN, "ses_abc", "a+b/c=")).toBe(`${base}?auth_token=${encodeURIComponent("a+b/c=")}`);
+  });
+});
+
+describe("renderMarkdown", () => {
+  test("renders headings, bold and inline code", () => {
+    const html = renderMarkdown("# Title\n\n**bold** and `code`");
+    expect(html).toContain("<h1>Title</h1>");
+    expect(html).toContain("<strong>bold</strong>");
+    expect(html).toContain("<code>code</code>");
+  });
+
+  test("renders fenced code blocks with escaped content and no inline formatting", () => {
+    const html = renderMarkdown("```js\nconst a = 1 < 2; // **x**\n```");
+    expect(html).toBe('<pre><code class="lang-js">const a = 1 &lt; 2; // **x**</code></pre>');
+  });
+
+  test("renders tables", () => {
+    const html = renderMarkdown("| a | b |\n|---|---|\n| 1 | 2 |");
+    expect(html).toContain("<th>a</th><th>b</th>");
+    expect(html).toContain("<td>1</td><td>2</td>");
+  });
+
+  test("renders unordered and ordered lists, blockquotes and rules", () => {
+    const html = renderMarkdown("- x\n* y\n\n1. a\n2. b\n\n> q\n\n---");
+    expect(html).toContain("<ul><li>x</li><li>y</li></ul>");
+    expect(html).toContain("<ol><li>a</li><li>b</li></ol>");
+    expect(html).toContain("<blockquote>q</blockquote>");
+    expect(html).toContain("<hr>");
+  });
+
+  test("escapes HTML and only links http/https/file", () => {
+    const html = renderMarkdown('<script>alert(1)</script> <img src=x onerror=alert(1)> [bad](javascript:alert(1)) [ok](https://a.b/?q="1")');
+    expect(html).not.toContain("<script");
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain('href="javascript');
+    expect(html).toContain(`<a href="${"https:"}//a.b/?q=&quot;1&quot;" target="_blank" rel="noopener">ok</a>`);
+  });
+});
+
+describe("auth_token in HTTP routes", () => {
+  const oc = { id: "ses_ok", title: "S1", agent: "coder", location: { directory: WT }, time: { created: T0 + 1000, updated: T0 + 2000 } };
+  const urls = async (extra) => {
+    const home = mkdtempSync(join(tmpdir(), "pipe-"));
+    const logs = join(home, "brain", CID, ".system_generated", "logs");
+    mkdirSync(logs, { recursive: true });
+    writeFileSync(join(logs, "transcript.jsonl"), transcript);
+    const server = await startServer({
+      port: 0,
+      agyDir: home,
+      titleOf: async () => "t",
+      opencode: { origin: ORIGIN, listSessions: async () => Array.of(oc), getSession: async (id) => ({ ...oc, id }), getMessages: async () => [], ...extra },
+    });
+    const base = `http://127.0.0.1:${server.address().port}`;
+    try {
+      const pipe = await (await fetch(`${base}/api/pipeline?conversationId=${CID}`)).json();
+      const detail = await (await fetch(`${base}/api/session-detail?sessionId=ses_ok`)).json();
+      return { node: pipe.nodes.at(0).session.webUrl, detail: detail.webUrl };
+    } finally {
+      server.close();
+    }
+  };
+
+  test("opencode.authToken is appended to both routes", async () => {
+    const got = await urls({ authToken: "dG9r" });
+    const want = buildOpenCodeSessionWebUrl(ORIGIN, "ses_ok", "dG9r");
+    expect(got.node).toBe(want);
+    expect(got.detail).toBe(want);
+    expect(want).toContain("?auth_token=dG9r");
+  });
+
+  test("getAuthToken(origin) is used when authToken is absent", async () => {
+    const got = await urls({ getAuthToken: async (origin) => `tok+${origin}` });
+    const want = buildOpenCodeSessionWebUrl(ORIGIN, "ses_ok", `tok+${ORIGIN}`);
+    expect(got.node).toBe(want);
+    expect(got.detail).toBe(want);
+  });
+
+  test("no token source leaves the url unchanged", async () => {
+    const got = await urls({});
+    expect(got.node).toBe(buildOpenCodeSessionWebUrl(ORIGIN, "ses_ok"));
+    expect(got.detail).toBe(got.node);
+  });
 });
 
 describe("matchDispatchesWithSessions", () => {
