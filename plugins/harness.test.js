@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { resolveSubagentFallbackTiers, wrapSubagentExecute } from "../../auto-continue-harness.js";
+import { resolveSubagentFallbackTiers, wrapSubagentExecute } from "./auto-continue-harness.js";
 
 describe("auto-continue-harness subagent fallback & background coercion (Issue #3)", () => {
   test("resolveSubagentFallbackTiers deduplicates ROLE_DEFAULT_MODELS when initialModel is omitted", () => {

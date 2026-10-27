@@ -133,22 +133,22 @@
 
 | 目录 / 文件 | 说明 |
 | :--- | :--- |
-| `plugins/opencode-goal/` | 零外部依赖的自维护 OpenCode `/goal` 插件源码（`src/`）、内联产物（`dist/server.js`）与单测（`test/goal.test.js`） |
-| `plugins/auto-continue-harness.js` | 自动续跑与子 Agent 三级模型故障回退护栏插件（`v5`） |
-| `skills/team-dual-goal/SKILL.md` | 7 大原子积木（`N1`~`N7` / `B1`~`B7`）动态装配与模型三级路由规程 |
-| `skills/team-review-governance/SKILL.md` | 需求 + 方案 + 代码三合一精简 Review 规程 |
-| `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的正向推荐需求澄清规程（配合 `HITL` 自动挂起唤醒） |
-| `desktop-pipeline/` | OpenCode Desktop 流水线看板动态积木推导与单测（`status.ts` / `status.test.ts`） |
 | `agy-magpie-harness/` | `Antigravity.app` 桌面端 GUI 8 个大写 GPT 模型注入、透明包装器 `ls-wrapper`、`agy-gpt` 启动器与 Magpie 适配补丁 |
-| `tools/install.py` | 一键状态检查与安装脚本 |
+| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与子 Agent 三级模型故障回退护栏插件（`v6`，已移除废弃的 `opencode-goal`） |
+| `plugins/harness.test.js` | `auto-continue-harness.js` 子 Agent 三级回退与后台强制同步单测 |
+| `config/opencode.agents.json` | OpenCode 五大专职子 Agent（`coder`、`reviewer`、`research`、`explore`、`general`）模型与只读权限配置 |
+| `skills/team-dual-goal/SKILL.md` | `agy` 原生 `/goal` + `opencode run` 7 大原子积木（`N1`~`N7` / `B1`~`B7`）动态装配与模型三级路由规程 |
+| `skills/team-review-governance/SKILL.md` | 需求 + 方案 + 代码三合一精简 Review 规程 |
+| `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的正向推荐需求澄清规程 |
+| `tools/install.py` | 一键状态检查与安装脚本（安装 `auto-continue-harness.js` 并清理旧 `opencode-goal`） |
 
 ```bash
 # 查看当前安装状态
 python3 tools/install.py status
 
-# 一键安装插件与护栏到 ~/.config/opencode
+# 一键安装护栏到 ~/.config/opencode 并清理废弃 opencode-goal
 python3 tools/install.py install
 
-# 运行插件单测
-bun test plugins/opencode-goal/test/goal.test.js
+# 运行护栏单测
+bun test plugins/harness.test.js
 ```
