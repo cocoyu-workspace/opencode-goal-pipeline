@@ -1,5 +1,7 @@
 # opencode-goal-pipeline
 
+> AGY + Magpie 接入与更新检查见 [维护文档](agy-magpie-harness/docs/agy-magpie-recovery.md)，跟踪 [Issue #20](https://github.com/wycocoyu/opencode-goal-pipeline/issues/20)。该文优先于下文早期的桌面模型数量与 Magpie/OpenCode 路由描述。OpenCode 直接使用 `opencode run`，不接入 Magpie。
+
 **`agy`（Gemini / GPT-6 Astra / GPT-6.1 Sol 深度需求澄清 + 原生 `/goal` 长任务主控 + 多模态/GUI 真机验收交付）$\times$ `opencode run`（全能后台异构执行底座：按场景灵活调度 `explore` / `research` / `coder` / `reviewer` / `general` 与 CLI 测试）四大阶段 12 块标准积木（`B1`~`B12`）协同流水线**。
 
 ---
