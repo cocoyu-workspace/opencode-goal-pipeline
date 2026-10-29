@@ -10,9 +10,24 @@
           "effect": "deny"
         },
         {
-          "action": "openviking_*",
-          "resource": "*",
-          "effect": "deny"
+          "action": "skill",
+          "resource": "team-grilling",
+          "effect": "allow"
+        },
+        {
+          "action": "skill",
+          "resource": "team-codebase-design",
+          "effect": "allow"
+        },
+        {
+          "action": "skill",
+          "resource": "team-diagnosing-bugs",
+          "effect": "allow"
+        },
+        {
+          "action": "skill",
+          "resource": "team-domain-modeling",
+          "effect": "allow"
         },
         {
           "action": "chrome-devtools_*",
