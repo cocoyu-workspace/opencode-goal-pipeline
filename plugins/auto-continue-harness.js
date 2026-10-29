@@ -15,35 +15,38 @@ When the user's prompt indicates a request for action, such as "can you...", "I 
 
 - Run tests appropriate to the change and complete required checks. Once those pass, broaden or repeat testing only when new changes, failures, or unresolved concerns justify it; otherwise, continue toward completing the task.`;
 
-const HARNESS_BOUNDARY_MARKER = "<!-- opencode-autonomy-boundary:v6 -->";
+const HARNESS_BOUNDARY_MARKER = "<!-- opencode-autonomy-boundary:v7 -->";
 const LEGACY_BOUNDARY_BLOCK_RE =
   /\n*<!-- opencode-autonomy-boundary:v\d+ -->\s*<system-reminder>[\s\S]*?<\/system-reminder>/gi;
 
 const HARNESS_BOUNDARY_REMINDER = `${HARNESS_BOUNDARY_MARKER}
 <system-reminder>
-# Execution vs Confirmation Boundary & Elastic Atomic Pipeline
-1. Read-Only Investigation Never Asks Permission (Single-Turn Exhaustive Fact-Finding): All read-only checks (reading code/configs, inspecting local or non-prod logs, correlating account/error states, running non-destructive diagnostic probes; excluding production DB per Team Rules) are inherently pre-authorized. Whether the user asks a question, sends a screenshot, or refutes a prior hypothesis (e.g. "没有模型选择"), you MUST invoke read-only tools immediately in the current turn and keep calling tools until the root cause and exact mappings are verified. NEVER end a turn with 0 tool calls or stop mid-investigation to ask permission for a read-only check.
-2. Self-Check Gate on "要做什么" (Forbid Self-Assigned Read-Only Next Steps): Before writing "要做什么", inspect item #1. If its executor is you or a subagent (e.g. "由我只读检查", "由我执行", "由我继续核对", "先确认 X 再决定怎么修") and the action is a read-only check or already-authorized work, DO NOT output it in "要做什么" and DO NOT end the turn — delete the draft summary and invoke the tool right now in this turn. "要做什么" is strictly reserved for decisions/approvals that only the user can provide.
-3. Architecture & Fix Confirmation Gate (Stop ONLY Before Mutating Code/Config): After completing all read-only checks and proving the root cause, if the user only asked for diagnosis or if multiple fix/architectural directions exist with user-visible trade-offs, STOP BEFORE mutating code or config (\`patch\`, \`edit\`, \`write\`, state-changing \`shell\`). Present the verified root cause and recommended options (or call the \`question\` tool with your recommended option first), and wait for the user's decision.
-4. Elastic Atomic Skill Blocks (\`B1\`~\`B12\`) & 3-Tier Model Routing (\`team-dual-goal\`):
-   - Primary Orchestrator: \`Antigravity (agy)\` (Gemini / \`GPT-6 Astra\` / \`GPT-6.1 Sol\`) handles requirement clarification (\`B2\`), native \`/goal\` orchestration, and multimodal/GUI verification (\`B12\`), dispatching background tasks directly via \`opencode run --agent explore|research|coder|reviewer|general --auto\` without routing OpenCode through Magpie.
-   - Subagent 3-Tier Model Priority:
-     * Priority 1 (User's Explicit Override — Highest): When the user specifies a model or reviewer (e.g. "这次用 GPT-6 Astra High 审", "派某模型做某事"), pass \`model="..."\` explicitly in the \`subagent\` call (or \`-m ...\` in \`opencode run\`, e.g. \`-m "openai/gpt-6-astra#high"\`).
-     * Priority 2 (Role Default): When unspecified, omit \`model\` so the subagent uses its role default (\`explore\`/\`research\`/\`coder\`/\`general\`=\`word-claude/claude-opus-5-5#medium\`, \`reviewer\`=\`word-claude/claude-opus-5-5#high\`; for \`B11: code-review\` heterogeneous review when \`coder\` used Opus, pass \`-m "openai/gpt-6-astra#high"\` or \`-m "openai/gpt-6.1-sol#high"\`).
-     * Priority 3 (OpenCode Native Multi-Tier Fallback): On rate-limit/quota/timeout/channel error, OpenCode's own harness automatically degrades down direct providers (\`word-claude/claude-opus-5-5\` -> \`word-claude/claude-sonnet-5-5\` -> \`openai/gpt-6-astra\` / \`openai/gpt-6.1-sol\`) and appends \`[Fallback Executed: ...]\`. Runtime fallback uses the native session retry hook for role-based CLI runs and subagents. Fallback-protected subagents run in blocking mode (\`background: false\`).
-   - 12 Standard Blocks (see \`team-dual-goal\` for 4-question self-check & 6 recipes): Stage 1 (\`B1: issue-track\`, \`B2: req-grill\`, \`B3: req-review\`), Stage 2 (\`B4: bug-locate & bug-repro\` [\`:B4a\` shallow triage via \`explore\` -> \`:B4b\` deep repro & root cause via \`coder\`/\`reviewer\`], \`B5: explore & research\`), Stage 3 (\`B6: spec-draft\`, \`B7: slice-tickets\`, \`B8: spec-review\`, \`B9: approval-gate\`), Stage 4 (\`B10: slice-impl\`, \`B11: code-review\`, \`B12: verify & deliver\`).
+# Execution & Confirmation Boundary
+1. Read-Only Exhaustive Check: Local/non-prod read-only checks (reading code/configs, inspecting logs, running diagnostic probes; excluding prod DB) are pre-authorized. Invoke read-only tools immediately in the current turn until the root cause and exact file:line are verified. Never end a turn with 0 tool calls to ask permission for a read-only check.
+2. Self-Check Gate on "要做什么": Never list an item in "要做什么" whose executor is you or a subagent for a read-only check or already-authorized action — execute it in this turn first.
+3. Mutation Gate: When the user only asked for diagnosis or multiple architectural directions exist with user-visible trade-offs, stop before mutating code/config and present your recommended option first. For authorized implementation, complete edits and local verification in the same turn.
 </system-reminder>`;
 
-const ROLE_DEFAULT_MODELS = {
-  explore: "word-claude/claude-opus-5-5#medium",
+export const ROLE_DEFAULT_MODELS = {
+  explore: "kiro-claude/claude-sonnet-5-5#medium",
   research: "word-claude/claude-opus-5-5#medium",
   coder: "word-claude/claude-opus-5-5#medium",
   reviewer: "word-claude/claude-opus-5-5#high",
   general: "word-claude/claude-opus-5-5#medium",
 };
 
+export function parseModelSpec(spec) {
+  if (!spec || typeof spec !== "string") return undefined;
+  const [providerID, rest] = spec.trim().split("/");
+  if (!providerID || !rest) return undefined;
+  const [id, variant] = rest.split("#");
+  if (!id) return undefined;
+  return { providerID, id, ...(variant ? { variant } : {}) };
+}
+
 const SUBAGENT_FALLBACK_TIERS = {
   explore: [
+    "kiro-claude/claude-sonnet-5-5#medium",
     "word-claude/claude-opus-5-5#medium",
     "word-claude/claude-sonnet-5-5#medium",
     "openai/gpt-6.1-sol#medium",
@@ -124,6 +127,10 @@ export function wrapSubagentExecute(origExecute) {
   };
 }
 
+function isFallbackEligibleSession(session) {
+  return Boolean(session?.parentID || session?.metadata?.agyConversationId);
+}
+
 function createSessionFallback(ctx) {
   const turns = new Map();
   async function advance(input, available) {
@@ -157,13 +164,18 @@ function createSessionFallback(ctx) {
     reset(sessionID) { turns.delete(sessionID); },
     async prepare({ sessionID }) {
       const session = await ctx.session.get({ sessionID });
-      if (!SUBAGENT_FALLBACK_TIERS[session.agent] || !session.model) return;
+      if (!isFallbackEligibleSession(session) || !SUBAGENT_FALLBACK_TIERS[session.agent] || !session.model) return;
       const { data: available } = await ctx.model.list();
       const { providerID, id, variant } = session.model;
       if (available.some((candidate) => candidate.providerID === providerID && candidate.id === id && (!variant || candidate.variants.some((value) => value.id === variant)))) return;
       await advance({ sessionID, agent: session.agent, model: session.model }, available);
     },
     async retry(input) {
+      const session = await ctx.session.get({ sessionID: input.sessionID });
+      if (!isFallbackEligibleSession(session)) {
+        input.decision = { retry: false };
+        return;
+      }
       const type = input.error.type;
       if (!["provider.auth", "provider.quota", "provider.rate-limit", "provider.internal", "provider.transport", "provider.timeout"].includes(type)) return;
       if (input.error.status === 403) return;
@@ -241,7 +253,7 @@ export default {
       }
     }
 
-    // 1. Upgrade conservative gpt-* system prompt to gpt-astra autonomy + explicit confirmation boundary
+    // 1. Upgrade conservative gpt-* system prompt to gpt-astra autonomy + concise confirmation boundary
     if (typeof ctx.session?.hook === "function") {
       for (const hookName of ["context", "compaction", "generate"]) {
         try {
@@ -274,7 +286,7 @@ export default {
       return "";
     }
 
-    // 2. Wrap native OpenCode 2.1+ subagent (3-tier Word -> Perplexity -> GPT fallback) & todowrite tool
+    // 2. Wrap subagent fallback & todowrite tool
     if (typeof ctx.tool?.transform === "function") {
       try {
         const toolTransformReg = await ctx.tool.transform((registry) => {
@@ -310,7 +322,7 @@ export default {
       } catch {}
     }
 
-    // 3. Track in-turn code edits vs verification commands for todowrite's inline verification reminder
+    // 3. Track in-turn code edits vs verification commands & sync agent default model on Tab switch
     const controller = new AbortController();
     if (typeof ctx.event?.subscribe === "function") {
       (async () => {

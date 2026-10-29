@@ -1,17 +1,28 @@
 # opencode-goal-pipeline
 
-**`agy`（Gemini / GPT-6 Astra / GPT-6.1 Sol 深度需求澄清 + 原生 `/goal` 长任务主控 + 多模态/GUI 真机验收交付）$\times$ `opencode run`（全能后台异构执行底座：按场景灵活调度 `explore` / `research` / `coder` / `reviewer` / `general` 与 CLI 测试）四大阶段 12 块标准积木（`B1`~`B12`）协同流水线**。
+> AGY + Magpie 接入与更新检查见 [维护文档](agy-magpie-harness/docs/agy-magpie-recovery.md)，跟踪 [Issue #20](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/20)。双入口极速工作流（平时上班 `OpenCode` 直出 + 后台挂机 `AGY /goal`）跟踪 [Issue #22](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/22)。OpenCode 直接使用 `opencode` / `opencode run`，不接入 Magpie。
+
+**双入口极速协同流水线：平时上班直开 `OpenCode`（`build` 沿用你手动选择的模型（默认 GPT，不自动切换）秒级直出，按 `Tab` 切 `coder` = `word-claude/claude-opus-5-5#medium` 0 Kiro 积分重度编码）$\times$ 后台挂机大活开 `AGY /goal`（Gemini / GPT-6 Astra / GPT-6.1 Sol 总控 + 多模态/GUI 真机验收 + `opencode run` 全能后台四大阶段 12 块标准积木 `B1`~`B12`）**。
 
 ---
 
-## 〇、端到端全景链路图（`agy` 主控 $\times$ `opencode run` 全能后台 $\times$ 单写者 `issue.md`）
+## 〇、双入口工作流与端到端全景链路图
+
+### 0. 平时上班 vs 后台挂机：双入口选路速查（90% 直开 OpenCode，10% 挂机开 AGY `/goal`）
+
+| 场景分类 | 推荐入口 | 默认 Agent 与模型 | 核心优势与交互方式 |
+| :--- | :--- | :--- | :--- |
+| **平时上班（90% 日常快速需求、查日志、改 Bug、直接写代码）** | **直接打开 `OpenCode`（不走 `AGY` 中转）** | • 默认主入口 **`build`**（`mode: "primary"`）：**不绑定模型，沿用你在 TUI 手动选择的模型（默认 GPT，如 `openai/gpt-6.1-sol-fast`），插件绝不替你切换，报错就原样报错、不降级**<br>• 按 **`Tab`** 切 **`coder`**（`mode: "all"`）：**`word-claude/claude-opus-5-5#medium`**（Word Cloud，**0 Kiro 积分**）<br>• 按 **`Tab`** 切 **`explore`**（`mode: "all"`）：**`kiro-claude/claude-sonnet-5-5#medium`**（严格只读查日志/探路） | • **首轮上下文瘦身 `82%+`**（`AGENTS.md <3 KB` + 屏蔽 51 个本地 Skill 与非编码 MCP 注入 + 移除启动阻塞插件），秒级首字响应<br>• `auto-continue-harness.js` 只对**可识别的子会话**做模型故障降级：带 `parentID` 的 `subagent` 子会话，或带 `metadata.agyConversationId` 的 AGY shim `opencode run` 会话。TUI 主会话和普通无标记会话一律不切模型、不重试；按 `Tab` 切到 `coder`/`explore` 时由 OpenCode 原生应用该 Agent 配置的模型（你主动按键触发）<br>• 内置隐藏 `title` / `compaction` / `summary` 绑定 `word-claude/claude-sonnet-5-5`，后台生成标题与摘要**不扣 Kiro 积分** |
+| **后台挂机大活（10% 跨模块重构、长链路 `/goal`、GUI 真机验收）** | **打开 `AGY` 输入 `/goal <目标>`** | • `AGY` 主控（`Gemini 4 Argon` / `GPT-6 Astra` / `GPT-6.1 Sol`）<br>• 后台调度 `opencode run --agent <explore\|research\|coder\|reviewer\|general> --auto` | • 挂在后台全自动跑完 `B1`~`B12`（立项、取证、方案、异构冷审、TDD 实施与 `tabbit-cli`/`cua-driver` 多模态真机验收），跑完看结果，上班不干等 |
 
 ### 1. 全景 Mermaid 架构与动态选块链路图（GitHub 原生渲染）
 
 ```mermaid
 flowchart TD
-    User(["👤 老板输入任务\n① 日常零口令直接说 | ② /goal 一键跑到底 | ③ 手动点菜插拔 (Priority 1)"])
-    User --> SelfCheck["🧠 agy 主会话：选块 4 问自检 (Q1~Q4)\nQ1 交付与授权终点 | Q2 需求清晰度与真伪\nQ3 事实与根因是否已证实 | Q4 变更范围、风险面与切片粒度"]
+    User(["👤 老板输入任务\n① 平时上班 (90%)：直开 OpenCode 秒级直出\n② 后台挂机大活 (10%)：开 AGY /goal 一键跑到底\n③ 手动点菜插拔 (Priority 1)"])
+
+    User -->|"平时上班：查日志 / 快速需求 / 改 Bug"| OCEntry["⚡ OpenCode 直出主入口\n• build (默认)：沿用你手动选的模型（默认 GPT，不自动切换、不降级）\n• 按 Tab 切 coder：word-claude/claude-opus-5-5#medium (0 Kiro 积分)\n• 按 Tab 切 explore：kiro-claude/claude-sonnet-5-5#medium (只读快筛)"]
+    User -->|"后台挂机大活：/goal 或跨模块长链路"| SelfCheck["🧠 agy 主会话：选块 4 问自检 (Q1~Q4)\nQ1 交付与授权终点 | Q2 需求清晰度与真伪\nQ3 事实与根因是否已证实 | Q4 变更范围、风险面与切片粒度"]
 
     SelfCheck --> Recipes{"🎯 匹配 6 套标准配方 + 4 条覆盖防线\n首轮第 1 行宣告本次积木链"}
 
@@ -34,9 +45,9 @@ flowchart TD
         B3 -->|"需求评审通过"| Stage2Start
     end
 
-    subgraph Stage2["阶段二：取证与定位阶段（B4 两级渐进排障：Sonnet 快筛 → Opus 深挖）"]
-        Stage2Start --> B4a["B4a · 浅层快速定位 (bug-locate)\nopencode explore (默认快模型 Sonnet 5.5)\n秒级抓报错时间线 + 堆栈 + 精确 file:line → 写 §2"]
-        B4a -->|"复杂/未坐实 Bug 需复现与深挖"| B4b["B4b · 深度复现与根因诊断 (bug-repro)\nopencode coder/explore (Opus 5.5) 或 reviewer (Fable 5.1)\n构造最小红灯复现命令/单测并锁定根因 → 写 §2"]
+    subgraph Stage2["阶段二：取证与定位阶段（B4 两级渐进排障：Kiro Sonnet 快筛 → Word Opus 深挖）"]
+        Stage2Start --> B4a["B4a · 浅层快速定位 (bug-locate)\nopencode explore (默认 kiro-claude/claude-sonnet-5-5#medium)\n秒级抓报错时间线 + 堆栈 + 精确 file:line → 写 §2"]
+        B4a -->|"复杂/未坐实 Bug 需复现与深挖"| B4b["B4b · 深度复现与根因诊断 (bug-repro)\nopencode coder/explore (word-claude/claude-opus-5-5#medium) 或 reviewer\n构造最小红灯复现命令/单测并锁定根因 → 写 §2"]
         Stage2Start --> B5["B5 · 代码探路与外部方案调研 (explore & research)\nopencode explore 查本仓复用 + opencode research 查 memex/500星开源 → 写 §2"]
     end
 
@@ -212,8 +223,14 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 - **前台全模型汇聚（`Antigravity.app` 8 模型 × 3 档强度）**：`Antigravity.app` 下拉框已同步 8 个基础模型 × `Medium / High / Max` 3 档强度（`Gemini 4 Argon`、6 个 Codex GPT `Astra / Sol`、2 个 `Claude (Word)`，已全面移除 Perplexity 模型）。主会话自身负责日常问答、需求澄清（`B2`）、原生 `/goal` 长控（支持前 GPT 理解定稿 + 后 Gemini 实施交付按需双棒）、主卡单写、多模态/浏览器/GUI 真机验收（`B12a`）与 `<20 行` 单点直接小改（配方 1）。
 - **Magpie 积木网关接入 OpenCode（`providers.magpie`）**：OpenCode 通过 `magpie` provider（`http://127.0.0.1:3425/v1`）按积木形式接入 `magpie/glm-5.3#max`、`magpie/glm-5.3-flash#max` 等模型。`GLM 5.3 Max` 专用于**老板显式指定**或**主力模型限流时的自动兜底**（有额度则用 GLM 5.3 Max，无额度自动降级到 Word / OpenAI）。
 - **第一优先级（老板当轮点名，最高优先）**：当老板点名「用 Opus 审」「用 GLM 5.3 Max 审」「用 Astra 跑」时，显式传入 `-m "<provider>/<model>#<effort>"`（或 `subagent(..., model="...")`）强制覆盖。
-- **第二优先级（角色默认配置与复杂度分级）**：未点名时走 `opencode.json` 默认模型（`explore` / `research` / `coder` / `general` 默认 `word-claude/claude-opus-5-5#medium`，`reviewer` 默认 `word-claude/claude-opus-5-5#high`）。
-- **第三优先级（`auto-continue-harness.js` 多级自动降级与按实际作者模型异构防自审）**：`opencode run` 与子 Agent 遇限流、配额耗尽或渠道异常（403 除外）时自动按备选链同会话降级续跑并追加 `[Fallback Executed: requested=... -> actual=...]`；`B3` / `B8` / `B11` 评审严格对比**被审产物的实际作者模型**保持异构（如 `coder` 用 Opus 写码时，`B11` 必传 `-m openai/gpt-6-astra#high` 或 `-m magpie/glm-5.3#max`）。
+- **第二优先级（角色默认配置与复杂度分级）**：未点名时走 `opencode.json` 默认模型：
+  - **`build`（TUI 默认主入口，`mode: "primary"`）**：不配置 `model`，沿用 `opencode.json` 顶层 `model`（`openai/gpt-6-sol`）与你在 TUI 的手动选择；**无降级链，报错原样报出**。
+  - **`explore`（TUI 按 `Tab` 可切 + 后台 `B4a/B5` 快筛，`mode: "all"`）**：默认 `kiro-claude/claude-sonnet-5-5#medium`（降级链：`kiro-claude/claude-sonnet-5-5#medium` $\rightarrow$ `word-claude/claude-sonnet-5-5#medium` $\rightarrow$ `openai/gpt-6.1-sol#medium`）。
+  - **`coder`（TUI 按 `Tab` 可切 + 后台 `B4b/B10` 重度编码，`mode: "all"`）**：默认 `word-claude/claude-opus-5-5#medium`（**0 Kiro 积分消耗**；降级链严格锁死 `word-claude/claude-opus-5-5#medium` $\rightarrow$ `word-claude/claude-sonnet-5-5#medium` $\rightarrow$ `openai/gpt-6.1-sol#high`）。
+  - **`research` / `general`（后台专职子 Agent，`mode: "subagent"`）**：默认 `word-claude/claude-opus-5-5#medium`。
+  - **`reviewer`（后台只读参谋与异构冷审，`mode: "subagent"`）**：默认 `word-claude/claude-opus-5-5#high`。
+  - **`title` / `compaction` / `summary`（内置隐藏会话辅助 Agent）**：默认 `word-claude/claude-sonnet-5-5`（不扣 Kiro 积分）。
+- **第三优先级（`auto-continue-harness.js` 多级自动降级与按实际作者模型异构防自审）**：仅 `subagent` 工具派生的**子会话**遇限流、配额耗尽或渠道异常（403 除外）时才自动按备选链同会话降级续跑（主会话与 `opencode run` 不降级、不重试）并追加 `[Fallback Executed: requested=... -> actual=...]`；`B3` / `B8` / `B11` 评审严格对比**被审产物的实际作者模型**保持异构（如 `coder` 用 Opus 写码时，`B11` 必传 `-m openai/gpt-6-astra#high` 或 `-m magpie/glm-5.3#max`）。
 
 ### 2. 子 Agent 通道铁律：默认 100% 锁死 `opencode run`，仅老板显式点名才切 `agy` 子 Agent
 
@@ -238,9 +255,9 @@ Q4（变更范围、风险面与切片粒度）：是否跨文件改接口/状�
 | 目录 / 文件 | 说明 |
 | :--- | :--- |
 | `agy-magpie-harness/` | `Antigravity.app` 桌面端 GUI 模型注入、透明包装器 `ls-wrapper`、`agy-gpt` 启动器与 Magpie 适配补丁 |
-| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与 `opencode run` / `subagent` 三级模型故障回退护栏插件（`v6`） |
-| `plugins/harness.test.js` | `auto-continue-harness.js` 三级回退与后台强制同步单测 |
-| `config/opencode.agents.json` | OpenCode 五大专职子 Agent（`coder`、`reviewer`、`research`、`explore`、`general`）模型与只读权限配置 |
+| `plugins/auto-continue-harness.js` | OpenCode 自动续跑与 `subagent` 子会话三级模型故障回退护栏插件（`v7`；主会话永不切模型、不重试） |
+| `plugins/harness.test.js` | `auto-continue-harness.js` 子会话三级回退、主会话永不切模型/不重试与后台强制同步单测 |
+| `config/opencode.agents.json` | OpenCode 主入口（`build`）与五大专职 Agent（`coder`、`reviewer`、`research`、`explore`、`general`）及隐藏辅助 Agent（`title`/`compaction`/`summary`）模型与瘦身权限配置 |
 | `skills/team-dual-goal/SKILL.md` | 四大阶段 12 块标准积木（`B1`~`B12`）、4 问自检与 6 套选块配方及三级模型路由唯一权威规程 |
 | `skills/team-review-governance/SKILL.md` | 需求（`B3`）+ 方案（`B8`）+ 代码（`B11`）三合一精简 Review 规程 |
 | `skills/team-grilling/SKILL.md` | 融合 Matt `#1193` 的 `B2: req-grill` 正向推荐需求澄清规程 |
@@ -257,4 +274,27 @@ python3 tools/install.py install
 
 # 运行护栏单测
 bun test plugins/harness.test.js
+```
+
+### 6. `cocoyuworkspace` 版本归档与一键回退指南（Git 版本管理）
+
+所有 OpenCode 全局指令与运行时配置均在 `/Users/mac/dev/cocoyuworkspace/agents/opencode/` 下按独立版本号与 Git 提交分层归档：
+
+| 版本状态 | `AGENTS.md` 归档版本（`instruction-archive.py`） | `runtime/`（`opencode.json` + `auto-continue-harness.js`）Git 提交 | `skill/team-dual-goal` 版本 | 说明 |
+| :--- | :--- | :--- | :--- | :--- |
+| **改动前旧版配置（Pre-V3 快照）** | **`opencode v39`**（`713feb4c8d`） | **`163a6ee`**（`chore(opencode): archive pre-V3 runtime snapshot`） | **`v11`**（`0b6762d780`） | 全 `word-claude/claude-opus-5-5#medium` 默认子 Agent + `23,681 B` 完整版 `AGENTS.md` |
+| **当前生效双入口配置（V3 极速版）** | **`opencode v40`**（`3adc2cb81c`） | **`8d18fd9`**（`feat(opencode): sync V3 Kiro Sonnet 5.5 Medium build/explore + Word Opus coder dual-entry runtime`） | **`v12`**（`fa12abf45d`） | `build`/`explore` 默认 `kiro-claude/claude-sonnet-5-5#medium` + `coder`（`mode: "all"`）默认 `word-claude/claude-opus-5-5#medium`（0 Kiro 积分）+ `<3 KB` 瘦身 `AGENTS.md` |
+
+```bash
+# 一键恢复到改动前的 Pre-V3 旧版配置（保留完整 Git 历史与新版本号）
+python3 /Users/mac/dev/cocoyuworkspace/TeamRules/instruction-archive.py restore opencode 39
+git -C /Users/mac/dev/cocoyuworkspace show 163a6ee:agents/opencode/runtime/opencode.json > ~/.config/opencode/opencode.json
+git -C /Users/mac/dev/cocoyuworkspace show 163a6ee:agents/opencode/runtime/plugins/auto-continue-harness.js > ~/.config/opencode/plugins/auto-continue-harness.js
+/opt/homebrew/bin/opencode service restart
+
+# 一键切回 V3 双入口极速配置
+python3 /Users/mac/dev/cocoyuworkspace/TeamRules/instruction-archive.py restore opencode 40
+git -C /Users/mac/dev/cocoyuworkspace show 8d18fd9:agents/opencode/runtime/opencode.json > ~/.config/opencode/opencode.json
+git -C /Users/mac/dev/cocoyuworkspace show 8d18fd9:agents/opencode/runtime/plugins/auto-continue-harness.js > ~/.config/opencode/plugins/auto-continue-harness.js
+/opt/homebrew/bin/opencode service restart
 ```
