@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync Magpie custom models from ~/.gemini/antigravity-cli/settings.json into Antigravity.app GUI state."""
+"""Sync Magpie custom models into Antigravity.app GUI state (and ~/.gemini/antigravity-cli/settings.json)."""
 
 import json
 import re
@@ -27,55 +27,110 @@ def discover_ports() -> list[int]:
     return ports
 
 
-# GUI 下拉框基础显示名（每个基础模型自动生成 (Medium) / (High) / (Max) 三个推理档位，
-# 前端 G4 + kac 会将同 base 的三个档位折叠为单行并展示二级 Effort 下拉菜单：默认 Medium，可选 High / Max）。
-BASE_GUI_MODELS = {
-    "magpie/codex/gpt-6-astra": "GPT-6 Astra",
-    "magpie/codex/gpt-6-astra-fast": "GPT-6 Astra Fast",
-    "magpie/codex/gpt-6-astra-ultrafast": "GPT-6 Astra Ultra Fast",
-    "magpie/codex/gpt-6.1-sol": "GPT-6.1 Sol",
-    "magpie/codex/gpt-6.1-sol-fast": "GPT-6.1 Sol Fast",
-    "magpie/codex/gpt-6.1-sol-ultrafast": "GPT-6.1 Sol Ultra Fast",
-    "magpie/word-claude/word/claude-opus-5-5": "Claude Opus 5.5 (Word)",
-    "magpie/word-claude/word/claude-sonnet-5-5": "Claude Sonnet 5.5 (Word)",
-}
+# GPT 模型基础行（每行自动生成 Medium / High / xhigh 三个推理档位，前端折叠为单行并展示二级 Effort 菜单）
+GPT_BASE_MODELS = [
+    ("codex/gpt-6.1-sol", "GPT-6.1 Sol", 500000),
+    ("codex/gpt-6.1-sol-fast", "GPT-6.1 Sol Fast", 500000),
+    ("codex/gpt-6.1-sol-ultrafast", "GPT-6.1 Sol Ultra Fast", 500000),
+    ("codex/gpt-6-astra", "GPT-6 Astra", 272000),
+    ("codex/gpt-6-astra-fast", "GPT-6 Astra Fast", 272000),
+    ("codex/gpt-6-astra-ultrafast", "GPT-6 Astra Ultra Fast", 272000),
+]
 
-EFFORT_TIERS = [
-    ("Medium", ""),
+GPT_EFFORT_TIERS = [
+    ("Medium", "-medium"),
     ("High", "-high"),
+    ("xhigh", "-xhigh"),
+]
+
+# Word 模型（云端 Word Claude Opus 5.5 与 Sonnet 5.5）
+SINGLE_FIXED_MODELS = [
+    ("word-claude/word/claude-opus-5-5-max", "Claude Opus 5.5 (Word) (Max)", 500000),
+    ("word-claude/word/claude-sonnet-5-5-max", "Claude Sonnet 5.5 (Word) (Max)", 500000),
+]
+
+# Kiro 云端 Claude 三模型（Opus 5.5 / Sonnet 5.5 / Haiku 5.5）
+# GUI 通过 gemini-api://kiro/<model> 交给云端 Magpie 的 kiro provider。
+KIRO_REASONING_MODELS = [
+    ("claude-opus-5.5", "Kiro Claude Opus 5.5"),
+    ("claude-sonnet-5.5", "Kiro Claude Sonnet 5.5"),
+    ("claude-haiku-5.5", "Kiro Claude Haiku 5.5"),
+]
+KIRO_SINGLE_MODELS = []
+
+KIRO_EFFORT_TIERS = [
+    ("Medium", "-medium"),
+    ("High", "-high"),
+    ("xhigh", "-xhigh"),
     ("Max", "-max"),
 ]
 
 
+def make_model_entry(raw_name: str, label: str, max_tokens: int, for_gui: bool) -> dict:
+    entry = {
+        "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+        "maxOutputTokens": 128000,
+        "maxTokens": max_tokens,
+        "modelFeatures": {
+            "supportsContextTokens": True,
+            "supportsCumulativeContext": True,
+            "supportsImages": True,
+            "supportsThinking": True,
+            "supportsToolCalls": True,
+        },
+        "modelName": f"gemini-api://{raw_name}" if for_gui else raw_name,
+        "supportsContext": True,
+    }
+    if for_gui:
+        entry["modelId"] = "MODEL_GOOGLE_GEMINI_INTERNAL_BYOM"
+        entry["chatModelName"] = label
+    return entry
+
+
 def build_gui_models() -> dict:
-    settings_path = Path.home() / ".gemini/antigravity-cli/settings.json"
-    if not settings_path.exists():
-        return {}
-    settings = json.loads(settings_path.read_text(encoding="utf-8"))
-    cli_models = settings.get("customModelsConfig", {}).get("customModels", {})
     gui_models = {}
-    for k, base_label in BASE_GUI_MODELS.items():
-        v = cli_models.get(k)
-        if v is None:
-            continue
-        raw_name = str(v.get("modelName", ""))
-        if raw_name.startswith("gemini-api://"):
-            raw_name = raw_name[len("gemini-api://") :]
-        if raw_name.startswith("magpie/"):
-            raw_name = raw_name[len("magpie/") :]
-        for effort_label, suffix in EFFORT_TIERS:
+    cli_models = {}
+
+    for raw_base, base_label, max_tokens in GPT_BASE_MODELS:
+        cli_models[f"magpie/{raw_base}"] = make_model_entry(raw_base, base_label, max_tokens, for_gui=False)
+        for effort_label, suffix in GPT_EFFORT_TIERS:
+            raw_name = f"{raw_base}{suffix}"
             label = f"{base_label} ({effort_label})"
-            entry = dict(v)
-            if "word/claude-opus-5-5" in raw_name:
-                entry["maxTokens"] = 200000
-            features = dict(entry.get("modelFeatures") or {})
-            features["supportsThinking"] = True
-            entry["modelFeatures"] = features
-            entry["modelId"] = "MODEL_GOOGLE_GEMINI_INTERNAL_BYOM"
-            entry["modelName"] = f"gemini-api://{raw_name}{suffix}"
-            entry["chatModelName"] = label
-            entry["apiProvider"] = "API_PROVIDER_GOOGLE_GEMINI"
-            gui_models[label] = entry
+            gui_models[label] = make_model_entry(raw_name, label, max_tokens, for_gui=True)
+            cli_models[f"magpie/{raw_name}"] = make_model_entry(raw_name, label, max_tokens, for_gui=False)
+
+    for raw_name, label, max_tokens in SINGLE_FIXED_MODELS:
+        gui_models[label] = make_model_entry(raw_name, label, max_tokens, for_gui=True)
+        cli_models[f"magpie/{raw_name}"] = make_model_entry(raw_name, label, max_tokens, for_gui=False)
+        if raw_name.endswith("-max"):
+            base_raw = raw_name[:-4]
+            cli_models[f"magpie/{base_raw}"] = make_model_entry(raw_name, label, max_tokens, for_gui=False)
+
+    for raw_name, base_label in KIRO_REASONING_MODELS:
+        base_model_name = f"kiro/{raw_name}"
+        cli_models[f"magpie/{base_model_name}"] = make_model_entry(base_model_name, base_label, 1_000_000, for_gui=False)
+        for effort_label, suffix in KIRO_EFFORT_TIERS:
+            model_name = f"kiro/{raw_name}{suffix}"
+            label = f"{base_label} ({effort_label})"
+            gui_models[label] = make_model_entry(model_name, label, 1_000_000, for_gui=True)
+            cli_models[f"magpie/{model_name}"] = make_model_entry(model_name, label, 1_000_000, for_gui=False)
+
+    for raw_name, label in KIRO_SINGLE_MODELS:
+        model_name = f"kiro/{raw_name}"
+        gui_models[label] = make_model_entry(model_name, label, 1_000_000, for_gui=True)
+        cli_models[f"magpie/{model_name}"] = make_model_entry(model_name, label, 1_000_000, for_gui=False)
+
+    settings_path = Path.home() / ".gemini/antigravity-cli/settings.json"
+    try:
+        settings = json.loads(settings_path.read_text(encoding="utf-8")) if settings_path.exists() else {}
+        settings.setdefault("customModelsConfig", {})["customModels"] = cli_models
+        settings.setdefault("modelProvider", "gemini")
+        settings.setdefault("model", "magpie/codex/gpt-6.1-sol")
+        settings_path.parent.mkdir(parents=True, exist_ok=True)
+        settings_path.write_text(json.dumps(settings, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    except Exception:
+        pass
+
     return gui_models
 
 
@@ -119,6 +174,14 @@ def sync_to_port(port: int, gui_models: dict) -> bool:
 def main() -> int:
     if "--wait" in sys.argv:
         time.sleep(6.0)
+    # Self-heal if Antigravity.app auto-update overwrote language_server wrapper
+    patch_script = Path(__file__).parent / "patch-agy-web-bundle.py"
+    real_bin = Path("/Applications/Antigravity.app/Contents/Resources/bin/language_server.real")
+    if patch_script.exists() and not real_bin.exists():
+        try:
+            subprocess.run(["python3", str(patch_script)], check=False)
+        except Exception:
+            pass
     gui_models = build_gui_models()
     if not gui_models:
         return 0

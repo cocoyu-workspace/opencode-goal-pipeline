@@ -10,8 +10,21 @@
 #   agy-gpt --continue                                # resume most recent conversation
 set -euo pipefail
 
-export GEMINI_API_KEY="${GEMINI_API_KEY:-magpie-agy}"
-export GOOGLE_GEMINI_BASE_URL="${GOOGLE_GEMINI_BASE_URL:-http://127.0.0.1:3425}"
+CLOUD_KEY_FILE="$HOME/.config/magpie/cloud-caller-key"
+if [[ -z "${GEMINI_API_KEY:-}" || "${GEMINI_API_KEY:-}" == "magpie-agy" ]]; then
+  if [[ -f "$CLOUD_KEY_FILE" ]]; then
+    GEMINI_API_KEY="$(tr -d '[:space:]' < "$CLOUD_KEY_FILE")"
+  else
+    GEMINI_API_KEY="magpie-agy"
+  fi
+fi
+export GEMINI_API_KEY
+if [[ -z "${GOOGLE_GEMINI_BASE_URL:-}" || "${GOOGLE_GEMINI_BASE_URL:-}" == "http://127.0.0.1:3425" ]]; then
+  GOOGLE_GEMINI_BASE_URL="https://newapi.resumegenkk.xyz"
+fi
+export GOOGLE_GEMINI_BASE_URL
+export HTTP_PROXY="${HTTP_PROXY:-http://127.0.0.1:17845}"
+export HTTPS_PROXY="${HTTPS_PROXY:-http://127.0.0.1:17845}"
 
 python3 -c '
 import json
