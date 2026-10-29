@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import plugin, { resolveSubagentFallbackTiers, wrapSubagentExecute } from "./auto-continue-harness.js";
+import plugin, { ROLE_DEFAULT_MODELS, parseModelSpec, resolveSubagentFallbackTiers, wrapSubagentExecute } from "./auto-continue-harness.js";
 
-describe("auto-continue-harness subagent fallback & background coercion (Issue #3)", () => {
+describe("auto-continue-harness subagent fallback & background coercion (Issue #3 & #22)", () => {
   test("resolveSubagentFallbackTiers deduplicates ROLE_DEFAULT_MODELS when initialModel is omitted", () => {
     // research default is word-claude/claude-opus-5-5#medium, so Tier 1 should skip it
     expect(resolveSubagentFallbackTiers("research", undefined)).toEqual([
@@ -22,15 +22,24 @@ describe("auto-continue-harness subagent fallback & background coercion (Issue #
     ]);
   });
 
-  test("resolveSubagentFallbackTiers supports explore and coder with direct OpenCode fallback", () => {
+  test("resolveSubagentFallbackTiers never touches build (interactive session) and keeps coder on 0-Kiro Word Cloud", () => {
+    expect(ROLE_DEFAULT_MODELS.build).toBeUndefined();
+    expect(resolveSubagentFallbackTiers("build", undefined)).toEqual([]);
+
+    expect(ROLE_DEFAULT_MODELS.explore).toBe("kiro-claude/claude-sonnet-5-5#medium");
     expect(resolveSubagentFallbackTiers("explore", undefined)).toEqual([
+      "word-claude/claude-opus-5-5#medium",
       "word-claude/claude-sonnet-5-5#medium",
       "openai/gpt-6.1-sol#medium",
     ]);
+
+    // coder strictly stays on Word Cloud -> OpenAI (0 Kiro credits)
+    expect(ROLE_DEFAULT_MODELS.coder).toBe("word-claude/claude-opus-5-5#medium");
     expect(resolveSubagentFallbackTiers("coder", undefined)).toEqual([
       "word-claude/claude-sonnet-5-5#medium",
       "openai/gpt-6.1-sol#high",
     ]);
+    expect(resolveSubagentFallbackTiers("coder", undefined).some((m) => m.startsWith("kiro-claude/"))).toBe(false);
 
     expect(resolveSubagentFallbackTiers("coder", "word-claude/claude-sonnet-5-5#medium")).toEqual([
       "word-claude/claude-opus-5-5#medium",
@@ -121,11 +130,11 @@ async function setupFallback(availableOverride, sessionOverride) {
     }
   } }, session: {
     hook: async (name, callback) => { hooks.set(name, callback); return { dispose() {} }; },
-    get: async () => (sessionOverride ?? {agent:"coder",model:{providerID:"word-claude",id:"claude-opus-5-5",variant:"medium"}}),
+    get: async () => (sessionOverride ?? {parentID:"parent",agent:"coder",model:{providerID:"word-claude",id:"claude-opus-5-5",variant:"medium"}}),
     switchModel: async (input) => { switches.push(input); },
   } });
   return { prepare: hooks.get("prompt"), retry: hooks.get("retry"), switches, dispose, storage,
-    async emit(type) { events.push({id:crypto.randomUUID(),type,data:{sessionID:"ses_test"}}); wake?.(); await new Promise(resolve=>setTimeout(resolve,0)); }
+    async emit(type, extraData = {}) { events.push({id:crypto.randomUUID(),type,data:{sessionID:"ses_test", ...extraData}}); wake?.(); await new Promise(resolve=>setTimeout(resolve,0)); }
   };
 }
 function failure(type = "provider.auth", status = 401, model = { providerID: "word-claude", id: "claude-opus-5-5", variant: "medium" }) {
@@ -167,9 +176,34 @@ describe("native session retry registration", () => {
     expect(h.switches[0].model.providerID).toBe("openai");
     await h.dispose();
   });
+
+  test("AGY shim sessions may fallback through metadata even without parentID", async () => {
+    const h = await setupFallback(undefined, {
+      metadata: { agyConversationId: "agy-conv-1", agyAgent: "coder" },
+      agent: "coder",
+      model: { providerID: "word-claude", id: "claude-opus-5-5", variant: "medium" },
+    });
+    const input = failure();
+    await h.retry(input);
+    expect(h.switches[0].model.id).toBe("claude-sonnet-5-5");
+    expect(input.decision).toEqual({ retry: true, delay: 0 });
+    await h.dispose();
+  });
+
+  test("ordinary parentless sessions without AGY metadata never fallback", async () => {
+    const h = await setupFallback(undefined, {
+      agent: "coder",
+      model: { providerID: "word-claude", id: "claude-opus-5-5", variant: "medium" },
+    });
+    const input = failure();
+    await h.retry(input);
+    expect(h.switches).toHaveLength(0);
+    expect(input.decision).toEqual({ retry: false });
+    await h.dispose();
+  });
 });
 
-describe("session lifecycle and audit", () => {
+describe("session lifecycle, Tab agent model sync, and audit", () => {
   test("settled execution resets candidates for the next turn", async () => {
     const h = await setupFallback();
     await h.retry(failure());
@@ -181,6 +215,28 @@ describe("session lifecycle and audit", () => {
   });
   test("general role default is omitted from backups", () => {
     expect(resolveSubagentFallbackTiers("general")).toEqual(["word-claude/claude-sonnet-5-5#medium","openai/gpt-6.1-sol#high"]);
+  });
+  test("main (parentless) sessions never switch model or retry, whatever the agent or error", async () => {
+    const h = await setupFallback(undefined, {
+      agent: "build",
+      model: { providerID: "openai", id: "gpt-6.1-sol-fast", variant: "xhigh" },
+    });
+    await h.prepare({ sessionID: "ses_test" });
+    for (const type of ["provider.auth", "provider.quota", "provider.rate-limit", "provider.internal", "provider.transport", "provider.timeout"]) {
+      const input = {
+        sessionID: "ses_test",
+        agent: "build",
+        model: { providerID: "openai", id: "gpt-6.1-sol-fast", variant: "xhigh" },
+        error: { type, message: "fault" },
+        attempt: 1,
+        decision: { retry: true, delay: 5000 },
+      };
+      await h.retry(input);
+      expect(input.decision).toEqual({ retry: false });
+    }
+    await h.emit("session.agent.selected", { agent: "coder", previous: "build" });
+    expect(h.switches).toHaveLength(0);
+    await h.dispose();
   });
 });
 
@@ -208,7 +264,7 @@ describe("startup model preflight", () => {
     await h.dispose();
   });
   test("does not replace a role without a fallback policy", async () => {
-    const h = await setupFallback(undefined,{agent:"build",model:{providerID:"missing",id:"missing"}});
+    const h = await setupFallback(undefined,{agent:"plan",model:{providerID:"missing",id:"missing"}});
     await h.prepare({sessionID:"ses_test"});
     expect(h.switches).toHaveLength(0);
     await h.dispose();

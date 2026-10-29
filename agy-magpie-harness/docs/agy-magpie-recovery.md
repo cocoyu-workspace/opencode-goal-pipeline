@@ -1,6 +1,6 @@
 # AGY + Magpie 接入记录与更新检查
 
-记录日期：2026-10-28。记录版本：Antigravity.app 2.28.0。关联历史 [Issue #7](https://github.com/wycocoyu/opencode-goal-pipeline/issues/7)、[Issue #8](https://github.com/wycocoyu/opencode-goal-pipeline/issues/8)。本次跟踪 [Issue #20](https://github.com/wycocoyu/opencode-goal-pipeline/issues/20)。
+记录日期：2026-10-28。记录版本：Antigravity.app 2.28.0。关联历史 [Issue #7](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/7)、[Issue #8](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/8)。本次跟踪 [Issue #20](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/20)。
 
 本文记录本次本机接入的实际机制、模型配置与证据，下次更新先按检查顺序判断适用范围。它不保证跨版本恢复，也不把未公开接口或平台支持判断补丁作为默认接入办法。
 

@@ -1,6 +1,6 @@
 # `agy + magpie + OpenCode` Harness Adapter (`agy-magpie-harness`)
 
-> 2026-10-28 维护入口：[AGY + Magpie 接入记录与更新检查](docs/agy-magpie-recovery.md)，跟踪 [Issue #20](https://github.com/wycocoyu/opencode-goal-pipeline/issues/20)。当前本机结果为 19 条桌面配置、25 条 CLI 配置，Word 仅 Opus 5.5 Max。真实对话验收待补。
+> 2026-10-28 维护入口：[AGY + Magpie 接入记录与更新检查](docs/agy-magpie-recovery.md)，跟踪 [Issue #20](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/20)。当前本机结果为 19 条桌面配置、25 条 CLI 配置，Word 仅 Opus 5.5 Max。真实对话验收待补。
 >
 > 下文第 1–3、5–6 节保留早期适配历史，其中 Perplexity、Sonnet、上下文、耗时与路由说明不作为当前配置依据。AGY 主会话使用 Magpie，OpenCode 子任务直接走 `opencode run`，不接入 Magpie。桌面接入以第 4 节链接为准。
 
@@ -62,7 +62,7 @@
 
 ## 4. 桌面端接入与更新检查
 
-当前方法与边界统一维护在 [AGY + Magpie 接入记录与更新检查](docs/agy-magpie-recovery.md)，关联 [Issue #20](https://github.com/wycocoyu/opencode-goal-pipeline/issues/20)。
+当前方法与边界统一维护在 [AGY + Magpie 接入记录与更新检查](docs/agy-magpie-recovery.md)，关联 [Issue #20](https://github.com/cocoyu-workspace/opencode-goal-pipeline/issues/20)。
 
 该文记录更新覆盖入口的现象、历史包装器职责、模型矩阵、官方设置入口、回退与真实验收清单。旧界面补丁改变平台支持判断，不再作为默认恢复步骤。前序本机运行时改动未包含在本次文档交付中。
 
