@@ -45,11 +45,22 @@ func main() {
 				args = append(args, "--web_bundle_path="+bundlePath)
 			}
 		}
-		if os.Getenv("GEMINI_API_KEY") == "" {
-			_ = os.Setenv("GEMINI_API_KEY", "magpie-agy")
+		if curKey := os.Getenv("GEMINI_API_KEY"); curKey == "" || curKey == "magpie-agy" {
+			keyBytes, err := os.ReadFile(filepath.Join(home, ".config", "magpie", "cloud-caller-key"))
+			key := strings.TrimSpace(string(keyBytes))
+			if err != nil || key == "" {
+				key = "magpie-agy"
+			}
+			_ = os.Setenv("GEMINI_API_KEY", key)
 		}
-		if os.Getenv("GOOGLE_GEMINI_BASE_URL") == "" {
-			_ = os.Setenv("GOOGLE_GEMINI_BASE_URL", "http://127.0.0.1:3425")
+		if curURL := os.Getenv("GOOGLE_GEMINI_BASE_URL"); curURL == "" || curURL == "http://127.0.0.1:3425" {
+			_ = os.Setenv("GOOGLE_GEMINI_BASE_URL", "https://newapi.resumegenkk.xyz")
+		}
+		if os.Getenv("HTTP_PROXY") == "" {
+			_ = os.Setenv("HTTP_PROXY", "http://127.0.0.1:17845")
+		}
+		if os.Getenv("HTTPS_PROXY") == "" {
+			_ = os.Setenv("HTTPS_PROXY", "http://127.0.0.1:17845")
 		}
 		syncScript := "/Users/mac/dev/opencode-goal-pipeline/agy-magpie-harness/bin/sync-agy-gui-models.py"
 		if _, err := os.Stat(syncScript); err == nil {

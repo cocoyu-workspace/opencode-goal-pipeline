@@ -29,7 +29,14 @@ const flag = (...names) => {
 const shouldTrack = () =>
   Boolean(process.env.ANTIGRAVITY_CONVERSATION_ID) &&
   argv.find((a) => !a.startsWith('-')) === 'run' &&
-  !argv.some((a) => SESSION_FLAGS.includes(a) || a.startsWith('--session='));
+  !argv.some(
+    (a) =>
+      SESSION_FLAGS.includes(a) ||
+      a.startsWith('--session=') ||
+      a.startsWith('-s=') ||
+      a === '--title' ||
+      a.startsWith('--title='),
+  );
 
 const upsertLedger = (entry) => {
   const rows = existsSync(LEDGER) ? JSON.parse(readFileSync(LEDGER, 'utf8')) : [];

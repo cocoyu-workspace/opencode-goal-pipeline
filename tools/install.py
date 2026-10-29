@@ -114,6 +114,13 @@ def install(opencode_dir: Path) -> None:
     shutil.copy2(SHIM_SRC, SHIM_DST)
     SHIM_DST.chmod(0o755)
     print(f"[installed] opencode shim -> {SHIM_DST}")
+    real_opencode = Path("/opt/homebrew/bin/opencode")
+    if real_opencode.exists():
+        try:
+            subprocess.run([str(real_opencode), "service", "restart"], check=False, timeout=15)
+            print("[installed] restarted opencode background service")
+        except Exception as e:
+            print(f"[warn] opencode service restart failed: {e}")
     enable_sidecar()
 
 
